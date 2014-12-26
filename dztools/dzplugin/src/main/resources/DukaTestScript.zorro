@@ -1,0 +1,10 @@
+function run()
+{
+    BarPeriod = 1;
+    
+    asset("EUR/USD");
+    enterLong(1, 0, 1.2304);
+    
+    asset("GBP/USD");
+    enterShort(1, 0, 1.9200);
+}
