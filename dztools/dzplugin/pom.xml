@@ -92,7 +92,8 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*.java</exclude>
-						<exclude>**/resources/*</exclude>
+						<exclude>**/*.properties</exclude>
+						<exclude>**/*.xml</exclude>
 					</excludes>
 					<finalName>${project.artifactId}-${project.version}</finalName>
 					<archive>
@@ -102,6 +103,7 @@
 						</manifest>
 						<manifestEntries>
 							<Class-Path>.</Class-Path>
+							<Built-By>juxeii</Built-By>
 						</manifestEntries>
 					</archive>
 				</configuration>

@@ -33,6 +33,7 @@
 						</manifest>
 						<manifestEntries>
 							<Class-Path>.</Class-Path>
+							<Built-By>juxeii</Built-By>
 						</manifestEntries>
 					</archive>
 				</configuration>
