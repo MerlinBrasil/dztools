@@ -24,22 +24,25 @@ package com.jforex.dzplugin.provider;
  * #L%
  */
 
-
 import java.util.HashMap;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IHistory;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
-
 import com.jforex.dzplugin.ZorroLogger;
 
 public class PriceEngine implements IPriceEngine, ITickConsumer {
 
     private IHistory history;
     private final HashMap<Instrument, ITick> lastTickMap;
+
+    private final static Logger logger = LogManager.getLogger(PriceEngine.class);
 
     public PriceEngine(IHistory history) {
         this.history = history;
@@ -73,6 +76,7 @@ public class PriceEngine implements IPriceEngine, ITickConsumer {
         try {
             return history.getLastTick(instrument);
         } catch (JFException e) {
+            logger.error("Last tick for " + instrument + " not availavle!");
             ZorroLogger.log("Last tick for " + instrument + " not availavle!");
             return null;
         }
