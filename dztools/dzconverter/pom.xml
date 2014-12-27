@@ -42,7 +42,6 @@
 					<inceptionYear>2014</inceptionYear>
 					<organizationName>juxeii</organizationName>
 					<verbose>false</verbose>
-					<addSvnKeyWords>true</addSvnKeyWords>
 				</configuration>
 				<executions>
 					<execution>
