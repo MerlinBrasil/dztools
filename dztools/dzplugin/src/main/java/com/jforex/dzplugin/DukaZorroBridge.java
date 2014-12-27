@@ -67,6 +67,7 @@ public class DukaZorroBridge {
         try {
             client = ClientFactory.getDefaultInstance();
             client.setSystemListener(new DukaZorroSystemListener());
+            return;
         } catch (ClassNotFoundException e) {
             logger.error("IClient ClassNotFoundException occured!");
         } catch (IllegalAccessException e) {
@@ -74,6 +75,7 @@ public class DukaZorroBridge {
         } catch (InstantiationException e) {
             logger.error("IClient InstantiationException occured!");
         }
+        ZorroLogger.inicateError();
     }
 
     public int doLogin(String User,
@@ -86,13 +88,14 @@ public class DukaZorroBridge {
         if (Type.equals("Demo"))
             return handleLogin(User, Pwd, "", accountInfos);
         else if (Type.equals("Real")) {
-            logger.info("Live login not yet supported.");
+            logger.warn("Live login not yet supported.");
             return ReturnCodes.LOGIN_FAIL;
             // MainPin mp = new MainPin(client);
             // String pin = mp.getPin();
             // return handleLogin(User, Pwd, pin, accountInfos);
         } else {
-            logger.warn("Received invalid login type: " + Type);
+            logger.error("Received invalid login type: " + Type);
+            ZorroLogger.inicateError();
             return ReturnCodes.LOGIN_FAIL;
         }
     }
@@ -130,6 +133,7 @@ public class DukaZorroBridge {
 
     public int doBrokerTime(long serverTime[]) {
         if (!client.isConnected()) {
+            logger.warn("No connection to Dukascopy!");
             ZorroLogger.log("No connection to Dukascopy!");
             return ReturnCodes.CONNECTION_FAIL;
         }
@@ -143,17 +147,15 @@ public class DukaZorroBridge {
             return ReturnCodes.ASSET_UNAVAILABLE;
 
         Instrument toSubscribeInstrument = InstrumentUtils.getByName(instrumentName);
-        if (toSubscribeInstrument == null) {
-            ZorroLogger.log(instrumentName + " is no valid asset name!");
+        if (toSubscribeInstrument == null)
             return ReturnCodes.ASSET_UNAVAILABLE;
-        }
 
         Set<Instrument> instruments = new HashSet<Instrument>();
         instruments.add(toSubscribeInstrument);
         // we must subscribe to cross instrument also for margin calculations
         Instrument crossInstrument = InstrumentUtils.getfromCurrencies(accountCurrency, toSubscribeInstrument.getPrimaryJFCurrency());
         if (crossInstrument != null) {
-            ZorroLogger.log("crossInstrument: " + crossInstrument);
+            logger.debug("crossInstrument: " + crossInstrument);
             instruments.add(crossInstrument);
         }
 
@@ -170,12 +172,12 @@ public class DukaZorroBridge {
             return ReturnCodes.ASSET_UNAVAILABLE;
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
-            ZorroLogger.log(instrumentName + " is no valid asset name!");
+        if (instrument == null)
             return ReturnCodes.ASSET_UNAVAILABLE;
-        }
+
         ITick tick = priceEngine.getLastTick(instrument);
         if (tick == null) {
+            logger.warn("No data for " + instrument + " available!");
             ZorroLogger.log("No data for " + instrument + " available!");
             return ReturnCodes.ASSET_UNAVAILABLE;
         }
@@ -226,7 +228,6 @@ public class DukaZorroBridge {
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
         if (instrument == null) {
-            ZorroLogger.log(instrumentName + " is no valid asset name!");
             return ReturnCodes.ORDER_SUBMIT_FAIL;
         }
         double amount = tradeParams[0];
@@ -264,8 +265,11 @@ public class DukaZorroBridge {
         if (!accountInfo.isConnected())
             return ReturnCodes.INVALID_ORDER_ID;
 
-        if (!orderHandler.isOrderIDValid(orderID))
+        if (!orderHandler.isOrderIDValid(orderID)) {
+            logger.warn("Order ID " + orderID + " is unknown!");
+            ZorroLogger.log("Order ID " + orderID + " is unknown!");
             return ReturnCodes.INVALID_ORDER_ID;
+        }
 
         IOrder order = orderHandler.getOrderByID(orderID);
         orderParams[0] = order.getOpenPrice();
@@ -283,11 +287,16 @@ public class DukaZorroBridge {
 
     public int doBrokerStop(int orderID,
                             double newSLPrice) {
+        logger.debug("New SL price: " + newSLPrice);
+
         if (!accountInfo.isTradingPossible())
             return ReturnCodes.ADJUST_SL_FAIL;
 
-        if (!orderHandler.isOrderIDValid(orderID))
+        if (!orderHandler.isOrderIDValid(orderID)) {
+            logger.warn("Order ID " + orderID + " is unknown!");
+            ZorroLogger.log("Order ID " + orderID + " is unknown!");
             return ReturnCodes.ADJUST_SL_FAIL;
+        }
 
         IOrder order = orderHandler.getOrderByID(orderID);
         if (order.getStopLossPrice() == 0) {
@@ -320,13 +329,13 @@ public class DukaZorroBridge {
         logger.debug("Broker nTicks " + nTicks);
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
         if (instrument == null) {
-            ZorroLogger.log(instrumentName + " is no valid asset!");
             return ReturnCodes.HISTORY_FAIL;
         }
 
         Period period = DateTimeUtils.getPeriodFromMinutes(tickMinutes);
         if (period == null) {
-            ZorroLogger.log("Invalid tickMinutes: " + tickMinutes);
+            logger.error("Invalid tickMinutes: " + tickMinutes);
+            ZorroLogger.inicateError();
             return ReturnCodes.HISTORY_FAIL;
         }
         List<IBar> bars = historyHandler.getBars(instrument, period, OfferSide.ASK, startDate, endDate);

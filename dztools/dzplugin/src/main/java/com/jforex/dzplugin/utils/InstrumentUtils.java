@@ -24,15 +24,20 @@ package com.jforex.dzplugin.utils;
  * #L%
  */
 
-
 import java.util.HashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.ICurrency;
 import com.dukascopy.api.Instrument;
+import com.jforex.dzplugin.ZorroLogger;
 
 public class InstrumentUtils {
 
     private static final HashMap<String, Instrument> assetNameToInstrumentMap = new HashMap<String, Instrument>();
+
+    private final static Logger logger = LogManager.getLogger(InstrumentUtils.class);
 
     public static Instrument getfromString(String instrumentString) {
         String uppercaseInstrumentString = instrumentString.toUpperCase();
@@ -55,8 +60,11 @@ public class InstrumentUtils {
 
     private static synchronized Instrument getFromNewName(String instrumentName) {
         Instrument instrument = InstrumentUtils.getfromString(instrumentName);
-        if (instrument == null)
+        if (instrument == null) {
+            logger.error(instrumentName + " is no valid asset name!");
+            ZorroLogger.log(instrumentName + " is no valid asset name!");
             return null;
+        }
 
         assetNameToInstrumentMap.put(instrumentName, instrument);
         return instrument;
