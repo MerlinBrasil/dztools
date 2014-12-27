@@ -24,12 +24,13 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
-
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.system.IClient;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -37,6 +38,8 @@ import com.jforex.dzplugin.config.ReturnCodes;
 public class SubscriptionHandler {
 
     private final IClient client;
+
+    private final static Logger logger = LogManager.getLogger(SubscriptionHandler.class);
 
     public SubscriptionHandler(IClient client) {
         this.client = client;
@@ -47,7 +50,8 @@ public class SubscriptionHandler {
 
         waitForSubscription(instruments);
         if (!client.getSubscribedInstruments().containsAll(instruments)) {
-            ZorroLogger.log("Subscription for assets failed!");
+            logger.error("Subscription for assets failed!");
+            ZorroLogger.inicateError();
             return ReturnCodes.ASSET_UNAVAILABLE;
         }
         return ReturnCodes.ASSET_AVAILABLE;
@@ -60,7 +64,8 @@ public class SubscriptionHandler {
             try {
                 Thread.sleep(Configuration.SUBSCRIPTION_WAIT_TIME);
             } catch (InterruptedException e) {
-                ZorroLogger.log("Thread exc: " + e.getMessage());
+                logger.error("Thread exc: " + e.getMessage());
+                ZorroLogger.inicateError();
                 break;
             }
         }
