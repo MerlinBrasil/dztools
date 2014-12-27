@@ -56,14 +56,11 @@ public class LoginHandler {
             for (int i = 0; i < Configuration.CONNECTION_RETRIES && !client.isConnected(); ++i)
                 Thread.sleep(Configuration.CONNECTION_WAIT_TIME);
         } catch (JFAuthenticationException e) {
-            logger.error("Invalid login credentials!");
-            ZorroLogger.log("Invalid login credentials!");
+            ZorroLogger.showError(logger, "Invalid login credentials!");
         } catch (JFVersionException e) {
-            logger.error("Invalid JForex version!");
-            ZorroLogger.log("Invalid JForex version!");
+            ZorroLogger.showError(logger, "Invalid JForex version!");
         } catch (Exception e) {
-            logger.error("Login exc: " + e.getMessage());
-            ZorroLogger.inicateError();
+            ZorroLogger.inicateError(logger, "Login exc: " + e.getMessage());
         }
         return client.isConnected() ? ReturnCodes.LOGIN_OK : ReturnCodes.LOGIN_FAIL;
     }

@@ -116,8 +116,7 @@ public class AccountInfo {
         try {
             pipCost = utils.convertPipToCurrency(instrument, accountCurrency, offerSide) * DukascopyParams.LOT_SIZE;
         } catch (JFException e) {
-            logger.error("Pipcost calculation exc: " + e.getMessage());
-            ZorroLogger.inicateError();
+            ZorroLogger.inicateError(logger, "Pipcost calculation exc: " + e.getMessage());
         }
         return pipCost;
     }

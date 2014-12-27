@@ -50,8 +50,7 @@ public class SubscriptionHandler {
 
         waitForSubscription(instruments);
         if (!client.getSubscribedInstruments().containsAll(instruments)) {
-            logger.error("Subscription for assets failed!");
-            ZorroLogger.inicateError();
+            ZorroLogger.showError(logger, "Subscription for assets failed!");
             return ReturnCodes.ASSET_UNAVAILABLE;
         }
         return ReturnCodes.ASSET_AVAILABLE;
@@ -64,8 +63,7 @@ public class SubscriptionHandler {
             try {
                 Thread.sleep(Configuration.SUBSCRIPTION_WAIT_TIME);
             } catch (InterruptedException e) {
-                logger.error("Thread exc: " + e.getMessage());
-                ZorroLogger.inicateError();
+                ZorroLogger.inicateError(logger, "Thread exc: " + e.getMessage());
                 break;
             }
         }

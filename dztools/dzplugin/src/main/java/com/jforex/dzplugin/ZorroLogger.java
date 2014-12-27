@@ -24,6 +24,8 @@ package com.jforex.dzplugin;
  * #L%
  */
 
+import org.apache.logging.log4j.Logger;
+
 public class ZorroLogger {
 
     public static void log(String errorMsg) {
@@ -42,8 +44,16 @@ public class ZorroLogger {
         log("!" + errorMsg);
     }
 
-    public static void inicateError() {
+    public static void inicateError(Logger logger,
+                                    String errorMsg) {
+        logger.error(errorMsg);
         log("Error! Check dzplugin logfile!");
+    }
+
+    public static void showError(Logger logger,
+                                 String errorMsg) {
+        logger.error(errorMsg);
+        log(errorMsg);
     }
 
     private static native void jcallback_BrokerError(String errorMsg);

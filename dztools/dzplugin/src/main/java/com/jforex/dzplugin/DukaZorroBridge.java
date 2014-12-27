@@ -69,13 +69,12 @@ public class DukaZorroBridge {
             client.setSystemListener(new DukaZorroSystemListener());
             return;
         } catch (ClassNotFoundException e) {
-            logger.error("IClient ClassNotFoundException occured!");
+            ZorroLogger.inicateError(logger, "IClient ClassNotFoundException occured!");
         } catch (IllegalAccessException e) {
-            logger.error("IClient IllegalAccessException occured!");
+            ZorroLogger.inicateError(logger, "IClient IllegalAccessException occured!");
         } catch (InstantiationException e) {
-            logger.error("IClient InstantiationException occured!");
+            ZorroLogger.inicateError(logger, "IClient InstantiationException occured!");
         }
-        ZorroLogger.inicateError();
     }
 
     public int doLogin(String User,
@@ -94,8 +93,7 @@ public class DukaZorroBridge {
             // String pin = mp.getPin();
             // return handleLogin(User, Pwd, pin, accountInfos);
         } else {
-            logger.error("Received invalid login type: " + Type);
-            ZorroLogger.inicateError();
+            ZorroLogger.inicateError(logger, "Received invalid login type: " + Type);
             return ReturnCodes.LOGIN_FAIL;
         }
     }
@@ -334,8 +332,7 @@ public class DukaZorroBridge {
 
         Period period = DateTimeUtils.getPeriodFromMinutes(tickMinutes);
         if (period == null) {
-            logger.error("Invalid tickMinutes: " + tickMinutes);
-            ZorroLogger.inicateError();
+            ZorroLogger.inicateError(logger, "Invalid tickMinutes: " + tickMinutes);
             return ReturnCodes.HISTORY_FAIL;
         }
         List<IBar> bars = historyHandler.getBars(instrument, period, OfferSide.ASK, startDate, endDate);
