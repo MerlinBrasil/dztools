@@ -15,15 +15,22 @@
 				<include>com.jforex:dzplugin</include>
 			</includes>
 			<sources>
-				<includeModuleDirectory>true</includeModuleDirectory>
+				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<directory>target</directory>
+						<directory>target/nar/dzplugin-0.9.0-x86-Windows-gpp-shared/lib/x86-Windows-gpp/shared</directory>
 						<outputDirectory>/</outputDirectory>
 						<includes>
-							<include>dzplugin-${project.version}.jar</include>
+							<include>dukascopy-${project.version}.dll</include>
 						</includes>
 					</fileSet>
+					<fileSet>
+                        <directory>target</directory>
+                        <outputDirectory>dztools/dzplugin</outputDirectory>
+                        <includes>
+                            <include>dzplugin-${project.version}.jar</include>
+                        </includes>
+                    </fileSet>
 				</fileSets>
 			</sources>
 		</moduleSet>
@@ -33,18 +40,18 @@
 				<include>com.jforex:dzconverter</include>
 			</includes>
 			<sources>
-				<includeModuleDirectory>true</includeModuleDirectory>
+				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
 						<directory>target</directory>
-						<outputDirectory>/</outputDirectory>
+						<outputDirectory>dztools/dzconverter</outputDirectory>
 						<includes>
 							<include>dzconverter-${project.version}.jar</include>
 						</includes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>/</outputDirectory>
+						<outputDirectory>dztools/dzconverter</outputDirectory>
 						<includes>
 							<include>config.properties</include>
 							<include>convert.bat</include>
@@ -57,7 +64,7 @@
 
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>lib</outputDirectory>
+			<outputDirectory>dztools/lib</outputDirectory>
 			<excludes>
 				<exclude>com.jforex:dzplugin</exclude>
 				<exclude>com.jforex:dzconverter</exclude>

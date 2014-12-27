@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>dzplugin</artifactId>
-	<packaging>jar</packaging>
+	<packaging>nar</packaging>
 	<version>0.9.0</version>
 	<name>dzplugin</name>
 
@@ -32,13 +32,14 @@
 					<execution>
 						<goals>
 							<goal>nar-compile</goal>
+							<goal>nar-unpack</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
 					<multithreaded>true</multithreaded>
 					<maxCores>1</maxCores>
-					<output>${project.artifactId}</output>
+					<output>dukascopy-${project.version}</output>
 					<cpp>
 						<name>g++</name>
 						<includes>
