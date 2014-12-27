@@ -24,10 +24,12 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IHistory;
@@ -35,13 +37,14 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 
 public class HistoryHandler {
 
     private final IHistory history;
+
+    private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
     public HistoryHandler(IHistory history) {
         this.history = history;
@@ -54,21 +57,21 @@ public class HistoryHandler {
                               long endDateTimeRaw) {
         long startDateTimeRounded = getStartDateTimeRounded(period, startDateTimeRaw);
         long endDateTimeRounded = getEndDateTimeRounded(instrument, period, endDateTimeRaw);
-        ZorroLogger.log("Fetching " + period + " bars");
-        String dateFrom = ZorroLogger.formatDateTime(startDateTimeRounded);
-        String dateTo = ZorroLogger.formatDateTime(endDateTimeRounded);
-        ZorroLogger.log("From " + dateFrom);
-        ZorroLogger.log("To " + dateTo);
+        String dateFrom = DateTimeUtils.formatDateTime(startDateTimeRounded);
+        String dateTo = DateTimeUtils.formatDateTime(endDateTimeRounded);
+
+        logger.debug("Fetching " + period + " bars from " + dateFrom + " to " + dateTo);
 
         List<IBar> bars = null;
         try {
             bars = history.getBars(instrument, period, offerSide, startDateTimeRounded, endDateTimeRounded);
         } catch (JFException e) {
-            ZorroLogger.log("getBars exc: " + e.getMessage());
+            logger.error("getBars exc: " + e.getMessage());
+            ZorroLogger.inicateError();
             return new ArrayList<IBar>();
         }
         Collections.reverse(bars);
-        ZorroLogger.log("Fetched " + bars.size() + " bars.");
+        logger.debug("Fetched " + bars.size() + " bars.");
 
         return bars;
     }
@@ -89,7 +92,8 @@ public class HistoryHandler {
             else
                 endDateTimeRounded = DateTimeUtils.roundTimeToPeriod(period, endDateTimeRaw);
         } catch (JFException e) {
-            ZorroLogger.log("getPreviousBarStart exc: " + e.getMessage());
+            logger.error("getPreviousBarStart exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return endDateTimeRounded;
     }

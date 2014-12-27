@@ -24,9 +24,6 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class ZorroLogger {
 
     public static void log(String errorMsg) {
@@ -45,14 +42,8 @@ public class ZorroLogger {
         log("!" + errorMsg);
     }
 
-    public static void logDateTime(String prefix,
-                                   long dateTime) {
-        log(prefix + " " + formatDateTime(dateTime));
-    }
-
-    public static String formatDateTime(long dateTime) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        return dateFormat.format(new Date(dateTime));
+    public static void inicateError() {
+        log("Error! Check dzplugin logfile!");
     }
 
     private static native void jcallback_BrokerError(String errorMsg);

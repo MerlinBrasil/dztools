@@ -24,7 +24,6 @@ package com.jforex.dzplugin.utils;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
@@ -40,13 +39,13 @@ import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.Period;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 
 public class DateTimeUtils {
 
     private static final HashMap<Integer, Period> minuteToPeriodMap;
+    private static final int DAYS_EPOCH = 25569;
 
     static {
         minuteToPeriodMap = new HashMap<Integer, Period>();
@@ -70,15 +69,17 @@ public class DateTimeUtils {
         timerStart = System.currentTimeMillis();
     }
 
-    public static double getOLEDateFromDate(Date date) {
-        double oleDate = 25569; // dates from 1899 to 1970
-        oleDate += (double) date.getTime() / (1000f * 3600f * 24f) + 1e-8;
-        return oleDate;
+    public static double getOLEDateFromMillis(long millis) {
+        return DAYS_EPOCH + (double) millis / (1000f * 3600f * 24f);
+    }
+
+    public static double getOLEDateFromMillisRounded(long millis) {
+        return getOLEDateFromMillis(millis) + 1e-8;
     }
 
     public static Date getDateFromOLEDate(double oaDate) {
         Date date = new Date();
-        date.setTime((long) ((oaDate - 25569) * 24 * 3600 * 1000));
+        date.setTime((long) ((oaDate - DAYS_EPOCH) * 24 * 3600 * 1000));
         return date;
     }
 
