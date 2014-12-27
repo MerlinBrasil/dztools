@@ -92,7 +92,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*.java</exclude>
-						<exclude>**/*.zorro</exclude>
+						<exclude>**/resources/*</exclude>
 					</excludes>
 					<finalName>${project.artifactId}-${project.version}</finalName>
 					<archive>
