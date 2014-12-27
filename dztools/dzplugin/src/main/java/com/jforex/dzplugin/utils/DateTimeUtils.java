@@ -34,6 +34,8 @@ import java.util.Set;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
@@ -46,6 +48,8 @@ public class DateTimeUtils {
 
     private static final HashMap<Integer, Period> minuteToPeriodMap;
     private static final int DAYS_EPOCH = 25569;
+
+    private final static Logger logger = LogManager.getLogger(DateTimeUtils.class);
 
     static {
         minuteToPeriodMap = new HashMap<Integer, Period>();
@@ -92,9 +96,10 @@ public class DateTimeUtils {
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
             return timeInfo.getMessage().getTransmitTimeStamp().getTime();
         } catch (IOException e) {
-            ZorroLogger.log("Unable to get GMT time: " + e.getMessage());
+            logger.error("Unable to get GMT time: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
-        ZorroLogger.log("Using System time now!");
+        logger.warn("Using System time now!");
         return System.currentTimeMillis();
     }
 
@@ -125,7 +130,8 @@ public class DateTimeUtils {
         try {
             offlineTimes = dataService.getOfflineTimeDomains(startTime, endTime);
         } catch (JFException e) {
-            ZorroLogger.log("getOfflineTimes exc: " + e.getMessage());
+            logger.error("getOfflineTimes exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return offlineTimes;
     }
