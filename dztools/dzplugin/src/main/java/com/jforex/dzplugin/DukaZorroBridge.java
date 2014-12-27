@@ -106,6 +106,7 @@ public class DukaZorroBridge {
         if (loginResult == ReturnCodes.LOGIN_OK) {
             initComponentsAfterLogin();
             accountInfos[0] = accountInfo.getID();
+            logger.info("Login successful for account ID " + accountInfo.getID());
         }
 
         return loginResult;
