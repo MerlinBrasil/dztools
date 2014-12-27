@@ -8,10 +8,61 @@
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 
+	<moduleSets>
+		<moduleSet>
+			<useAllReactorProjects>true</useAllReactorProjects>
+			<includes>
+				<include>com.jforex:dzplugin</include>
+			</includes>
+			<sources>
+				<includeModuleDirectory>true</includeModuleDirectory>
+				<fileSets>
+					<fileSet>
+						<directory>target</directory>
+						<outputDirectory>/</outputDirectory>
+						<includes>
+							<include>dzplugin-${project.version}.jar</include>
+						</includes>
+					</fileSet>
+				</fileSets>
+			</sources>
+		</moduleSet>
+		<moduleSet>
+			<useAllReactorProjects>true</useAllReactorProjects>
+			<includes>
+				<include>com.jforex:dzconverter</include>
+			</includes>
+			<sources>
+				<includeModuleDirectory>true</includeModuleDirectory>
+				<fileSets>
+					<fileSet>
+						<directory>target</directory>
+						<outputDirectory>/</outputDirectory>
+						<includes>
+							<include>dzconverter-${project.version}.jar</include>
+						</includes>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>/</outputDirectory>
+						<includes>
+							<include>config.properties</include>
+							<include>convert.bat</include>
+						</includes>
+					</fileSet>
+				</fileSets>
+			</sources>
+		</moduleSet>
+	</moduleSets>
+
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>lib</outputDirectory>
+			<excludes>
+				<exclude>com.jforex:dzplugin</exclude>
+				<exclude>com.jforex:dzconverter</exclude>
+				<exclude>com.jforex:dztoolsbundle</exclude>
+			</excludes>
 		</dependencySet>
 	</dependencySets>
-
 </assembly>
