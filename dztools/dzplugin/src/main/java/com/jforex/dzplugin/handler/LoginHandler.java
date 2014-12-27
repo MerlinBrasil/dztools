@@ -24,11 +24,12 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -36,6 +37,8 @@ import com.jforex.dzplugin.config.ReturnCodes;
 public class LoginHandler {
 
     private final IClient client;
+
+    private final static Logger logger = LogManager.getLogger(LoginHandler.class);
 
     public LoginHandler(IClient client) {
         this.client = client;
@@ -53,11 +56,14 @@ public class LoginHandler {
             for (int i = 0; i < Configuration.CONNECTION_RETRIES && !client.isConnected(); ++i)
                 Thread.sleep(Configuration.CONNECTION_WAIT_TIME);
         } catch (JFAuthenticationException e) {
+            logger.error("Invalid login credentials!");
             ZorroLogger.log("Invalid login credentials!");
         } catch (JFVersionException e) {
+            logger.error("Invalid JForex version!");
             ZorroLogger.log("Invalid JForex version!");
         } catch (Exception e) {
-            ZorroLogger.log("Login exc: " + e.getMessage());
+            logger.error("Login exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return client.isConnected() ? ReturnCodes.LOGIN_OK : ReturnCodes.LOGIN_FAIL;
     }
