@@ -4,14 +4,14 @@
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
         </Console>
-        <File name="dzplugin" fileName="logs/dzconverter.log" append="false">
+        <File name="dzplugin" fileName="logs/dzplugin.log" append="false">
             <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
         </File>
     </Appenders>
     <Loggers>
         <Root level="debug">
-            <AppenderRef ref="STDOUT" level="INFO" />
-            <AppenderRef ref="dzconverter" level="INFO" />
+            <AppenderRef ref="STDOUT" level="ERROR" />
+            <AppenderRef ref="dzplugin" level="ERROR" />
         </Root>
     </Loggers>
 </Configuration>
