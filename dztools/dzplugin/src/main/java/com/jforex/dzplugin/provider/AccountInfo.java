@@ -24,6 +24,8 @@ package com.jforex.dzplugin.provider;
  * #L%
  */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.IContext;
@@ -32,7 +34,6 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.JFUtils;
 import com.dukascopy.api.OfferSide;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.utils.InstrumentUtils;
@@ -46,6 +47,8 @@ public class AccountInfo {
     private final String accountID;
     private final double leverage;
     private final double accountLOTMargin;
+
+    private final static Logger logger = LogManager.getLogger(AccountInfo.class);
 
     public AccountInfo(IContext context,
                        IPriceEngine priceEngine) {
@@ -113,7 +116,8 @@ public class AccountInfo {
         try {
             pipCost = utils.convertPipToCurrency(instrument, accountCurrency, offerSide) * DukascopyParams.LOT_SIZE;
         } catch (JFException e) {
-            ZorroLogger.log("Pipcost calculation exc: " + e.getMessage());
+            logger.error("Pipcost calculation exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return pipCost;
     }
