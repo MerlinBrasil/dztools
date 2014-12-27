@@ -24,16 +24,16 @@ package com.jforex.dzplugin.task;
  * #L%
  */
 
-
 import java.util.concurrent.Callable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IEngine;
 import com.dukascopy.api.IEngine.OrderCommand;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
-
-import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.DukascopyParams;
 
@@ -45,6 +45,8 @@ public class SubmitOrderTask implements Callable<IOrder> {
     private final OrderCommand cmd;
     private final double amount;
     private final double SLPrice;
+
+    private final static Logger logger = LogManager.getLogger(SubmitOrderTask.class);
 
     public SubmitOrderTask(IEngine engine,
                            String orderLabel,
@@ -76,7 +78,7 @@ public class SubmitOrderTask implements Callable<IOrder> {
                                        "");
             order.waitForUpdate(Configuration.ORDER_UPDATE_WAITTIME, IOrder.State.FILLED);
         } catch (JFException e) {
-            ZorroLogger.logSystem("submitOrder exception: " + e.getMessage());
+            logger.error("submitOrder exception: " + e.getMessage());
         }
         return order;
     }

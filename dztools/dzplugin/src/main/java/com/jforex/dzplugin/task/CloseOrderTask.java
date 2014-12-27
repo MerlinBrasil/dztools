@@ -24,19 +24,21 @@ package com.jforex.dzplugin.task;
  * #L%
  */
 
-
 import java.util.concurrent.Callable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.JFException;
-
-import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 
 public class CloseOrderTask implements Callable<IOrder> {
 
     private final IOrder order;
     private final double amount;
+
+    private final static Logger logger = LogManager.getLogger(CloseOrderTask.class);
 
     public CloseOrderTask(IOrder order,
                           double amount) {
@@ -55,7 +57,7 @@ public class CloseOrderTask implements Callable<IOrder> {
             else
                 order.close(amount);
         } catch (JFException e) {
-            ZorroLogger.logSystem("orderclose exc: " + e.getMessage());
+            logger.error("order close exc: " + e.getMessage());
         }
         return order;
     }

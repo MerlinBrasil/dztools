@@ -24,7 +24,6 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,10 +43,6 @@ public class ZorroLogger {
 
     public static void logPopUp(String errorMsg) {
         log("!" + errorMsg);
-    }
-
-    public static void logSystem(String errorMsg) {
-        System.out.println(errorMsg);
     }
 
     public static void logDateTime(String prefix,

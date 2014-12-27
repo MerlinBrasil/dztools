@@ -1,29 +1,14 @@
 package com.jforex.dzplugin;
 
 /*
- * #%L
- * dzplugin
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2014 juxeii
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * #%L dzplugin $Id:$ $HeadURL:$ %% Copyright (C) 2014 juxeii %% This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * #L%
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>. #L%
  */
-
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,17 +16,6 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.jforex.dzplugin.config.DukascopyParams;
-import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.handler.HistoryHandler;
-import com.jforex.dzplugin.handler.LoginHandler;
-import com.jforex.dzplugin.handler.OrderHandler;
-import com.jforex.dzplugin.handler.SubscriptionHandler;
-import com.jforex.dzplugin.provider.AccountInfo;
-import com.jforex.dzplugin.provider.IPriceEngine;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IContext;
@@ -54,6 +28,16 @@ import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.handler.HistoryHandler;
+import com.jforex.dzplugin.handler.LoginHandler;
+import com.jforex.dzplugin.handler.OrderHandler;
+import com.jforex.dzplugin.handler.SubscriptionHandler;
+import com.jforex.dzplugin.provider.AccountInfo;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class DukaZorroBridge {
 
@@ -84,11 +68,11 @@ public class DukaZorroBridge {
             client = ClientFactory.getDefaultInstance();
             client.setSystemListener(new DukaZorroSystemListener());
         } catch (ClassNotFoundException e) {
-            ZorroLogger.log("IClient ClassNotFoundException occured!");
+            logger.error("IClient ClassNotFoundException occured!");
         } catch (IllegalAccessException e) {
-            ZorroLogger.log("IClient IllegalAccessException occured!");
+            logger.error("IClient IllegalAccessException occured!");
         } catch (InstantiationException e) {
-            ZorroLogger.log("IClient InstantiationException occured!");
+            logger.error("IClient InstantiationException occured!");
         }
     }
 
@@ -102,14 +86,13 @@ public class DukaZorroBridge {
         if (Type.equals("Demo"))
             return handleLogin(User, Pwd, "", accountInfos);
         else if (Type.equals("Real")) {
-            ZorroLogger.log("Live login not yet supported.");
+            logger.info("Live login not yet supported.");
             return ReturnCodes.LOGIN_FAIL;
             // MainPin mp = new MainPin(client);
             // String pin = mp.getPin();
             // return handleLogin(User, Pwd, pin, accountInfos);
-        }
-        else {
-            ZorroLogger.log("Received invalid login type: " + Type);
+        } else {
+            logger.warn("Received invalid login type: " + Type);
             return ReturnCodes.LOGIN_FAIL;
         }
     }
@@ -308,7 +291,7 @@ public class DukaZorroBridge {
 
         IOrder order = orderHandler.getOrderByID(orderID);
         if (order.getStopLossPrice() == 0) {
-            ZorroLogger.log("Order has no SL set -> reject BrokerStop!");
+            logger.warn("Order has no SL set -> reject BrokerStop!");
             return ReturnCodes.ADJUST_SL_FAIL;
         }
 
@@ -333,8 +316,8 @@ public class DukaZorroBridge {
         if (!accountInfo.isConnected())
             return ReturnCodes.HISTORY_FAIL;
 
-        ZorroLogger.log("Broker tickMinutes " + tickMinutes);
-        ZorroLogger.log("Broker nTicks " + nTicks);
+        logger.debug("Broker tickMinutes " + tickMinutes);
+        logger.debug("Broker nTicks " + nTicks);
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
         if (instrument == null) {
             ZorroLogger.log(instrumentName + " is no valid asset!");
@@ -356,8 +339,8 @@ public class DukaZorroBridge {
         if (arraySizeForAllBars <= tickParams.length)
             maxIndex = bars.size();
 
-        ZorroLogger.log("Broker bars " + bars.size());
-        ZorroLogger.log("Broker maxIndex " + maxIndex);
+        logger.debug("bars size " + bars.size());
+        logger.debug("maxIndex " + maxIndex);
 
         for (int i = 0; i < maxIndex; ++i) {
             IBar bar = bars.get(i);

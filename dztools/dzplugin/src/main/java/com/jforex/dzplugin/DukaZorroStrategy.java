@@ -24,12 +24,7 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-
 import java.time.Period;
-
-import com.jforex.dzplugin.provider.IPriceEngine;
-import com.jforex.dzplugin.provider.ITickConsumer;
-import com.jforex.dzplugin.provider.PriceEngine;
 
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.IBar;
@@ -39,6 +34,9 @@ import com.dukascopy.api.IStrategy;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.provider.ITickConsumer;
+import com.jforex.dzplugin.provider.PriceEngine;
 
 public class DukaZorroStrategy implements IStrategy {
 
