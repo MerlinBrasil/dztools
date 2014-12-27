@@ -9,6 +9,73 @@
 	<modules>
 		<module>dzplugin</module>
 		<module>dzconverter</module>
+		<module>dztoolsbundle</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>dc_public</id>
+			<name>Dukascopy public repository</name>
+			<url>http://www.dukascopy.com/client/jforexlib/publicrepo/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.dukascopy.dds2</groupId>
+			<artifactId>DDS2-jClient-JForex</artifactId>
+			<version>2.42.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.dukascopy.api</groupId>
+			<artifactId>JForex-API</artifactId>
+			<version>2.12.1</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2Version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2Version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.2</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<skipTests>true</skipTests>
+		<log4j2Version>2.1</log4j2Version>
+	</properties>
 
 </project>

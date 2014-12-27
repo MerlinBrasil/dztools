@@ -2,49 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.jforex</groupId>
+	<parent>
+		<groupId>com.jforex</groupId>
+		<artifactId>dztools</artifactId>
+		<version>0.9.0</version>
+	</parent>
+
 	<artifactId>dzplugin</artifactId>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<version>0.9.0</version>
 	<name>dzplugin</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<skipTests>true</skipTests>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>dc_public</id>
-			<name>Dukascopy public repository</name>
-			<url>http://www.dukascopy.com/client/jforexlib/publicrepo/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
-		<dependency>
-			<groupId>com.dukascopy.dds2</groupId>
-			<artifactId>DDS2-jClient-JForex</artifactId>
-			<version>2.42.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.dukascopy.api</groupId>
-			<artifactId>JForex-API</artifactId>
-			<version>2.12.1</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
@@ -106,22 +75,6 @@
 							<type>shared</type>
 						</library>
 					</libraries>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
-				<executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
