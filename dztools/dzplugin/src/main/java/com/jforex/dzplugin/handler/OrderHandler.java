@@ -24,12 +24,14 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
-
 import java.rmi.server.UID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.IEngine;
@@ -37,7 +39,6 @@ import com.dukascopy.api.IEngine.OrderCommand;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
-
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -50,6 +51,8 @@ public class OrderHandler {
     private final IContext context;
     private final IEngine engine;
     private final HashMap<Integer, IOrder> orderMap;
+
+    private final static Logger logger = LogManager.getLogger(OrderHandler.class);
 
     public OrderHandler(IContext context) {
         this.context = context;
@@ -88,8 +91,10 @@ public class OrderHandler {
             return ReturnCodes.INVALID_ORDER_ID;
 
         IOrder order = orderMap.get(orderID);
-        if (order.getState() != IOrder.State.OPENED && order.getState() != IOrder.State.FILLED)
+        if (order.getState() != IOrder.State.OPENED && order.getState() != IOrder.State.FILLED) {
+            logger.warn("Order " + orderID + " could not be closed. Order state: " + order.getState());
             return ReturnCodes.INVALID_ORDER_ID;
+        }
 
         CloseOrderTask task = new CloseOrderTask(order, amount);
         order = getOrderFromFuture(context.executeTask(task));
@@ -112,9 +117,11 @@ public class OrderHandler {
         try {
             order = orderFuture.get();
         } catch (InterruptedException e) {
-            ZorroLogger.log("InterruptedException");
+            logger.error("InterruptedException: " + e.getMessage());
+            ZorroLogger.inicateError();
         } catch (ExecutionException e) {
-            ZorroLogger.log("ExecutionException");
+            logger.error("ExecutionException: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return order;
     }
@@ -124,7 +131,8 @@ public class OrderHandler {
         try {
             orders = engine.getOrders();
         } catch (JFException e) {
-            ZorroLogger.log("getOrders exc: " + e.getMessage());
+            logger.error("getOrders exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         for (IOrder order : orders) {
             String label = order.getLabel();
