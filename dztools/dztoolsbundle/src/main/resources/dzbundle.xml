@@ -32,6 +32,21 @@
 							<include>dzplugin-${project.version}.jar</include>
 						</includes>
 					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>dztools/dzplugin/logs</outputDirectory>
+						<excludes>
+							<exclude>*</exclude>
+						</excludes>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<includes>
+							<include>log4j2.xml</include>
+							<include>log4j.properties</include>
+						</includes>
+					</fileSet>
 				</fileSets>
 			</sources>
 		</moduleSet>
@@ -69,6 +84,7 @@
 						<outputDirectory>dztools/dzconverter</outputDirectory>
 						<includes>
 							<include>log4j2.xml</include>
+							<include>log4j.properties</include>
 						</includes>
 					</fileSet>
 					<fileSet>
@@ -81,13 +97,6 @@
 					<fileSet>
 						<directory>src/main/resources</directory>
 						<outputDirectory>dztools/dzconverter/logs</outputDirectory>
-						<excludes>
-							<exclude>*</exclude>
-						</excludes>
-					</fileSet>
-					<fileSet>
-						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzplugin/logs</outputDirectory>
 						<excludes>
 							<exclude>*</exclude>
 						</excludes>
