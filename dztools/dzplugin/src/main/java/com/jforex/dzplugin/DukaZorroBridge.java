@@ -4,17 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.dukascopy.api.IBar;
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.ICurrency;
-import com.dukascopy.api.IEngine.OrderCommand;
-import com.dukascopy.api.IOrder;
-import com.dukascopy.api.ITick;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.OfferSide;
-import com.dukascopy.api.Period;
-import com.dukascopy.api.system.ClientFactory;
-import com.dukascopy.api.system.IClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -26,6 +17,18 @@ import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 import com.jforex.dzplugin.utils.InstrumentUtils;
+
+import com.dukascopy.api.IBar;
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.ICurrency;
+import com.dukascopy.api.IEngine.OrderCommand;
+import com.dukascopy.api.IOrder;
+import com.dukascopy.api.ITick;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.OfferSide;
+import com.dukascopy.api.Period;
+import com.dukascopy.api.system.ClientFactory;
+import com.dukascopy.api.system.IClient;
 
 public class DukaZorroBridge {
 
@@ -40,8 +43,9 @@ public class DukaZorroBridge {
     private SubscriptionHandler subscriptionHandler;
     private IPriceEngine priceEngine;
     private DateTimeUtils dateTimeUtils;
-
     private boolean isStrategyStarted;
+
+    private final static Logger logger = LogManager.getLogger(DukaZorroBridge.class);
 
     public DukaZorroBridge() {
         initClientInstance();
