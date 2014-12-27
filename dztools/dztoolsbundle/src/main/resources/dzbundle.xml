@@ -50,11 +50,17 @@
 						</includes>
 					</fileSet>
 					<fileSet>
+						<directory>target/classes</directory>
+						<outputDirectory>dztools/dzconverter</outputDirectory>
+						<includes>
+							<include>convert.bat</include>
+						</includes>
+					</fileSet>
+					<fileSet>
 						<directory>src/main/resources</directory>
 						<outputDirectory>dztools/dzconverter</outputDirectory>
 						<includes>
 							<include>config.properties</include>
-							<include>convert.bat</include>
 						</includes>
 					</fileSet>
 					<fileSet>
