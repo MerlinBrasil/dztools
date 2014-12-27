@@ -51,7 +51,7 @@ public class ProgressListener implements LoadingProgressListener {
     }
 
     private String getFileName() {
-        return instrument.getPrimaryJFCurrency().getCurrencyCode() +
+        return "bars\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
                 instrument.getSecondaryJFCurrency().getCurrencyCode() +
                 "_" + dukaZorroConverter.getYear() + ".bar";
     }
