@@ -24,19 +24,22 @@ package com.jforex.dzplugin.task;
  * #L%
  */
 
-
 import java.util.concurrent.Callable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.JFException;
-
-import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.handler.LoginHandler;
 
 public class StopLossTask implements Callable<IOrder> {
 
     private final IOrder order;
     private final double SLPrice;
+
+    private final static Logger logger = LogManager.getLogger(LoginHandler.class);
 
     public StopLossTask(IOrder order,
                         double SLPrice) {
@@ -50,7 +53,7 @@ public class StopLossTask implements Callable<IOrder> {
             order.setStopLossPrice(SLPrice);
             order.waitForUpdate(Configuration.ORDER_UPDATE_WAITTIME);
         } catch (JFException e) {
-            ZorroLogger.log("Setting SL to " + SLPrice + " failed: " + e.getMessage());
+            logger.error("Setting SL to " + SLPrice + " failed: " + e.getMessage());
         }
         return order;
     }
