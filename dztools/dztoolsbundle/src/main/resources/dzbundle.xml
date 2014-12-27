@@ -87,7 +87,7 @@
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzplugin/log</outputDirectory>
+						<outputDirectory>dztools/dzplugin/logs</outputDirectory>
 						<excludes>
 							<exclude>*</exclude>
 						</excludes>
