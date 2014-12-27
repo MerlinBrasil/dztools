@@ -25,12 +25,12 @@
 						</includes>
 					</fileSet>
 					<fileSet>
-                        <directory>target</directory>
-                        <outputDirectory>dztools/dzplugin</outputDirectory>
-                        <includes>
-                            <include>dzplugin-${project.version}.jar</include>
-                        </includes>
-                    </fileSet>
+						<directory>target</directory>
+						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<includes>
+							<include>dzplugin-${project.version}.jar</include>
+						</includes>
+					</fileSet>
 				</fileSets>
 			</sources>
 		</moduleSet>
@@ -56,6 +56,13 @@
 							<include>config.properties</include>
 							<include>convert.bat</include>
 						</includes>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>dztools/dzconverter/bars</outputDirectory>
+						<excludes>
+							<exclude>*</exclude>
+						</excludes>
 					</fileSet>
 				</fileSets>
 			</sources>

@@ -92,11 +92,13 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*.java</exclude>
+						<exclude>**/*.zorro</exclude>
 					</excludes>
 					<finalName>${project.artifactId}-${project.version}</finalName>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
+							<classpathPrefix>../lib/</classpathPrefix>
 						</manifest>
 					</archive>
 				</configuration>

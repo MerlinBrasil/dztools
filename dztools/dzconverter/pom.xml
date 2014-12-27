@@ -21,13 +21,15 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*.java</exclude>
+						<exclude>**/*.properties</exclude>
+						<exclude>**/*.bat</exclude>
 					</excludes>
 					<finalName>${project.artifactId}-${project.version}</finalName>
 					<archive>
 						<manifest>
 							<mainClass>${project.groupId}.${project.artifactId}.DukaZorroConverter</mainClass>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
+							<classpathPrefix>../lib/</classpathPrefix>
 						</manifest>
 					</archive>
 				</configuration>
