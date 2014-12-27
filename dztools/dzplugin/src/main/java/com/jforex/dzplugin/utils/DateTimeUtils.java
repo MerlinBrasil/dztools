@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.utils;
+package com.jforex.dzplugin.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,8 +15,9 @@ import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.Period;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.Configuration;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.Configuration;
 
 public class DateTimeUtils {
 

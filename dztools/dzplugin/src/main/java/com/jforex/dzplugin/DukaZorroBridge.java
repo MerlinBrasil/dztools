@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge;
+package com.jforex.dzplugin;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,16 +15,17 @@ import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
-import com.jforex.dukazorrobridge.config.DukascopyParams;
-import com.jforex.dukazorrobridge.config.ReturnCodes;
-import com.jforex.dukazorrobridge.handler.HistoryHandler;
-import com.jforex.dukazorrobridge.handler.LoginHandler;
-import com.jforex.dukazorrobridge.handler.OrderHandler;
-import com.jforex.dukazorrobridge.handler.SubscriptionHandler;
-import com.jforex.dukazorrobridge.provider.AccountInfo;
-import com.jforex.dukazorrobridge.provider.IPriceEngine;
-import com.jforex.dukazorrobridge.utils.DateTimeUtils;
-import com.jforex.dukazorrobridge.utils.InstrumentUtils;
+
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.handler.HistoryHandler;
+import com.jforex.dzplugin.handler.LoginHandler;
+import com.jforex.dzplugin.handler.OrderHandler;
+import com.jforex.dzplugin.handler.SubscriptionHandler;
+import com.jforex.dzplugin.provider.AccountInfo;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class DukaZorroBridge {
 

@@ -1,10 +1,10 @@
-package com.jforex.dukazorrobridge;
+package com.jforex.dzplugin;
 
 import java.time.Period;
 
-import com.jforex.dukazorrobridge.provider.IPriceEngine;
-import com.jforex.dukazorrobridge.provider.ITickConsumer;
-import com.jforex.dukazorrobridge.provider.PriceEngine;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.provider.ITickConsumer;
+import com.jforex.dzplugin.provider.PriceEngine;
 
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.IBar;

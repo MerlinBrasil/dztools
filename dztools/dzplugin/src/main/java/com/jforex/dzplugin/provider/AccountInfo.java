@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.provider;
+package com.jforex.dzplugin.provider;
 
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.IContext;
@@ -7,9 +7,10 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.JFUtils;
 import com.dukascopy.api.OfferSide;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.DukascopyParams;
-import com.jforex.dukazorrobridge.utils.InstrumentUtils;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class AccountInfo {
 

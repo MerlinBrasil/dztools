@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.provider;
+package com.jforex.dzplugin.provider;
 
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;

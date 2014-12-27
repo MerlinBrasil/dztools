@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.provider;
+package com.jforex.dzplugin.provider;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -8,7 +8,8 @@ import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
-import com.jforex.dukazorrobridge.ZorroLogger;
+
+import com.jforex.dzplugin.ZorroLogger;
 
 public class PriceEngine implements IPriceEngine, ITickConsumer {
 

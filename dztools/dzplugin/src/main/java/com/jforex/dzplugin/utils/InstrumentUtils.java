@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.utils;
+package com.jforex.dzplugin.utils;
 
 import java.util.HashMap;
 

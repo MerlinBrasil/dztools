@@ -1,11 +1,12 @@
-package com.jforex.dukazorrobridge.task;
+package com.jforex.dzplugin.task;
 
 import java.util.concurrent.Callable;
 
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.JFException;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.Configuration;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.Configuration;
 
 public class StopLossTask implements Callable<IOrder> {
 

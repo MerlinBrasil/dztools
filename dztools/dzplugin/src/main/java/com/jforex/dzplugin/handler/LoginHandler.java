@@ -1,11 +1,12 @@
-package com.jforex.dukazorrobridge.handler;
+package com.jforex.dzplugin.handler;
 
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.Configuration;
-import com.jforex.dukazorrobridge.config.ReturnCodes;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.config.ReturnCodes;
 
 public class LoginHandler {
 

@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge;
+package com.jforex.dzplugin;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

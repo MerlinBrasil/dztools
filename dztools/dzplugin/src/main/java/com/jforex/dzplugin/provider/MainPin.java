@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.provider;
+package com.jforex.dzplugin.provider;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -14,8 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.dukascopy.api.system.IClient;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.Configuration;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.Configuration;
 
 // Code from http://www.dukascopy.com/wiki/#JForex_SDK_LIVE_mode
 public class MainPin {

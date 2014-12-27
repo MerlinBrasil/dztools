@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.handler;
+package com.jforex.dzplugin.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,8 +10,9 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.utils.DateTimeUtils;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.utils.DateTimeUtils;
 
 public class HistoryHandler {
 

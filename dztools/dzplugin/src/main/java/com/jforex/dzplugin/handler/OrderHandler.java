@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.handler;
+package com.jforex.dzplugin.handler;
 
 import java.rmi.server.UID;
 import java.util.HashMap;
@@ -12,12 +12,13 @@ import com.dukascopy.api.IEngine.OrderCommand;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
-import com.jforex.dukazorrobridge.ZorroLogger;
-import com.jforex.dukazorrobridge.config.DukascopyParams;
-import com.jforex.dukazorrobridge.config.ReturnCodes;
-import com.jforex.dukazorrobridge.task.CloseOrderTask;
-import com.jforex.dukazorrobridge.task.StopLossTask;
-import com.jforex.dukazorrobridge.task.SubmitOrderTask;
+
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.task.CloseOrderTask;
+import com.jforex.dzplugin.task.StopLossTask;
+import com.jforex.dzplugin.task.SubmitOrderTask;
 
 public class OrderHandler {
 

@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge;
+package com.jforex.dzplugin;
 
 import com.dukascopy.api.system.ISystemListener;
 

@@ -1,4 +1,4 @@
-package com.jforex.dukazorrobridge.config;
+package com.jforex.dzplugin.config;
 
 public class Configuration {
 
