@@ -24,7 +24,6 @@ package com.jforex.dzplugin.provider;
  * #L%
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,8 +37,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.dukascopy.api.system.IClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 
@@ -48,6 +49,8 @@ public class MainPin {
 
     private final IClient client;
     private static JFrame noParentFrame = null;
+
+    private final static Logger logger = LogManager.getLogger(MainPin.class);
 
     public MainPin(IClient client) {
         this.client = client;
@@ -58,7 +61,8 @@ public class MainPin {
         try {
             pd = new PinDialog();
         } catch (Exception e) {
-            ZorroLogger.log("getPin exc: " + e.getMessage());
+            logger.error("getPin exc: " + e.getMessage());
+            ZorroLogger.inicateError();
         }
         return pd.pinfield.getText();
     }
@@ -103,7 +107,8 @@ public class MainPin {
                     try {
                         captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.connectURLForLIVE)));
                     } catch (Exception ex) {
-                        ZorroLogger.log("getPin exc: " + ex.getMessage());
+                        logger.error("getPin exc: " + ex.getMessage());
+                        ZorroLogger.inicateError();
                     }
                 }
             });
