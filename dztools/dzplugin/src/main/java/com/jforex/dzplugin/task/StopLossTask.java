@@ -32,14 +32,13 @@ import org.apache.logging.log4j.Logger;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.JFException;
 import com.jforex.dzplugin.config.Configuration;
-import com.jforex.dzplugin.handler.LoginHandler;
 
 public class StopLossTask implements Callable<IOrder> {
 
     private final IOrder order;
     private final double SLPrice;
 
-    private final static Logger logger = LogManager.getLogger(LoginHandler.class);
+    private final static Logger logger = LogManager.getLogger(StopLossTask.class);
 
     public StopLossTask(IOrder order,
                         double SLPrice) {
