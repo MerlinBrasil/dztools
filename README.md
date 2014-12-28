@@ -30,3 +30,13 @@ Pick a script of your choice and press *Trade*. If everything is fine you should
 
 The plugin stores its logs to dztools/dzplugin/logs/dzplugin.log(the default log level is *info*). If you encounter problems open dztools/dzplugin/log4j2.xml for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose dzplugin.log file which you can use to report errors.
 
+You can also change the log level for the Dukascopy via dztools/dzplugin/log4j.properties.
+
+## dzconverter usage
+
+This little command line tool allows you to convert *.bi5 Dukascopy history files to the *.bar file format of Zorro.
+
+**Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
+
+1.) Open dztools/dzconverter/
+
