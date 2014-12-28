@@ -12,6 +12,12 @@
 		<module>dztoolsbundle</module>
 	</modules>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<skipTests>true</skipTests>
+		<log4j2Version>2.1</log4j2Version>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>dc_public</id>
@@ -73,11 +79,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<skipTests>true</skipTests>
-		<log4j2Version>2.1</log4j2Version>
-	</properties>
 
 </project>
