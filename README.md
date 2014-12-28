@@ -8,7 +8,7 @@ This is the Dukascopy broker plugin which implements the [Zorro-Broker-API](http
 
 ## dzconverter
 
-When trading with Dukascopy you probably also want to use their historical price data. In case you already have them available in your local .cache folder(with bi5 file extension) this converter creates *.bar files which Zorro can use for trading and testing.
+When trading with Dukascopy you probably also want to use their historical price data within Zorro. In case you already have some assets/instruments of them available in your local .cache folder(with bi5 file extension), this converter creates *.bar files which Zorro can use for trading and testing.
 
 ## General installation
 
