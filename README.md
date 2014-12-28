@@ -1,4 +1,3 @@
-dztools
-=======
+**dztools**
 
-Tools for trading with the Zorro platform and Dukascopy broker.
+Here you find two tools for trading with [Dukascopy](http://www.dukascopy.com) over the [Zorro](http://www.takemoneyfromtherichandgiveittothepoor.com/) platform.
