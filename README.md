@@ -4,7 +4,7 @@ Here you find two tools for trading with [Dukascopy](http://www.dukascopy.com) o
 
 ## dzplugin
 
-This is the Dukascopy Broker plugin which implements the [Zorro-Broker-API](http://www.zorro-trader.com/manual/en/brokerplugin.htm).
+This is the Dukascopy broker plugin which implements the [Zorro-Broker-API](http://www.zorro-trader.com/manual/en/brokerplugin.htm).
 
 ## dzconverter
 
