@@ -12,4 +12,4 @@ When trading with Dukascopy you probably also want to use their historical price
 
 ## General installation
 
-
+1.) Download and install the latest [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
