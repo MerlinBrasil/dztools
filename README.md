@@ -42,8 +42,14 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 2.) **Create a *cacheCopy* folder(or some other foler name of your choice).**
 
-3.) Say you want to convert the EUR/USD history. **Copy .cache/EURUSD to cacheCopy!!** This step is needed since the program uses this [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29)  method.
+3.) Say you want to convert the EUR/USD history. **Copy .cache/EURUSD to cacheCopy!!** This step is needed since the program uses this [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29) method.
 
-1.) Open dztools/dzconverter/config.properties with a text editor. Fill in your login credentials under *user* and *password*.
+4.) Open dztools/dzconverter/config.properties with a text editor. Fill in your login credentials under *user* and *password*. For *cachedir* put your path to the *cacheCopy* here(always use two backslashes as in the given example path). Save this file.
+
+5.) Open dztools/dzconverter/convert.bat. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
+
+6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-$version}.jar EUR/USD 2013*.
+
+7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in dztools/dzconverter/bars with the asses and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
 
