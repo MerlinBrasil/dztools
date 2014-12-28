@@ -39,7 +39,10 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 **Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
 
 1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is D:\programs\JForex\.cache).
-2.) **Create a *cacheCopy*(or some other foler name of your choice) folder.**
+
+2.) **Create a *cacheCopy* folder(or some other foler name of your choice).**
+
+3.) Say you want to convert the EUR/USD history. **Copy .cache/EURUSD to cacheCopy!!** This step is needed since the program uses this [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29)  method.
 
 1.) Open dztools/dzconverter/config.properties with a text editor. Fill in your login credentials under *user* and *password*.
 
