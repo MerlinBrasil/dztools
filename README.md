@@ -14,7 +14,7 @@ When trading with Dukascopy you probably also want to use their historical price
 
 1.) Download and install the latest **32-bit** [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html). Make sure it is the 32-bit version since the tools are based on a 32-bit JVM. In case you already have a 32-bit JRE installation(check it with *java -version*) you might skip this step.
 
-2.) Add ${yourJREintsallPath}\jre\bin\ and ${yourJREintsallPath}\jre\bin\client to the **front** of your *Path* environment variable(here is a [howto](http://www.computerhope.com/issues/ch000549.htm)).
+2.) Add ${yourJREinstallPath}\jre\bin\ and ${yourJREinstallPath}\jre\bin\client to the **front** of your *Path* environment variable(here is a [howto](http://www.computerhope.com/issues/ch000549.htm)).
 
 3.) Download the [dztools](https://github.com/juxeii/dztools/releases) zip archive.
 
