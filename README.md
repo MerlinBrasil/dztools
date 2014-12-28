@@ -14,7 +14,7 @@ When trading with Dukascopy you probably also want to use their historical price
 
 1.) Download and install the latest **32-bit** [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html). Make sure it is the 32-bit version(x86 suffix) since the tools are based on a 32-bit JVM. In case you already have a 32-bit JRE installation(check it with *java -version*) you might skip this step.
 
-2.) Add *${yourJREinstallPath}\jre\bin\* and *${yourJREinstallPath}\jre\bin\client* to the **front** of your *Path* environment variable(here is a [howto](http://www.computerhope.com/issues/ch000549.htm)).
+2.) Add *${yourJREinstallPath}\jre\bin\* and *${yourJREinstallPath}\jre\bin\client* to the **front** of your *Path* environment variable([here](http://www.computerhope.com/issues/ch000549.htm) is a howto).
 
 3.) Install [Zorro 1.26](http://www.takemoneyfromtherichandgiveittothepoor.com/download.php) if not already on your machine.
 
@@ -52,7 +52,8 @@ This command line tool allows you to convert *.bi5 Dukascopy history files to th
 
 5.) Open *dztools/dzconverter/convert.bat*. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
 
-6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-${version}.jar EUR/USD 2013*.
+6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. 
+A valid convert command sould look like this: *java -jar dzconverter-${version}.jar EUR/USD 2013*.
 
 7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in *dztools/dzconverter/bars* with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
@@ -62,13 +63,13 @@ For subsequent conversions you can skip steps 1,2 and 4.
 
 **Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
 
-Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected *.bar files under *${yourZorroInstallPath}\History*.
+Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected .bar files under *${yourZorroInstallPath}\History*.
 
 For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
 
-## Remarks for the plugin and converter
+## Remarks
 
 - This a very early release so **don't expect it to be bug free!**
-- Login to a real account is therefore not supported yet(although the code is in place).
+- Login to a real account for the plugin is therefore not supported yet(although the code is in place).
 - If you don't trust the binaries checkout the dztools project und build it manually(you need to know [maven](http://maven.apache.org/))
 - Follow discussions for Zorro in the [forum](http://www.opserver.de/ubb7/ubbthreads.php?ubb=cfrm&c=1)
