@@ -62,7 +62,7 @@ For subsequent conversions you can skip steps 1,2 and 4.
 
 **Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
 
-Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected *.bar files under *${yourZorroInstallPath}\History*.
+Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected .bar files under *${yourZorroInstallPath}\History*.
 
 For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
 
