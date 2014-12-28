@@ -66,9 +66,9 @@ Say you want to test a script which trades EUR/USD for 2008-2014. You need to co
 
 For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
 
-## Remarks for the plugin and converter
+## Remarks
 
 - This a very early release so **don't expect it to be bug free!**
-- Login to a real account is therefore not supported yet(although the code is in place).
+- Login to a real account for the plugin is therefore not supported yet(although the code is in place).
 - If you don't trust the binaries checkout the dztools project und build it manually(you need to know [maven](http://maven.apache.org/))
 - Follow discussions for Zorro in the [forum](http://www.opserver.de/ubb7/ubbthreads.php?ubb=cfrm&c=1)
