@@ -52,7 +52,7 @@ This command line tool allows you to convert *.bi5 Dukascopy history files to th
 
 5.) Open *dztools/dzconverter/convert.bat*. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
 
-6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-$version}.jar EUR/USD 2013*.
+6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-${version}.jar EUR/USD 2013*.
 
 7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in *dztools/dzconverter/bars* with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
