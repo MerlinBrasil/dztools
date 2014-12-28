@@ -18,13 +18,13 @@ When trading with Dukascopy you probably also want to use their historical price
 
 3.) Download the [dztools.zip](https://github.com/juxeii/dztools/releases) archive.
 
-4.) Extract the archive into ${yourZorroInstallPath}/Plugin folder.
+4.) Extract the archive into *${yourZorroInstallPath}/Plugin* folder.
 
 ## dzplugin usage
 
 After extracting the dztools archive you should see a *dukascopy-{version}.dll* and a folder *dztools* in the Plugin directory of your Zorro installation.
 
-Start Zorro and check if the Account drop-down-box shows *Dukascopy* as an available Broker.
+Start Zorro and check if the *Account* drop-down-box shows *Dukascopy* as an available broker.
 
 Pick a script of your choice and press *Trade*. If everything is fine you should see that the login to Dukascopy has been successful.
 
@@ -60,9 +60,9 @@ For subsequent conversion you can skip steps 1,2 and 4.
 
 **Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
 
-Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace the *.bar files under ${yourZorroInstallPath}\History.
+Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected *.bar files under ${yourZorroInstallPath}\History.
 
-For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under dztools/dzconverter. Use the logs in the same way as described for the dzplugin.
+For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
 
 ## Remarks for the plugin and converter
 
