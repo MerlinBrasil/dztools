@@ -54,13 +54,13 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in dztools/dzconverter/bars with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
-8.) Copy the .bar files to ${yourZorroInstallPath}\History **after you did a backup of this folder!!!**
+8.) Copy the .bar files to *${yourZorroInstallPath}\History* **after you did a backup of this folder!!!**
 
 For subsequent conversion you can skip steps 1,2 and 4.
 
 **Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
 
-Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected *.bar files under ${yourZorroInstallPath}\History.
+Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected *.bar files under *${yourZorroInstallPath}\History*.
 
 For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
 
