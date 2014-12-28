@@ -16,9 +16,11 @@ When trading with Dukascopy you probably also want to use their historical price
 
 2.) Add *${yourJREinstallPath}\jre\bin\* and *${yourJREinstallPath}\jre\bin\client* to the **front** of your *Path* environment variable(here is a [howto](http://www.computerhope.com/issues/ch000549.htm)).
 
-3.) Download the [dztools.zip](https://github.com/juxeii/dztools/releases) archive.
+3.) Install [Zorro 1.26](http://www.takemoneyfromtherichandgiveittothepoor.com/download.php) if not already on your machine.
 
-4.) Extract the archive into *${yourZorroInstallPath}/Plugin* folder.
+4.) Download the [dztools.zip](https://github.com/juxeii/dztools/releases) archive.
+
+5.) Extract the archive into *${yourZorroInstallPath}/Plugin* folder.
 
 ## dzplugin usage
 
