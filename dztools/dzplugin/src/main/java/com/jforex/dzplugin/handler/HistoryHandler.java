@@ -67,7 +67,7 @@ public class HistoryHandler {
         try {
             bars = history.getBars(instrument, period, offerSide, startDateTimeRounded, endDateTimeRounded);
         } catch (JFException e) {
-            ZorroLogger.inicateError(logger, "getBars exc: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "getBars exc: " + e.getMessage());
             return new ArrayList<IBar>();
         }
         Collections.reverse(bars);
@@ -92,7 +92,7 @@ public class HistoryHandler {
             else
                 endDateTimeRounded = DateTimeUtils.roundTimeToPeriod(period, endDateTimeRaw);
         } catch (JFException e) {
-            ZorroLogger.inicateError(logger, "getPreviousBarStart exc: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "getPreviousBarStart exc: " + e.getMessage());
         }
         return endDateTimeRounded;
     }

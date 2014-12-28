@@ -117,9 +117,9 @@ public class OrderHandler {
         try {
             order = orderFuture.get();
         } catch (InterruptedException e) {
-            ZorroLogger.inicateError(logger, "InterruptedException: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "InterruptedException: " + e.getMessage());
         } catch (ExecutionException e) {
-            ZorroLogger.inicateError(logger, "ExecutionException: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "ExecutionException: " + e.getMessage());
         }
         return order;
     }
@@ -129,7 +129,7 @@ public class OrderHandler {
         try {
             orders = engine.getOrders();
         } catch (JFException e) {
-            ZorroLogger.inicateError(logger, "getOrders exc: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "getOrders exc: " + e.getMessage());
         }
         for (IOrder order : orders) {
             String label = order.getLabel();

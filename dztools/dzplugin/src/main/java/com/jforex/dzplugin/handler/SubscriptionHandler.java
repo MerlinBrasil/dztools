@@ -63,7 +63,7 @@ public class SubscriptionHandler {
             try {
                 Thread.sleep(Configuration.SUBSCRIPTION_WAIT_TIME);
             } catch (InterruptedException e) {
-                ZorroLogger.inicateError(logger, "Thread exc: " + e.getMessage());
+                ZorroLogger.indicateError(logger, "Thread exc: " + e.getMessage());
                 break;
             }
         }

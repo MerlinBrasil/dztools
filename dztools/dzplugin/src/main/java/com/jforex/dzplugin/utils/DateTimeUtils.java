@@ -96,7 +96,7 @@ public class DateTimeUtils {
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
             return timeInfo.getMessage().getTransmitTimeStamp().getTime();
         } catch (IOException e) {
-            ZorroLogger.inicateError(logger, "Unable to get GMT time: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "Unable to get GMT time: " + e.getMessage());
         }
         logger.warn("Using System time now!");
         return System.currentTimeMillis();
@@ -129,7 +129,7 @@ public class DateTimeUtils {
         try {
             offlineTimes = dataService.getOfflineTimeDomains(startTime, endTime);
         } catch (JFException e) {
-            ZorroLogger.inicateError(logger, "getOfflineTimes exc: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "getOfflineTimes exc: " + e.getMessage());
         }
         return offlineTimes;
     }

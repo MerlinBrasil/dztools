@@ -61,7 +61,7 @@ public class LoginHandler {
         } catch (JFVersionException e) {
             ZorroLogger.showError(logger, "Invalid JForex version!");
         } catch (Exception e) {
-            ZorroLogger.inicateError(logger, "Login exc: " + e.getMessage());
+            ZorroLogger.indicateError(logger, "Login exc: " + e.getMessage());
         }
         return client.isConnected() ? ReturnCodes.LOGIN_OK : ReturnCodes.LOGIN_FAIL;
     }
