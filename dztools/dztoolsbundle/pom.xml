@@ -58,7 +58,7 @@
 
 	<profiles>
 		<profile>
-			<id>dzplugin</id>
+			<id>zorro</id>
 			<build>
 				<plugins>
 					<plugin>
