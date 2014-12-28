@@ -12,12 +12,12 @@ package com.jforex.dzplugin.provider;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -27,6 +27,10 @@ package com.jforex.dzplugin.provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.utils.InstrumentUtils;
+
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.ICurrency;
@@ -34,9 +38,6 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.JFUtils;
 import com.dukascopy.api.OfferSide;
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.DukascopyParams;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class AccountInfo {
 
@@ -104,6 +105,7 @@ public class AccountInfo {
 
         Instrument conversionInstrument = InstrumentUtils.getfromCurrencies(accountCurrency, instrument.getPrimaryJFCurrency());
         double conversionPrice = priceEngine.getAsk(conversionInstrument);
+        logger.debug("Margin for lot calculation for " + instrument + " ,conversionInstrument " + conversionInstrument + " ,conversionPrice " + conversionPrice);
         if (accountCurrency == conversionInstrument.getSecondaryJFCurrency())
             conversionPrice = 1f / conversionPrice;
 
@@ -118,6 +120,7 @@ public class AccountInfo {
         } catch (JFException e) {
             ZorroLogger.inicateError(logger, "Pipcost calculation exc: " + e.getMessage());
         }
+        logger.debug("Pipcost calculation for " + instrument + " ,offerSide " + offerSide + " ,accountCurrency " + accountCurrency + " with pipCost: " + pipCost);
         return pipCost;
     }
 
@@ -126,6 +129,10 @@ public class AccountInfo {
     }
 
     public boolean isTradingPossible() {
-        return account.isConnected() && account.getAccountState() == IAccount.AccountState.OK;
+        if (account.getAccountState() != IAccount.AccountState.OK) {
+            logger.debug("Account state " + account.getAccountState() + " is invalid for trading!");
+            return false;
+        }
+        return account.isConnected();
     }
 }
