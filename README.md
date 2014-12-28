@@ -28,9 +28,9 @@ Start Zorro and check if the *Account* drop-down-box shows *Dukascopy* as an ava
 
 Pick a script of your choice and press *Trade*. If everything is fine you should see that the login to Dukascopy has been successful.
 
-The plugin stores its logs to dztools/dzplugin/logs/dzplugin.log(the default log level is *info*). If you encounter problems open dztools/dzplugin/log4j2.xml for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose dzplugin.log file which you can use to report errors.
+The plugin stores its logs to *dztools/dzplugin/logs/dzplugin.log*(the default log level is *info*). If you encounter problems open *dztools/dzplugin/log4j2.xml* for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose *dzplugin.log* file which you can use to report errors.
 
-You can also change the log level for the Dukascopy via dztools/dzplugin/log4j.properties.
+You can also change the log level for the Dukascopy via *dztools/dzplugin/log4j.properties*.
 
 ## dzconverter usage
 
@@ -40,19 +40,19 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 **Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
 
-1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is D:\programs\JForex\\.cache).
+1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is *D:\programs\JForex\\.cache*).
 
 2.) **Create a *cacheCopy* folder(or some other foler name of your choice).**
 
 3.) Say you want to convert the EUR/USD history. **Copy .cache/EURUSD to cacheCopy!!** This step is needed since the program uses this [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29) method.
 
-4.) Open dztools/dzconverter/config.properties with a text editor. Fill in your login credentials under *user* and *password*. For *cachedir* put your path to the *cacheCopy* here(always use two backslashes as in the given example path). Save this file.
+4.) Open *dztools/dzconverter/config.properties* with a text editor. Fill in your login credentials under *user* and *password*. For *cachedir* put your path to the *cacheCopy* here(always use two backslashes as in the given example path). Save this file.
 
-5.) Open dztools/dzconverter/convert.bat. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
+5.) Open *dztools/dzconverter/convert.bat*. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
 
 6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-$version}.jar EUR/USD 2013*.
 
-7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in dztools/dzconverter/bars with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
+7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in *dztools/dzconverter/bars* with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
 8.) Copy the .bar files to *${yourZorroInstallPath}\History* **after you did a backup of this folder!!!**
 
