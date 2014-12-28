@@ -23,3 +23,5 @@ When trading with Dukascopy you probably also want to use their historical price
 ## dzplugin usage
 
 After extracting the dztools archive you should see a *dukascopy-{version}.dll* and a folder *dztools* in the Plugin directory of your Zorro installation.
+Start Zorro and check if the Account drop-down-box shows *Dukascopy* as an available Broker.
+Pick a script of your choice and press *Trade*. If everything is fine you should see that the login to Dukascopy has been successful.
