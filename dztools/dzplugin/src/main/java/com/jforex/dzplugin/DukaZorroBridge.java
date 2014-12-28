@@ -3,10 +3,10 @@ package com.jforex.dzplugin;
 /*
  * #%L dzplugin $Id:$ $HeadURL:$ %% Copyright (C) 2014 juxeii %% This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>. #L%
  */
 
@@ -16,6 +16,17 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.handler.HistoryHandler;
+import com.jforex.dzplugin.handler.LoginHandler;
+import com.jforex.dzplugin.handler.OrderHandler;
+import com.jforex.dzplugin.handler.SubscriptionHandler;
+import com.jforex.dzplugin.provider.AccountInfo;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IContext;
@@ -28,16 +39,6 @@ import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
-import com.jforex.dzplugin.config.DukascopyParams;
-import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.handler.HistoryHandler;
-import com.jforex.dzplugin.handler.LoginHandler;
-import com.jforex.dzplugin.handler.OrderHandler;
-import com.jforex.dzplugin.handler.SubscriptionHandler;
-import com.jforex.dzplugin.provider.AccountInfo;
-import com.jforex.dzplugin.provider.IPriceEngine;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class DukaZorroBridge {
 
@@ -67,6 +68,7 @@ public class DukaZorroBridge {
         try {
             client = ClientFactory.getDefaultInstance();
             client.setSystemListener(new DukaZorroSystemListener());
+            logger.debug("IClient successfully initialized.");
             return;
         } catch (ClassNotFoundException e) {
             ZorroLogger.inicateError(logger, "IClient ClassNotFoundException occured!");
@@ -106,7 +108,7 @@ public class DukaZorroBridge {
         if (loginResult == ReturnCodes.LOGIN_OK) {
             initComponentsAfterLogin();
             accountInfos[0] = accountInfo.getID();
-            logger.info("Login successful for account ID " + accountInfo.getID());
+            logger.debug("Login successful for account ID " + accountInfo.getID());
         }
 
         return loginResult;
@@ -133,12 +135,17 @@ public class DukaZorroBridge {
     public int doBrokerTime(long serverTime[]) {
         if (!client.isConnected()) {
             logger.warn("No connection to Dukascopy!");
-            ZorroLogger.log("No connection to Dukascopy!");
             return ReturnCodes.CONNECTION_FAIL;
         }
         serverTime[0] = dateTimeUtils.getServerTime();
 
-        return dateTimeUtils.isMarketOffline() ? ReturnCodes.CONNECTION_OK_BUT_MARKET_CLOSED : ReturnCodes.CONNECTION_OK;
+        boolean isMarketOffline = dateTimeUtils.isMarketOffline();
+        if (isMarketOffline)
+            logger.debug("Market is offline");
+        else
+            logger.debug("Market is online");
+
+        return isMarketOffline ? ReturnCodes.CONNECTION_OK_BUT_MARKET_CLOSED : ReturnCodes.CONNECTION_OK;
     }
 
     public int doSubscribeAsset(String instrumentName) {
@@ -162,6 +169,7 @@ public class DukaZorroBridge {
         if (subscriptionResult == ReturnCodes.ASSET_AVAILABLE)
             priceEngine.initInstruments(instruments);
 
+        logger.debug("Subscription for " + toSubscribeInstrument + " successful.");
         return subscriptionResult;
     }
 
@@ -198,13 +206,6 @@ public class DukaZorroBridge {
         assetParams[7] = 0f;
         // RollShort: currently not available by Dukascopy
         assetParams[8] = 0f;
-        // ZorroLogger.log("instrument: " + instrument);
-        // ZorroLogger.log("price: " + assetParams[0]);
-        // ZorroLogger.log("spread: " + assetParams[1]);
-        // ZorroLogger.log("pipVal: " + assetParams[3]);
-        // ZorroLogger.log("pipCost: " + assetParams[4]);
-        // ZorroLogger.log("minLOT: " + assetParams[5]);
-        // ZorroLogger.log("LOTMargin: " + assetParams[6]);
 
         return ReturnCodes.ASSET_AVAILABLE;
     }
@@ -250,8 +251,11 @@ public class DukaZorroBridge {
             else
                 SLPrice = currentAskPrice + dStopDist;
         }
+        logger.debug("Try to open position for " + instrument + " with cmd " + cmd + " ,amount " + amount + " ,SLPrice " + SLPrice);
         int orderID = orderHandler.submitOrder(instrument, cmd, amount, priceEngine.getRounded(instrument, SLPrice));
         if (orderID == ReturnCodes.INVALID_ORDER_ID) {
+            logger.warn("Could not open position for " + instrument + " with cmd " + cmd + " ,amount " + amount + " ,SLPrice " + SLPrice);
+            ZorroLogger.log("Could not open position for " + instrument);
             return ReturnCodes.ORDER_SUBMIT_FAIL;
         }
         tradeParams[2] = orderHandler.getOrderByID(orderID).getOpenPrice();
@@ -324,8 +328,8 @@ public class DukaZorroBridge {
         if (!accountInfo.isConnected())
             return ReturnCodes.HISTORY_FAIL;
 
-        logger.debug("Broker tickMinutes " + tickMinutes);
-        logger.debug("Broker nTicks " + nTicks);
+        logger.debug("tickMinutes " + tickMinutes);
+        logger.debug("nTicks " + nTicks);
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
         if (instrument == null) {
             return ReturnCodes.HISTORY_FAIL;
