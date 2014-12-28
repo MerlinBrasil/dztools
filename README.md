@@ -58,7 +58,7 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 8.) Copy the .bar files to *${yourZorroInstallPath}\History* **after you did a backup of this folder!!!**
 
-For subsequent conversion you can skip steps 1,2 and 4.
+For subsequent conversions you can skip steps 1,2 and 4.
 
 **Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
 
