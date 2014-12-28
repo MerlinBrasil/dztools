@@ -35,6 +35,7 @@ You can also change the log level for the Dukascopy via dztools/dzplugin/log4j.p
 ## dzconverter usage
 
 This little command line tool allows you to convert *.bi5 Dukascopy history files to the *.bar file format of Zorro.
+- The tool converts only 1min bars of an **entire** year(except of course the current one). This is currently the highest resolution of Zorro(IMHO a tick based version of Zorro is in preparation).
 
 **Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
 
@@ -50,6 +51,6 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. A valid convert command sould look like this *java -jar dzconverter-$version}.jar EUR/USD 2013*.
 
-7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in dztools/dzconverter/bars with the asses and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
+7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in dztools/dzconverter/bars with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
 
-
+For subsequent conversion you can skip steps 1,2 and 4.
