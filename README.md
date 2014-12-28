@@ -16,6 +16,10 @@ When trading with Dukascopy you probably also want to use their historical price
 
 2.) Add ${yourJREinstallPath}\jre\bin\ and ${yourJREinstallPath}\jre\bin\client to the **front** of your *Path* environment variable(here is a [howto](http://www.computerhope.com/issues/ch000549.htm)).
 
-3.) Download the [dztools](https://github.com/juxeii/dztools/releases) zip archive.
+3.) Download the [dztools.zip](https://github.com/juxeii/dztools/releases) archive.
 
 4.) Extract the archive into ${yourZorroInstallPath}/Plugin folder.
+
+## dzplugin usage
+
+After extracting the dztools archive you should see a *dukascopy-{version}.dll* and a folder *dztools* in the Plugin directory of your Zorro installation.
