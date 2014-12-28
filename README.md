@@ -38,7 +38,7 @@ This little command line tool allows you to convert *.bi5 Dukascopy history file
 
 **Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
 
-1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is D:\programs\JForex\.cache).
+1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is D:\programs\JForex\\.cache).
 
 2.) **Create a *cacheCopy* folder(or some other foler name of your choice).**
 
