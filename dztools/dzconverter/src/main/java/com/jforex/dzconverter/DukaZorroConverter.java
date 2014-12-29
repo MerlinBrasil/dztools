@@ -24,7 +24,6 @@ package com.jforex.dzconverter;
  * #L%
  */
 
-
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,11 +33,11 @@ import com.dukascopy.api.Instrument;
 
 public class DukaZorroConverter {
 
-    private static ArgumentHandler argHandler;
-    private static PropertiesHandler propHandler;
+    private ArgumentHandler argHandler;
+    private PropertiesHandler propHandler;
     private ClientHandler clientHandler;
-    private static Instrument instrument;
-    private static int year;
+    private Instrument instrument;
+    private int year;
 
     private final static Logger logger = LogManager.getLogger(DukaZorroConverter.class);
 
@@ -53,24 +52,49 @@ public class DukaZorroConverter {
     public void start(String[] args) {
         argHandler = new ArgumentHandler(args);
 
-        instrument = argHandler.getInstrument();
-        if (instrument == null)
+        if (!isInstrumentOK())
             logErrorAndQuit("Provided instrument is invalid!");
-        year = argHandler.getYear();
-        if (year == 0)
+
+        if (!isYearOK())
             logErrorAndQuit("Provided year is invalid!");
 
-        propHandler = new PropertiesHandler("config.properties");
-        if (!propHandler.arePropertiesValid())
+        if (!arePropertiesOK())
             logErrorAndQuit("Properties are invalid!");
-        String cacheDir = propHandler.getCacheDir();
 
-        validateCacheDir(cacheDir);
+        if (!isCacheDirOK())
+            logErrorAndQuit("Provided cachedir " + propHandler.getCacheDir() + " is missing the data folder " + getDataDirectory()
+                    + ". Check the config.properties cachedir entry!");
 
-        clientHandler = new ClientHandler(propHandler);
-        if (!clientHandler.isLoginOK())
+        if (!isLoginOK())
             logErrorAndQuit("Login failed!");
+
         clientHandler.startConversionStrategy(this);
+    }
+
+    public boolean isInstrumentOK() {
+        instrument = argHandler.getInstrument();
+        return instrument == null ? false : true;
+    }
+
+    public boolean isYearOK() {
+        year = argHandler.getYear();
+        return year == 0 ? false : true;
+    }
+
+    public boolean arePropertiesOK() {
+        propHandler = new PropertiesHandler("config.properties");
+        return !propHandler.arePropertiesValid() ? false : true;
+    }
+
+    public boolean isCacheDirOK() {
+        String cacheDir = propHandler.getCacheDir();
+        File file = new File(cacheDir + "\\" + getDataDirectory());
+        return !file.isDirectory() ? false : true;
+    }
+
+    public boolean isLoginOK() {
+        clientHandler = new ClientHandler(propHandler);
+        return !clientHandler.isLoginOK() ? false : true;
     }
 
     public void disconnect() {
@@ -100,11 +124,7 @@ public class DukaZorroConverter {
         quit();
     }
 
-    private void validateCacheDir(String cacheDir) {
-        String dataDirectory = instrument.getPrimaryJFCurrency().getCurrencyCode() + instrument.getSecondaryJFCurrency().getCurrencyCode() + "\\" + year;
-        File file = new File(cacheDir + "\\" + dataDirectory);
-        if (!file.isDirectory())
-            logErrorAndQuit("Provided cachedir " + cacheDir + " is missing the data folder " + dataDirectory
-                    + ". Check the config.properties cachedir entry!");
+    private String getDataDirectory() {
+        return instrument.getPrimaryJFCurrency().getCurrencyCode() + instrument.getSecondaryJFCurrency().getCurrencyCode() + "\\" + year;
     }
 }
