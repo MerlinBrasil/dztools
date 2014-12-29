@@ -30,8 +30,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.ZorroLogger;
-
 import com.dukascopy.api.IHistory;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
@@ -82,7 +80,6 @@ public class PriceEngine implements IPriceEngine, ITickConsumer {
             return history.getLastTick(instrument);
         } catch (JFException e) {
             logger.error("Last tick for " + instrument + " not availavle!");
-            ZorroLogger.log("Last tick for " + instrument + " not availavle!");
             return null;
         }
     }

@@ -22,7 +22,6 @@ package com.jforex.dzplugin.task;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.utils.DateTimeUtils;
 
 public class NTPTimeSynchTask implements Callable<Long> {
 
@@ -53,7 +53,7 @@ public class NTPTimeSynchTask implements Callable<Long> {
         try {
             inetAddress = InetAddress.getByName(Configuration.NTP_TIME_SERVER_URL);
         } catch (UnknownHostException e) {
-            logger.error("NTP server url " + Configuration.NTP_TIME_SERVER_URL + " is unkown!");
+            logger.error("NTP server url " + Configuration.NTP_TIME_SERVER_URL + " is not reachable!");
         }
     }
 
@@ -67,6 +67,8 @@ public class NTPTimeSynchTask implements Callable<Long> {
             logger.warn("Unable to get time from NTP server: " + e.getMessage());
             return 0L;
         }
-        return timeInfo.getMessage().getTransmitTimeStamp().getTime();
+        long ntpTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+        logger.debug("ntpSynchTask successful. Time: " + DateTimeUtils.formatDateTime(ntpTime));
+        return ntpTime;
     }
 }

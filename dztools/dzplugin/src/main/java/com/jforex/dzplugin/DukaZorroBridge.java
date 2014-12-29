@@ -29,17 +29,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.config.DukascopyParams;
-import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.handler.HistoryHandler;
-import com.jforex.dzplugin.handler.LoginHandler;
-import com.jforex.dzplugin.handler.OrderHandler;
-import com.jforex.dzplugin.handler.SubscriptionHandler;
-import com.jforex.dzplugin.provider.AccountInfo;
-import com.jforex.dzplugin.provider.IPriceEngine;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
-
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.ICurrency;
@@ -51,6 +40,17 @@ import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.handler.HistoryHandler;
+import com.jforex.dzplugin.handler.LoginHandler;
+import com.jforex.dzplugin.handler.OrderHandler;
+import com.jforex.dzplugin.handler.SubscriptionHandler;
+import com.jforex.dzplugin.provider.AccountInfo;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.provider.ServerTimeProvider;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class DukaZorroBridge {
 
@@ -65,6 +65,7 @@ public class DukaZorroBridge {
     private SubscriptionHandler subscriptionHandler;
     private IPriceEngine priceEngine;
     private DateTimeUtils dateTimeUtils;
+    private ServerTimeProvider serverTimeProvider;
     private boolean isStrategyStarted;
 
     private final static Logger logger = LogManager.getLogger(DukaZorroBridge.class);
@@ -132,11 +133,12 @@ public class DukaZorroBridge {
 
         context = strategy.getContext();
         priceEngine = strategy.getPriceEngine();
+        serverTimeProvider = new ServerTimeProvider(priceEngine);
         accountInfo = new AccountInfo(context, priceEngine);
         historyHandler = new HistoryHandler(context.getHistory());
         orderHandler = new OrderHandler(context);
         subscriptionHandler = new SubscriptionHandler(client);
-        dateTimeUtils = new DateTimeUtils(context.getDataService());
+        dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
         accountCurrency = accountInfo.getCurrency();
     }
 
@@ -149,7 +151,7 @@ public class DukaZorroBridge {
             logger.warn("No connection to Dukascopy!");
             return ReturnCodes.CONNECTION_FAIL;
         }
-        serverTime[0] = dateTimeUtils.getServerTime();
+        serverTime[0] = serverTimeProvider.get();
 
         boolean isMarketOffline = dateTimeUtils.isMarketOffline();
         if (isMarketOffline)

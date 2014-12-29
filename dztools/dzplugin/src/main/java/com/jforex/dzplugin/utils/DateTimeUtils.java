@@ -24,26 +24,21 @@ package com.jforex.dzplugin.utils;
  * #L%
  */
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.Configuration;
 
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.Period;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.provider.ServerTimeProvider;
 
 public class DateTimeUtils {
 
@@ -64,14 +59,13 @@ public class DateTimeUtils {
         minuteToPeriodMap.put(0, Period.TICK);
     }
 
-    private IDataService dataService;
-    private long startGMTTime;
-    private long timerStart;
+    private final IDataService dataService;
+    private final ServerTimeProvider serverTimeProvider;
 
-    public DateTimeUtils(IDataService dataService) {
+    public DateTimeUtils(IDataService dataService,
+                         ServerTimeProvider serverTimeProvider) {
         this.dataService = dataService;
-        startGMTTime = getGMTTime();
-        timerStart = System.currentTimeMillis();
+        this.serverTimeProvider = serverTimeProvider;
     }
 
     public static double getOLEDateFromMillis(long millis) {
@@ -88,27 +82,8 @@ public class DateTimeUtils {
         return date;
     }
 
-    public long getGMTTime() {
-        NTPUDPClient timeClient = new NTPUDPClient();
-        timeClient.setDefaultTimeout(Configuration.NTP_TIMEOUT);
-        InetAddress inetAddress;
-        try {
-            inetAddress = InetAddress.getByName(Configuration.NTP_TIME_SERVER_URL);
-            TimeInfo timeInfo = timeClient.getTime(inetAddress);
-            return timeInfo.getMessage().getTransmitTimeStamp().getTime();
-        } catch (IOException e) {
-            logger.warn("Unable to get GMT time: " + e.getMessage());
-        }
-        logger.warn("Using System time now!");
-        return System.currentTimeMillis();
-    }
-
-    public long getServerTime() {
-        return startGMTTime + (System.currentTimeMillis() - timerStart);
-    }
-
     public boolean isMarketOffline() {
-        long serverTime = getServerTime();
+        long serverTime = serverTimeProvider.get();
         Set<ITimeDomain> offlines = getOfflineTimes(serverTime, serverTime + Period.ONE_MIN.getInterval());
         if (offlines == null)
             return true;
