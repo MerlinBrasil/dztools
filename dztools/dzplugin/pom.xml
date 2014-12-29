@@ -53,7 +53,7 @@
 							<option>${stack.protector.option}</option>
 							<option>${architecture.option}</option>
 							<option>${subsystem.option}</option>
-							<option>${debug.option}</option>
+							<option>-s</option>
 							<option>-std=c++11</option>
 							<option>-DVERSION=${project.version}</option>
 						</options>
