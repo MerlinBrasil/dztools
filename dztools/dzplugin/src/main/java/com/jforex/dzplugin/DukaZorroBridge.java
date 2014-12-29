@@ -154,8 +154,6 @@ public class DukaZorroBridge {
         boolean isMarketOffline = dateTimeUtils.isMarketOffline();
         if (isMarketOffline)
             logger.debug("Market is offline");
-        else
-            logger.debug("Market is online");
 
         return isMarketOffline ? ReturnCodes.CONNECTION_OK_BUT_MARKET_CLOSED : ReturnCodes.CONNECTION_OK;
     }
@@ -263,7 +261,6 @@ public class DukaZorroBridge {
             else
                 SLPrice = currentAskPrice + dStopDist;
         }
-        logger.debug("Try to open position for " + instrument + " with cmd " + cmd + " ,amount " + amount + " ,SLPrice " + SLPrice);
         int orderID = orderHandler.submitOrder(instrument, cmd, amount, priceEngine.getRounded(instrument, SLPrice));
         if (orderID == ReturnCodes.INVALID_ORDER_ID) {
             logger.warn("Could not open position for " + instrument + " with cmd " + cmd + " ,amount " + amount + " ,SLPrice " + SLPrice);
