@@ -12,12 +12,12 @@ package com.jforex.dzplugin.utils;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
-import com.jforex.dzplugin.provider.IPriceEngine;
 
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
@@ -65,21 +64,12 @@ public class DateTimeUtils {
         minuteToPeriodMap.put(0, Period.TICK);
     }
 
-    private final IDataService dataService;
-    private final IPriceEngine priceEngine;
+    private IDataService dataService;
     private long startGMTTime;
     private long timerStart;
 
-    private enum ServerTimeState {
-        NTP,
-        TICK,
-        SYSTEM
-    }
-
-    public DateTimeUtils(IDataService dataService,
-                         IPriceEngine priceEngine) {
+    public DateTimeUtils(IDataService dataService) {
         this.dataService = dataService;
-        this.priceEngine = priceEngine;
         startGMTTime = getGMTTime();
         timerStart = System.currentTimeMillis();
     }
@@ -103,7 +93,7 @@ public class DateTimeUtils {
         timeClient.setDefaultTimeout(Configuration.NTP_TIMEOUT);
         InetAddress inetAddress;
         try {
-            inetAddress = InetAddress.getByName(Configuration.NTP_TIME_SERVER);
+            inetAddress = InetAddress.getByName(Configuration.NTP_TIME_SERVER_URL);
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
             return timeInfo.getMessage().getTransmitTimeStamp().getTime();
         } catch (IOException e) {
@@ -115,10 +105,6 @@ public class DateTimeUtils {
 
     public long getServerTime() {
         return startGMTTime + (System.currentTimeMillis() - timerStart);
-    }
-
-    private long getLatestTickTime() {
-        return priceEngine.getLatestTick().getTime();
     }
 
     public boolean isMarketOffline() {
