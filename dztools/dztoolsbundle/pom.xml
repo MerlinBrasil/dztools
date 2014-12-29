@@ -57,29 +57,6 @@
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>de.jutzig</groupId>
-				<artifactId>github-release-plugin</artifactId>
-				<version>1.1.0</version>
-				<executions>
-					<execution>
-						<id>github-upload</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>release</goal>
-						</goals>
-						<inherited>false</inherited>
-						<configuration>
-							<serverId>github</serverId>
-							<repositoryId>juxeii/${assemblyName}</repositoryId>
-							<overwriteArtifact>true</overwriteArtifact>
-							<releaseName>Release-${project.version}</releaseName>
-							<tag>${project.version}</tag>
-							<artifact>${project.build.directory}\${assemblyName}.zip</artifact>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -94,17 +71,49 @@
 						<executions>
 							<execution>
 								<id>copy-resources</id>
-								<phase>install</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
 									<outputDirectory>${zorroPath}/Plugin</outputDirectory>
+									<includeEmptyDirs>true</includeEmptyDirs>
+									<overwrite>true</overwrite>
 									<resources>
 										<resource>
 											<directory>target/${assemblyName}</directory>
 										</resource>
 									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>Github_Deploy</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>de.jutzig</groupId>
+						<artifactId>github-release-plugin</artifactId>
+						<version>1.1.0</version>
+						<executions>
+							<execution>
+								<id>github-upload</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>release</goal>
+								</goals>
+								<inherited>false</inherited>
+								<configuration>
+									<serverId>github</serverId>
+									<repositoryId>juxeii/${assemblyName}</repositoryId>
+									<overwriteArtifact>true</overwriteArtifact>
+									<releaseName>Release-${project.version}</releaseName>
+									<tag>${project.version}</tag>
+									<artifact>${project.build.directory}\${assemblyName}.zip</artifact>
 								</configuration>
 							</execution>
 						</executions>
