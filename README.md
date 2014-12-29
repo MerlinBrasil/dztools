@@ -34,6 +34,8 @@ The plugin stores its logs to *dztools/dzplugin/logs/dzplugin.log*(the default l
 
 You can also change the log level for Dukascopy via *dztools/dzplugin/log4j.properties*.
 
+Please use [pastebin](http://pastebin.com/) for uploading the logs.
+
 ## dzconverter usage
 
 This command line tool allows you to convert *.bi5 Dukascopy history files to the *.bar file format of Zorro.
