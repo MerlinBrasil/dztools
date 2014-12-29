@@ -33,18 +33,19 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.IEngine;
-import com.dukascopy.api.IEngine.OrderCommand;
-import com.dukascopy.api.IOrder;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.JFException;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.task.CloseOrderTask;
 import com.jforex.dzplugin.task.StopLossTask;
 import com.jforex.dzplugin.task.SubmitOrderTask;
+
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.IEngine;
+import com.dukascopy.api.IEngine.OrderCommand;
+import com.dukascopy.api.IOrder;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.JFException;
 
 public class OrderHandler {
 
@@ -65,9 +66,13 @@ public class OrderHandler {
                                         OrderCommand cmd,
                                         double amount,
                                         double SLPrice) {
-        int orderID = new UID().hashCode();
+        int orderID = Math.abs(new UID().hashCode());
         String orderLabel = DukascopyParams.ORDER_PREFIX_LABEL + orderID;
 
+        logger.debug("Try to open position for " + instrument +
+                " with cmd " + cmd + " ,amount " + amount +
+                " ,SLPrice " + SLPrice + " ,orderLabel " +
+                orderLabel + " orderID " + orderID);
         SubmitOrderTask task = new SubmitOrderTask(engine, orderLabel, instrument, cmd, amount, SLPrice);
         IOrder order = getOrderFromFuture(context.executeTask(task));
         if (order == null)
