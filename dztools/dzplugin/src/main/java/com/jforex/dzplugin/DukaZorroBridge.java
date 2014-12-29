@@ -146,12 +146,12 @@ public class DukaZorroBridge {
         return loginHandler.logout();
     }
 
-    public int doBrokerTime(long serverTime[]) {
+    public int doBrokerTime(double serverTime[]) {
         if (!client.isConnected()) {
             logger.warn("No connection to Dukascopy!");
             return ReturnCodes.CONNECTION_FAIL;
         }
-        serverTime[0] = serverTimeProvider.get();
+        serverTime[0] = DateTimeUtils.getOLEDateFromMillis(serverTimeProvider.get());
 
         boolean isMarketOffline = dateTimeUtils.isMarketOffline();
         if (isMarketOffline)

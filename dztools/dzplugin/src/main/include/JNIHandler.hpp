@@ -47,7 +47,7 @@ public:
     jint callBrokerLogout(JNIEnv* env);
 
     jint callBrokerTime(JNIEnv* env,
-                        jlongArray utcTimeArray);
+                        jdoubleArray utcTimeArray);
 
     jint callSubscribeAsset(JNIEnv* env,
                             jstring jAsset);

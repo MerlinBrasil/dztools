@@ -50,7 +50,7 @@ static jclass ExceptionClass;
 static JMethodDesc constructor =      { nullptr, "<init>",           "()V" };
 static JMethodDesc doLogin =          { nullptr, "doLogin",          "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I" };
 static JMethodDesc doLogout =         { nullptr, "doLogout",         "()I" };
-static JMethodDesc doBrokerTime =     { nullptr, "doBrokerTime",     "([J)I" };
+static JMethodDesc doBrokerTime =     { nullptr, "doBrokerTime",     "([D)I" };
 static JMethodDesc doSubscribeAsset = { nullptr, "doSubscribeAsset", "(Ljava/lang/String;)I" };
 static JMethodDesc doBrokerAsset =    { nullptr, "doBrokerAsset",    "(Ljava/lang/String;[D)I" };
 static JMethodDesc doBrokerAccount =  { nullptr, "doBrokerAccount",  "([D)I" };

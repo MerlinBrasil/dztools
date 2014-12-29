@@ -142,7 +142,7 @@ jint JNIHandler::callBrokerLogout(JNIEnv* env)
 
 
 jint JNIHandler::callBrokerTime(JNIEnv* env,
-                                jlongArray utcTimeArray)
+                                jdoubleArray utcTimeArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTime.methodID, utcTimeArray);
 }

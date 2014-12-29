@@ -79,14 +79,14 @@ int DllCallHandler::BrokerLogout()
 
 int DllCallHandler::BrokerTime(DATE *pTimeUTC)
 {
-    jlongArray utcTimeArray = env->NewLongArray(1);
+    jdoubleArray utcTimeArray = env->NewDoubleArray(1);
     jint res = jniHandler.callBrokerTime(env, utcTimeArray);
 
     if(pTimeUTC)
     {
-        jlong *utcTime = env->GetLongArrayElements(utcTimeArray, 0);
-        *pTimeUTC = DateUtils::fromDukaTime(utcTime[0]);
-        env->ReleaseLongArrayElements(utcTimeArray, utcTime, 0);
+        jdouble *utcTime = env->GetDoubleArrayElements(utcTimeArray, 0);
+        *pTimeUTC = utcTime[0];
+        env->ReleaseDoubleArrayElements(utcTimeArray, utcTime, 0);
     }
     env->DeleteLocalRef((jobject)utcTimeArray);
 
