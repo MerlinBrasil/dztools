@@ -24,7 +24,6 @@ package com.jforex.dzplugin.provider;
  * #L%
  */
 
-
 import java.util.Set;
 
 import com.dukascopy.api.ITick;
@@ -33,6 +32,8 @@ import com.dukascopy.api.Instrument;
 public interface IPriceEngine {
 
     abstract ITick getLastTick(Instrument instrument);
+
+    abstract ITick getLatestTick();
 
     abstract double getBid(Instrument instrument);
 

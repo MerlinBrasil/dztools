@@ -1,5 +1,6 @@
 package com.jforex.dzplugin.config;
 
+
 /*
  * #%L
  * dzplugin
@@ -24,11 +25,10 @@ package com.jforex.dzplugin.config;
  * #L%
  */
 
-
 public class Configuration {
 
-    public static final String connectURLForDEMO = "https://www.dukascopy.com/client/demo/jclient/jforex.jnlp";
-    public static final String connectURLForLIVE = "https://www.dukascopy.com/client/live/jclient/jforex.jnlp";
+    public static final String CONNECT_URL_DEMO = "https://www.dukascopy.com/client/demo/jclient/jforex.jnlp";
+    public static final String CONNECT_URL_LIVE = "https://www.dukascopy.com/client/live/jclient/jforex.jnlp";
     public static final String NTP_TIME_SERVER = "time-a.nist.gov";
     public static final long CONNECTION_WAIT_TIME = 1000;
     public static final int CONNECTION_RETRIES = 10;
@@ -38,4 +38,5 @@ public class Configuration {
     public static final int SUBMIT_WAIT_RETRIES = 40;
     public static final long ORDER_UPDATE_WAITTIME = 3000;
     public static final int NTP_TIMEOUT = 3000;
+    public static final long SERVERTIME_SYNC_MILLIS = 1000 * 60 * 5;
 }

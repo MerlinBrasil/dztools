@@ -30,17 +30,19 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.ZorroLogger;
+
 import com.dukascopy.api.IHistory;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
-import com.jforex.dzplugin.ZorroLogger;
 
 public class PriceEngine implements IPriceEngine, ITickConsumer {
 
     private IHistory history;
     private final HashMap<Instrument, ITick> lastTickMap;
+    private ITick latestTick;
 
     private final static Logger logger = LogManager.getLogger(PriceEngine.class);
 
@@ -53,8 +55,10 @@ public class PriceEngine implements IPriceEngine, ITickConsumer {
     public void initInstruments(Set<Instrument> instruments) {
         for (Instrument instrument : instruments) {
             ITick historyTick = getLastTickFromHistory(instrument);
-            if (historyTick != null)
+            if (historyTick != null) {
                 lastTickMap.put(instrument, historyTick);
+                latestTick = historyTick;
+            }
         }
     }
 
@@ -62,6 +66,7 @@ public class PriceEngine implements IPriceEngine, ITickConsumer {
     public void onTick(Instrument instrument,
                        ITick tick) {
         lastTickMap.put(instrument, tick);
+        latestTick = tick;
     }
 
     @Override
@@ -111,5 +116,10 @@ public class PriceEngine implements IPriceEngine, ITickConsumer {
                              double rawPrice) {
         double roundingFactor = Math.pow(10, instrument.getPipScale() + 1);
         return Math.round(rawPrice * roundingFactor) / roundingFactor;
+    }
+
+    @Override
+    public ITick getLatestTick() {
+        return latestTick;
     }
 }

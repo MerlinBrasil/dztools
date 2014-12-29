@@ -50,9 +50,9 @@ public class LoginHandler {
                      String Pin) {
         try {
             if (Pin.isEmpty())
-                client.connect(Configuration.connectURLForDEMO, User, Pwd);
+                client.connect(Configuration.CONNECT_URL_DEMO, User, Pwd);
             else
-                client.connect(Configuration.connectURLForLIVE, User, Pwd, Pin);
+                client.connect(Configuration.CONNECT_URL_LIVE, User, Pwd, Pin);
 
             for (int i = 0; i < Configuration.CONNECTION_RETRIES && !client.isConnected(); ++i)
                 Thread.sleep(Configuration.CONNECTION_WAIT_TIME);

@@ -78,7 +78,7 @@ public class MainPin {
             captchaPanel.setLayout(new BoxLayout(captchaPanel, BoxLayout.Y_AXIS));
 
             final JLabel captchaImage = new JLabel();
-            captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.connectURLForLIVE)));
+            captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.CONNECT_URL_LIVE)));
             captchaPanel.add(captchaImage);
 
             captchaPanel.add(pinfield);
@@ -104,7 +104,7 @@ public class MainPin {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.connectURLForLIVE)));
+                        captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.CONNECT_URL_LIVE)));
                     } catch (Exception ex) {
                         ZorroLogger.indicateError(logger, "getPin exc: " + ex.getMessage());
                     }

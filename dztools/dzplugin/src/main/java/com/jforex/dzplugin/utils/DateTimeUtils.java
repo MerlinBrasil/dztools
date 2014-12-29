@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.provider.IPriceEngine;
 
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
@@ -64,12 +65,21 @@ public class DateTimeUtils {
         minuteToPeriodMap.put(0, Period.TICK);
     }
 
-    private IDataService dataService;
+    private final IDataService dataService;
+    private final IPriceEngine priceEngine;
     private long startGMTTime;
     private long timerStart;
 
-    public DateTimeUtils(IDataService dataService) {
+    private enum ServerTimeState {
+        NTP,
+        TICK,
+        SYSTEM
+    }
+
+    public DateTimeUtils(IDataService dataService,
+                         IPriceEngine priceEngine) {
         this.dataService = dataService;
+        this.priceEngine = priceEngine;
         startGMTTime = getGMTTime();
         timerStart = System.currentTimeMillis();
     }
@@ -105,6 +115,10 @@ public class DateTimeUtils {
 
     public long getServerTime() {
         return startGMTTime + (System.currentTimeMillis() - timerStart);
+    }
+
+    private long getLatestTickTime() {
+        return priceEngine.getLatestTick().getTime();
     }
 
     public boolean isMarketOffline() {

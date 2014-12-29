@@ -136,7 +136,7 @@ public class DukaZorroBridge {
         historyHandler = new HistoryHandler(context.getHistory());
         orderHandler = new OrderHandler(context);
         subscriptionHandler = new SubscriptionHandler(client);
-        dateTimeUtils = new DateTimeUtils(context.getDataService());
+        dateTimeUtils = new DateTimeUtils(context.getDataService(), priceEngine);
         accountCurrency = accountInfo.getCurrency();
     }
 
