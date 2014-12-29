@@ -74,6 +74,6 @@ For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files u
 - This a very early release so **don't expect it to be bug free!**
 - Currently **only Forex** is supported(no Stocks, CFDs etc.)
 - The login process for the converter is sometimes not reliable; just repeat the conversion
-- Login to a real account for the plugin is therefore not supported yet(although the code is in place).
+- Login to a real account for the plugin is currently not supported(although the code is in place).
 - If you don't trust the binaries checkout the dztools project und build it manually(you need to know [maven](http://maven.apache.org/))
 - Follow discussions for Zorro in the [forum](http://www.opserver.de/ubb7/ubbthreads.php?ubb=cfrm&c=1)
