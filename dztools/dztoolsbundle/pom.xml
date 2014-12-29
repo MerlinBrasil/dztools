@@ -16,6 +16,10 @@
 		<assemblyName>dztools</assemblyName>
 	</properties>
 
+	<scm>
+		<developerConnection>scm:git:https://github.com/juxeii/${assemblyName}</developerConnection>
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.jforex</groupId>
@@ -78,6 +82,29 @@
 											<directory>target/${assemblyName}</directory>
 										</resource>
 									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>de.jutzig</groupId>
+						<artifactId>github-release-plugin</artifactId>
+						<version>1.1.0</version>
+						<executions>
+							<execution>
+								<id>github-upload</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>release</goal>
+								</goals>
+								<inherited>false</inherited>
+								<configuration>
+									<serverId>github</serverId>
+									<repositoryId>juxeii/${assemblyName}</repositoryId>
+									<overwriteArtifact>true</overwriteArtifact>
+									<releaseName>${project.version}</releaseName>
+									<tag>v${project.version}</tag>
+									<artifact>${project.build.directory}\${assemblyName}.zip</artifact>
 								</configuration>
 							</execution>
 						</executions>
