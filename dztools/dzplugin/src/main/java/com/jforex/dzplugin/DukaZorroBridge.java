@@ -22,12 +22,9 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.IBar;
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.ICurrency;
 import com.dukascopy.api.IEngine.OrderCommand;
@@ -35,7 +32,6 @@ import com.dukascopy.api.IOrder;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.OfferSide;
-import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.config.DukascopyParams;
@@ -119,7 +115,7 @@ public class DukaZorroBridge {
         priceEngine = strategy.getPriceEngine();
         serverTimeProvider = new ServerTimeProvider(priceEngine);
         accountInfo = new AccountInfo(context, priceEngine);
-        historyHandler = new HistoryHandler(context.getHistory());
+        historyHandler = new HistoryHandler(this);
         orderHandler = new OrderHandler(context);
         subscriptionHandler = new SubscriptionHandler(this);
         dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
@@ -294,47 +290,7 @@ public class DukaZorroBridge {
                                int tickMinutes,
                                int nTicks,
                                double tickParams[]) {
-        if (!accountInfo.isConnected())
-            return ReturnCodes.HISTORY_FAIL;
-
-        logger.debug("startDate " + DateTimeUtils.formatOLETime(startDate) + " endDate: " + DateTimeUtils.formatOLETime(endDate));
-        logger.debug("nTicks " + nTicks + " tickMinutes " + tickMinutes);
-        Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
-            return ReturnCodes.HISTORY_FAIL;
-        }
-
-        Period period = DateTimeUtils.getPeriodFromMinutes(tickMinutes);
-        if (period == null) {
-            ZorroLogger.indicateError(logger, "Invalid tickMinutes: " + tickMinutes);
-            return ReturnCodes.HISTORY_FAIL;
-        }
-        List<IBar> bars = historyHandler.getBars(instrument,
-                                                 period,
-                                                 OfferSide.ASK,
-                                                 DateTimeUtils.getMillisFromOLEDate(endDate),
-                                                 nTicks);
-        if (bars.size() == 0)
-            return ReturnCodes.HISTORY_FAIL;
-
-        int tickParamsIndex = 0;
-        int arraySizeForAllBars = 5 * bars.size();
-        int maxIndex = nTicks;
-        if (arraySizeForAllBars <= tickParams.length)
-            maxIndex = bars.size();
-
-        logger.debug("bars size " + bars.size() + " maxIndex " + maxIndex);
-
-        for (int i = 0; i < maxIndex; ++i) {
-            IBar bar = bars.get(i);
-            tickParams[tickParamsIndex] = bar.getOpen();
-            tickParams[tickParamsIndex + 1] = bar.getClose();
-            tickParams[tickParamsIndex + 2] = bar.getHigh();
-            tickParams[tickParamsIndex + 3] = bar.getLow();
-            tickParams[tickParamsIndex + 4] = DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime());
-            tickParamsIndex += 5;
-        }
-        return maxIndex;
+        return historyHandler.doBrokerHistory(instrumentName, startDate, endDate, tickMinutes, nTicks, tickParams);
     }
 
     public void doDLLlog(String msg) {

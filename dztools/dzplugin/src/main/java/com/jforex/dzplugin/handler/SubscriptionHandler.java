@@ -43,8 +43,8 @@ import com.jforex.dzplugin.utils.InstrumentUtils;
 public class SubscriptionHandler {
 
     private final IClient client;
-    private AccountInfo accountInfo;
-    private IPriceEngine priceEngine;
+    private final AccountInfo accountInfo;
+    private final IPriceEngine priceEngine;
 
     private final static Logger logger = LogManager.getLogger(SubscriptionHandler.class);
 
