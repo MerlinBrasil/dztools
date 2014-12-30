@@ -10,12 +10,12 @@ package com.jforex.dzplugin;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -25,15 +25,6 @@ package com.jforex.dzplugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.ICurrency;
-import com.dukascopy.api.IEngine.OrderCommand;
-import com.dukascopy.api.IOrder;
-import com.dukascopy.api.ITick;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.OfferSide;
-import com.dukascopy.api.system.ClientFactory;
-import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.handler.HistoryHandler;
@@ -45,6 +36,16 @@ import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 import com.jforex.dzplugin.utils.InstrumentUtils;
+
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.ICurrency;
+import com.dukascopy.api.IEngine.OrderCommand;
+import com.dukascopy.api.IOrder;
+import com.dukascopy.api.ITick;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.OfferSide;
+import com.dukascopy.api.system.ClientFactory;
+import com.dukascopy.api.system.IClient;
 
 public class DukaZorroBridge {
 
@@ -255,24 +256,10 @@ public class DukaZorroBridge {
 
     public int doBrokerStop(int orderID,
                             double newSLPrice) {
-        logger.debug("New SL price: " + newSLPrice);
-
         if (!accountInfo.isTradingPossible())
             return ReturnCodes.ADJUST_SL_FAIL;
 
-        if (!orderHandler.isOrderIDValid(orderID)) {
-            logger.warn("Order ID " + orderID + " is unknown!");
-            ZorroLogger.log("Order ID " + orderID + " is unknown!");
-            return ReturnCodes.ADJUST_SL_FAIL;
-        }
-
-        IOrder order = orderHandler.getOrderByID(orderID);
-        if (order.getStopLossPrice() == 0) {
-            logger.warn("Order has no SL set -> reject BrokerStop!");
-            return ReturnCodes.ADJUST_SL_FAIL;
-        }
-
-        return orderHandler.setSLPrice(order, priceEngine.getRounded(order.getInstrument(), newSLPrice));
+        return orderHandler.doBrokerStop(orderID, newSLPrice);
     }
 
     public int doBrokerSell(int orderID,

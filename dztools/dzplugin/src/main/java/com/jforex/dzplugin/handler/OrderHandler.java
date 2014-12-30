@@ -12,12 +12,12 @@ package com.jforex.dzplugin.handler;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -33,9 +33,11 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.task.CloseOrderTask;
 import com.jforex.dzplugin.task.StopLossTask;
 import com.jforex.dzplugin.task.SubmitOrderTask;
@@ -51,15 +53,37 @@ public class OrderHandler {
 
     private final IContext context;
     private final IEngine engine;
+    private final IPriceEngine priceEngine;
     private final HashMap<Integer, IOrder> orderMap;
 
     private final static Logger logger = LogManager.getLogger(OrderHandler.class);
 
-    public OrderHandler(IContext context) {
-        this.context = context;
+    public OrderHandler(DukaZorroBridge dukaZorroBridge) {
+        this.context = dukaZorroBridge.getContext();
+        this.priceEngine = dukaZorroBridge.getPriceEngine();
         this.engine = context.getEngine();
+
         orderMap = new HashMap<Integer, IOrder>();
         resumeOrderIDs();
+    }
+
+    public int doBrokerStop(int orderID,
+                            double newSLPrice) {
+        logger.debug("orderID " + orderID + " newSLPrice: " + newSLPrice);
+
+        if (!isOrderIDValid(orderID)) {
+            logger.warn("Order ID " + orderID + " is unknown!");
+            ZorroLogger.log("Order ID " + orderID + " is unknown!");
+            return ReturnCodes.ADJUST_SL_FAIL;
+        }
+
+        IOrder order = getOrderByID(orderID);
+        if (order.getStopLossPrice() == 0) {
+            logger.warn("Order has no SL set -> reject BrokerStop!");
+            return ReturnCodes.ADJUST_SL_FAIL;
+        }
+
+        return setSLPrice(order, priceEngine.getRounded(order.getInstrument(), newSLPrice));
     }
 
     public synchronized int submitOrder(Instrument instrument,
