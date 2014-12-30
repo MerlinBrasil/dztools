@@ -65,7 +65,7 @@ public class DukaZorroBridge {
         initClientInstance();
         isStrategyStarted = false;
         strategy = new DukaZorroStrategy();
-        loginHandler = new LoginHandler(client);
+        loginHandler = new LoginHandler(this);
     }
 
     private void initClientInstance() {
@@ -83,28 +83,7 @@ public class DukaZorroBridge {
         }
     }
 
-    public int doLogin(String User,
-                       String Pwd,
-                       String Type,
-                       String accountInfos[]) {
-        if (client.isConnected())
-            return ReturnCodes.LOGIN_OK;
-
-        int loginResult = loginHandler.doLogin(User, Pwd, Type);
-        if (loginResult == ReturnCodes.LOGIN_OK) {
-            initComponentsAfterLogin();
-            accountInfos[0] = accountInfo.getID();
-            logger.debug("Login successful for account ID " + accountInfo.getID());
-        }
-
-        return loginResult;
-    }
-
-    public int doLogout() {
-        return loginHandler.logout();
-    }
-
-    private void initComponentsAfterLogin() {
+    public void initComponentsAfterLogin() {
         if (!isStrategyStarted)
             client.startStrategy(strategy);
 
@@ -116,6 +95,20 @@ public class DukaZorroBridge {
         orderHandler = new OrderHandler(this);
         subscriptionHandler = new SubscriptionHandler(this);
         dateTimeUtils = new DateTimeUtils(this);
+    }
+
+    public int doLogin(String User,
+                       String Pwd,
+                       String Type,
+                       String accountInfos[]) {
+        if (client.isConnected())
+            return ReturnCodes.LOGIN_OK;
+
+        return loginHandler.doLogin(User, Pwd, Type, accountInfos);
+    }
+
+    public int doLogout() {
+        return loginHandler.logout();
     }
 
     public int doBrokerTime(double serverTime[]) {

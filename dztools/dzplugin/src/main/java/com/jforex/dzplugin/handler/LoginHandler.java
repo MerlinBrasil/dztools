@@ -27,38 +27,52 @@ package com.jforex.dzplugin.handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.system.IClient;
-import com.dukascopy.api.system.JFAuthenticationException;
-import com.dukascopy.api.system.JFVersionException;
+import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
 
+import com.dukascopy.api.system.IClient;
+import com.dukascopy.api.system.JFAuthenticationException;
+import com.dukascopy.api.system.JFVersionException;
+
 public class LoginHandler {
 
+    private final DukaZorroBridge dukaZorroBridge;
     private final IClient client;
 
     private final static Logger logger = LogManager.getLogger(LoginHandler.class);
 
-    public LoginHandler(IClient client) {
-        this.client = client;
+    public LoginHandler(DukaZorroBridge dukaZorroBridge) {
+        this.dukaZorroBridge = dukaZorroBridge;
+        this.client = dukaZorroBridge.getClient();
     }
 
     public int doLogin(String User,
                        String Pwd,
-                       String Type) {
+                       String Type,
+                       String accountInfos[]) {
+        int loginResult = ReturnCodes.LOGIN_FAIL;
+
         if (Type.equals("Demo"))
-            return login(User, Pwd, "");
+            loginResult = login(User, Pwd, "");
         else if (Type.equals("Real")) {
             logger.warn("Live login not yet supported.");
-            return ReturnCodes.LOGIN_FAIL;
             // MainPin mp = new MainPin(client);
             // String pin = mp.getPin();
-            // return handleLogin(User, Pwd, pin);
+            // int loginResult = handleLogin(User, Pwd, pin);
         } else {
             ZorroLogger.indicateError(logger, "Received invalid login type: " + Type);
-            return ReturnCodes.LOGIN_FAIL;
         }
+
+        if (loginResult == ReturnCodes.LOGIN_OK) {
+            dukaZorroBridge.initComponentsAfterLogin();
+            String accountID = dukaZorroBridge.getAccountInfo().getID();
+            accountInfos[0] = accountID;
+            logger.info("Login successful for account ID " + accountID);
+        }
+
+        return loginResult;
     }
 
     private int login(String User,
