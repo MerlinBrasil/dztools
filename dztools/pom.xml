@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jforex</groupId>
 	<artifactId>dztools</artifactId>
-	<version>0.9.0</version>
+	<version>0.9.1</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -25,6 +25,17 @@
 			<url>http://www.dukascopy.com/client/jforexlib/publicrepo/</url>
 		</repository>
 	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>autoincrement-versions-maven-plugin</id>
+			<name>autoincrement-versions-maven-plugin</name>
+			<url>http://autoincrement-versions-maven-plugin.googlecode.com/svn/repo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
@@ -82,8 +93,68 @@
 						<skip>true</skip>
 					</configuration>
 				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											autoincrement-versions-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>increment</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>versionInc</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>autoincrement-versions-maven-plugin</artifactId>
+						<version>2.0-SNAPSHOT</version>
+						<executions>
+							<execution>
+								<id>update-pom-versions</id>
+								<goals>
+									<goal>increment</goal>
+									<goal>commit</goal>
+								</goals>
+								<phase>compile</phase>
+								<configuration>
+									<autoIncrementVersion>true</autoIncrementVersion>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
