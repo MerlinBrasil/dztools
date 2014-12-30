@@ -31,7 +31,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.utils.DateTimeUtils;
@@ -51,8 +50,8 @@ public class HistoryHandler {
 
     private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
-    public HistoryHandler(DukaZorroBridge dukaZorroBridge) {
-        this.history = dukaZorroBridge.getContext().getHistory();
+    public HistoryHandler(IHistory history) {
+        this.history = history;
     }
 
     public int doBrokerHistory(String instrumentName,

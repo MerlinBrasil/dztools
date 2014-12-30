@@ -33,7 +33,6 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -61,10 +60,12 @@ public class OrderHandler {
 
     private final static Logger logger = LogManager.getLogger(OrderHandler.class);
 
-    public OrderHandler(DukaZorroBridge dukaZorroBridge) {
-        this.context = dukaZorroBridge.getContext();
-        this.priceEngine = dukaZorroBridge.getPriceEngine();
-        this.accountInfo = dukaZorroBridge.getAccountInfo();
+    public OrderHandler(IContext context,
+                        IPriceEngine priceEngine,
+                        AccountInfo accountInfo) {
+        this.context = context;
+        this.priceEngine = priceEngine;
+        this.accountInfo = accountInfo;
         this.engine = context.getEngine();
 
         orderMap = new HashMap<Integer, IOrder>();

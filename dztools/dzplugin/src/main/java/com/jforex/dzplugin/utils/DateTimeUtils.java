@@ -33,7 +33,6 @@ import java.util.SimpleTimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 
@@ -64,9 +63,10 @@ public class DateTimeUtils {
     private final IDataService dataService;
     private final ServerTimeProvider serverTimeProvider;
 
-    public DateTimeUtils(DukaZorroBridge dukaZorroBridge) {
-        this.dataService = dukaZorroBridge.getContext().getDataService();
-        this.serverTimeProvider = dukaZorroBridge.getServerTimeProvider();
+    public DateTimeUtils(IDataService dataService,
+                         ServerTimeProvider serverTimeProvider) {
+        this.dataService = dataService;
+        this.serverTimeProvider = serverTimeProvider;
     }
 
     public static double getOLEDateFromMillis(long millis) {

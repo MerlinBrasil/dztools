@@ -27,7 +27,6 @@ package com.jforex.dzplugin.provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.utils.InstrumentUtils;
@@ -51,10 +50,12 @@ public class AccountInfo {
 
     private final static Logger logger = LogManager.getLogger(AccountInfo.class);
 
-    public AccountInfo(DukaZorroBridge dukaZorroBridge) {
-        this.account = dukaZorroBridge.getContext().getAccount();
-        this.utils = dukaZorroBridge.getContext().getUtils();
-        this.priceEngine = dukaZorroBridge.getPriceEngine();
+    public AccountInfo(IAccount account,
+                       JFUtils utils,
+                       IPriceEngine priceEngine) {
+        this.account = account;
+        this.utils = utils;
+        this.priceEngine = priceEngine;
 
         accountCurrency = account.getAccountCurrency();
         accountID = account.getAccountId();

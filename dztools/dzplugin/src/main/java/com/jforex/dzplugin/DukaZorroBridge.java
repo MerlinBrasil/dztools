@@ -25,8 +25,8 @@ package com.jforex.dzplugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.handler.AccountHandler;
 import com.jforex.dzplugin.handler.HistoryHandler;
 import com.jforex.dzplugin.handler.LoginHandler;
 import com.jforex.dzplugin.handler.OrderHandler;
@@ -35,12 +35,8 @@ import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IContext;
-import com.dukascopy.api.ITick;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
 
@@ -50,6 +46,7 @@ public class DukaZorroBridge {
     private IContext context;
     private DukaZorroStrategy strategy;
     private AccountInfo accountInfo;
+    private AccountHandler accountHandler;
     private HistoryHandler historyHandler;
     private OrderHandler orderHandler;
     private LoginHandler loginHandler;
@@ -89,12 +86,13 @@ public class DukaZorroBridge {
 
         context = strategy.getContext();
         priceEngine = strategy.getPriceEngine();
-        serverTimeProvider = new ServerTimeProvider(this);
-        accountInfo = new AccountInfo(this);
-        historyHandler = new HistoryHandler(this);
-        orderHandler = new OrderHandler(this);
-        subscriptionHandler = new SubscriptionHandler(this);
-        dateTimeUtils = new DateTimeUtils(this);
+        serverTimeProvider = new ServerTimeProvider(priceEngine);
+        accountInfo = new AccountInfo(context.getAccount(), context.getUtils(), priceEngine);
+        dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
+        accountHandler = new AccountHandler(priceEngine, accountInfo, serverTimeProvider, dateTimeUtils);
+        historyHandler = new HistoryHandler(context.getHistory());
+        orderHandler = new OrderHandler(context, priceEngine, accountInfo);
+        subscriptionHandler = new SubscriptionHandler(client, priceEngine, accountInfo);
     }
 
     public int doLogin(String User,
@@ -112,17 +110,10 @@ public class DukaZorroBridge {
     }
 
     public int doBrokerTime(double serverTime[]) {
-        if (!client.isConnected()) {
-            logger.warn("No connection to Dukascopy!");
+        if (!client.isConnected())
             return ReturnCodes.CONNECTION_FAIL;
-        }
-        serverTime[0] = DateTimeUtils.getOLEDateFromMillis(serverTimeProvider.get());
 
-        boolean isMarketOffline = dateTimeUtils.isMarketOffline();
-        if (isMarketOffline)
-            logger.debug("Market is offline");
-
-        return isMarketOffline ? ReturnCodes.CONNECTION_OK_BUT_MARKET_CLOSED : ReturnCodes.CONNECTION_OK;
+        return accountHandler.doBrokerTime(serverTime);
     }
 
     public int doSubscribeAsset(String instrumentName) {
@@ -137,47 +128,14 @@ public class DukaZorroBridge {
         if (!accountInfo.isConnected())
             return ReturnCodes.ASSET_UNAVAILABLE;
 
-        Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-
-        ITick tick = priceEngine.getLastTick(instrument);
-        if (tick == null) {
-            logger.warn("No data for " + instrument + " available!");
-            ZorroLogger.log("No data for " + instrument + " available!");
-            return ReturnCodes.ASSET_UNAVAILABLE;
-        }
-        assetParams[0] = tick.getAsk();
-        assetParams[1] = priceEngine.getSpread(instrument);
-        // Volume: not supported for Forex
-        assetParams[2] = 0f;
-        assetParams[3] = instrument.getPipValue();
-        double pipCost = accountInfo.getPipCost(instrument, OfferSide.ASK);
-        if (pipCost == 0f)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-        assetParams[4] = pipCost;
-        assetParams[5] = DukascopyParams.LOT_SIZE;
-        double marginForLot = accountInfo.getMarginForLot(instrument);
-        if (marginForLot == 0f)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-        assetParams[6] = marginForLot;
-        // RollLong : currently not available by Dukascopy
-        assetParams[7] = 0f;
-        // RollShort: currently not available by Dukascopy
-        assetParams[8] = 0f;
-
-        return ReturnCodes.ASSET_AVAILABLE;
+        return accountHandler.doBrokerAsset(instrumentName, assetParams);
     }
 
     public int doBrokerAccount(double accountInfoParams[]) {
         if (!accountInfo.isConnected())
             return ReturnCodes.ACCOUNT_UNAVAILABLE;
 
-        accountInfoParams[0] = accountInfo.getBalance();
-        accountInfoParams[1] = accountInfo.getTradeValue();
-        accountInfoParams[2] = accountInfo.getUsedMargin();
-
-        return ReturnCodes.ACCOUNT_AVAILABLE;
+        return accountHandler.doBrokerAccount(accountInfoParams);
     }
 
     public int doBrokerBuy(String instrumentName,

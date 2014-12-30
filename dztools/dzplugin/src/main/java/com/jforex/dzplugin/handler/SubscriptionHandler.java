@@ -30,7 +30,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -49,10 +48,12 @@ public class SubscriptionHandler {
 
     private final static Logger logger = LogManager.getLogger(SubscriptionHandler.class);
 
-    public SubscriptionHandler(DukaZorroBridge dukaZorroBridge) {
-        this.client = dukaZorroBridge.getClient();
-        this.accountInfo = dukaZorroBridge.getAccountInfo();
-        this.priceEngine = dukaZorroBridge.getPriceEngine();
+    public SubscriptionHandler(IClient client,
+                               IPriceEngine priceEngine,
+                               AccountInfo accountInfo) {
+        this.client = client;
+        this.accountInfo = accountInfo;
+        this.priceEngine = priceEngine;
     }
 
     public int doSubscribeAsset(String instrumentName) {
