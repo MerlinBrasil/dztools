@@ -39,8 +39,6 @@ import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.ICurrency;
-import com.dukascopy.api.IEngine.OrderCommand;
-import com.dukascopy.api.IOrder;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.OfferSide;
@@ -194,64 +192,15 @@ public class DukaZorroBridge {
         if (!accountInfo.isTradingPossible())
             return ReturnCodes.ORDER_SUBMIT_FAIL;
 
-        Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
-            return ReturnCodes.ORDER_SUBMIT_FAIL;
-        }
-        double amount = tradeParams[0];
-        double dStopDist = tradeParams[1];
-
-        OrderCommand cmd = OrderCommand.BUY;
-        if (amount < 0) {
-            amount = -amount;
-            cmd = OrderCommand.SELL;
-        }
-        // Scale amount to millions
-        amount /= DukascopyParams.LOT_SCALE;
-
-        double currentAskPrice = priceEngine.getAsk(instrument);
-        double spread = priceEngine.getSpread(instrument);
-
-        double SLPrice = 0;
-        if (dStopDist > 0) {
-            if (cmd == OrderCommand.BUY)
-                SLPrice = currentAskPrice - dStopDist - spread;
-            else
-                SLPrice = currentAskPrice + dStopDist;
-        }
-        int orderID = orderHandler.submitOrder(instrument, cmd, amount, priceEngine.getRounded(instrument, SLPrice));
-        if (orderID == ReturnCodes.INVALID_ORDER_ID) {
-            ZorroLogger.log("Could not open position for " + instrument + ".Check logs!");
-            return ReturnCodes.ORDER_SUBMIT_FAIL;
-        }
-        tradeParams[2] = orderHandler.getOrderByID(orderID).getOpenPrice();
-
-        return orderID;
+        return orderHandler.doBrokerBuy(instrumentName, tradeParams);
     }
 
     public int doBrokerTrade(int orderID,
                              double orderParams[]) {
-        if (!accountInfo.isConnected())
+        if (!accountInfo.isTradingPossible())
             return ReturnCodes.INVALID_ORDER_ID;
 
-        if (!orderHandler.isOrderIDValid(orderID)) {
-            logger.warn("Order ID " + orderID + " is unknown!");
-            ZorroLogger.log("Order ID " + orderID + " is unknown!");
-            return ReturnCodes.INVALID_ORDER_ID;
-        }
-
-        IOrder order = orderHandler.getOrderByID(orderID);
-        orderParams[0] = order.getOpenPrice();
-        if (order.isLong())
-            orderParams[1] = priceEngine.getAsk(order.getInstrument());
-        else
-            orderParams[1] = priceEngine.getBid(order.getInstrument());
-        // Rollover not supported by Dukascopy
-        orderParams[2] = 0f;
-        orderParams[3] = order.getProfitLossInAccountCurrency();
-        int orderAmount = (int) (order.getAmount() * DukascopyParams.LOT_SCALE);
-
-        return order.getState() == IOrder.State.CLOSED ? -orderAmount : orderAmount;
+        return orderHandler.doBrokerTrade(orderID, orderParams);
     }
 
     public int doBrokerStop(int orderID,
@@ -276,6 +225,9 @@ public class DukaZorroBridge {
                                int tickMinutes,
                                int nTicks,
                                double tickParams[]) {
+        if (!accountInfo.isConnected())
+            return ReturnCodes.HISTORY_FAIL;
+
         return historyHandler.doBrokerHistory(instrumentName, startDate, endDate, tickMinutes, nTicks, tickParams);
     }
 

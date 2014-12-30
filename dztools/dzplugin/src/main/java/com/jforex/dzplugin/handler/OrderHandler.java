@@ -37,10 +37,12 @@ import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.task.CloseOrderTask;
 import com.jforex.dzplugin.task.StopLossTask;
 import com.jforex.dzplugin.task.SubmitOrderTask;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IContext;
 import com.dukascopy.api.IEngine;
@@ -54,6 +56,7 @@ public class OrderHandler {
     private final IContext context;
     private final IEngine engine;
     private final IPriceEngine priceEngine;
+    private final AccountInfo accountInfo;
     private final HashMap<Integer, IOrder> orderMap;
 
     private final static Logger logger = LogManager.getLogger(OrderHandler.class);
@@ -61,10 +64,73 @@ public class OrderHandler {
     public OrderHandler(DukaZorroBridge dukaZorroBridge) {
         this.context = dukaZorroBridge.getContext();
         this.priceEngine = dukaZorroBridge.getPriceEngine();
+        this.accountInfo = dukaZorroBridge.getAccountInfo();
         this.engine = context.getEngine();
 
         orderMap = new HashMap<Integer, IOrder>();
         resumeOrderIDs();
+    }
+
+    public int doBrokerBuy(String instrumentName,
+                           double tradeParams[]) {
+        if (!accountInfo.isTradingPossible())
+            return ReturnCodes.ORDER_SUBMIT_FAIL;
+
+        Instrument instrument = InstrumentUtils.getByName(instrumentName);
+        if (instrument == null) {
+            return ReturnCodes.ORDER_SUBMIT_FAIL;
+        }
+        double amount = tradeParams[0];
+        double dStopDist = tradeParams[1];
+
+        OrderCommand cmd = OrderCommand.BUY;
+        if (amount < 0) {
+            amount = -amount;
+            cmd = OrderCommand.SELL;
+        }
+        // Scale amount to millions
+        amount /= DukascopyParams.LOT_SCALE;
+
+        double currentAskPrice = priceEngine.getAsk(instrument);
+        double spread = priceEngine.getSpread(instrument);
+
+        double SLPrice = 0;
+        if (dStopDist > 0) {
+            if (cmd == OrderCommand.BUY)
+                SLPrice = currentAskPrice - dStopDist - spread;
+            else
+                SLPrice = currentAskPrice + dStopDist;
+        }
+        int orderID = submitOrder(instrument, cmd, amount, priceEngine.getRounded(instrument, SLPrice));
+        if (orderID == ReturnCodes.INVALID_ORDER_ID) {
+            ZorroLogger.log("Could not open position for " + instrument + ".Check logs!");
+            return ReturnCodes.ORDER_SUBMIT_FAIL;
+        }
+        tradeParams[2] = getOrderByID(orderID).getOpenPrice();
+
+        return orderID;
+    }
+
+    public int doBrokerTrade(int orderID,
+                             double orderParams[]) {
+        if (!isOrderIDValid(orderID)) {
+            logger.warn("Order ID " + orderID + " is unknown!");
+            ZorroLogger.log("Order ID " + orderID + " is unknown!");
+            return ReturnCodes.INVALID_ORDER_ID;
+        }
+
+        IOrder order = getOrderByID(orderID);
+        orderParams[0] = order.getOpenPrice();
+        if (order.isLong())
+            orderParams[1] = priceEngine.getAsk(order.getInstrument());
+        else
+            orderParams[1] = priceEngine.getBid(order.getInstrument());
+        // Rollover not supported by Dukascopy
+        orderParams[2] = 0f;
+        orderParams[3] = order.getProfitLossInAccountCurrency();
+        int orderAmount = (int) (order.getAmount() * DukascopyParams.LOT_SCALE);
+
+        return order.getState() == IOrder.State.CLOSED ? -orderAmount : orderAmount;
     }
 
     public int doBrokerStop(int orderID,
