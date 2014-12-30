@@ -363,4 +363,48 @@ public class DukaZorroBridge {
     public void doDLLlog(String msg) {
         logger.info(msg);
     }
+
+    public IClient getClient() {
+        return client;
+    }
+
+    public IContext getContext() {
+        return context;
+    }
+
+    public AccountInfo getAccountInfo() {
+        return accountInfo;
+    }
+
+    public HistoryHandler getHistoryHandler() {
+        return historyHandler;
+    }
+
+    public OrderHandler getOrderHandler() {
+        return orderHandler;
+    }
+
+    public LoginHandler getLoginHandler() {
+        return loginHandler;
+    }
+
+    public SubscriptionHandler getSubscriptionHandler() {
+        return subscriptionHandler;
+    }
+
+    public IPriceEngine getPriceEngine() {
+        return priceEngine;
+    }
+
+    public DateTimeUtils getDateTimeUtils() {
+        return dateTimeUtils;
+    }
+
+    public ServerTimeProvider getServerTimeProvider() {
+        return serverTimeProvider;
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
 }
