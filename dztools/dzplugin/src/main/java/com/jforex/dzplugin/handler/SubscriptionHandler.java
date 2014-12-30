@@ -24,6 +24,7 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,21 +32,54 @@ import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.system.IClient;
+import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.provider.AccountInfo;
+import com.jforex.dzplugin.provider.IPriceEngine;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class SubscriptionHandler {
 
     private final IClient client;
+    private AccountInfo accountInfo;
+    private IPriceEngine priceEngine;
 
     private final static Logger logger = LogManager.getLogger(SubscriptionHandler.class);
 
-    public SubscriptionHandler(IClient client) {
-        this.client = client;
+    public SubscriptionHandler(DukaZorroBridge dukaZorroBridge) {
+        this.client = dukaZorroBridge.getClient();
+        this.accountInfo = dukaZorroBridge.getAccountInfo();
+        this.priceEngine = dukaZorroBridge.getPriceEngine();
     }
 
-    public int subscribe(Set<Instrument> instruments) {
+    public int doSubscribe(String instrumentName) {
+        if (!client.isConnected())
+            return ReturnCodes.ASSET_UNAVAILABLE;
+
+        Instrument toSubscribeInstrument = InstrumentUtils.getByName(instrumentName);
+        if (toSubscribeInstrument == null)
+            return ReturnCodes.ASSET_UNAVAILABLE;
+
+        Set<Instrument> instruments = new HashSet<Instrument>();
+        instruments.add(toSubscribeInstrument);
+        // we must subscribe to cross instrument also for margin calculations
+        Instrument crossInstrument = InstrumentUtils.getfromCurrencies(accountInfo.getCurrency(), toSubscribeInstrument.getPrimaryJFCurrency());
+        if (crossInstrument != null) {
+            logger.debug("crossInstrument: " + crossInstrument);
+            instruments.add(crossInstrument);
+        }
+
+        int subscriptionResult = subscribe(instruments);
+        if (subscriptionResult == ReturnCodes.ASSET_AVAILABLE)
+            priceEngine.initInstruments(instruments);
+
+        logger.info("Subscription for " + toSubscribeInstrument + " successful.");
+        return subscriptionResult;
+    }
+
+    private int subscribe(Set<Instrument> instruments) {
         client.setSubscribedInstruments(instruments);
 
         waitForSubscription(instruments);

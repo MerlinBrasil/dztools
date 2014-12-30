@@ -22,9 +22,7 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,7 +121,7 @@ public class DukaZorroBridge {
         accountInfo = new AccountInfo(context, priceEngine);
         historyHandler = new HistoryHandler(context.getHistory());
         orderHandler = new OrderHandler(context);
-        subscriptionHandler = new SubscriptionHandler(client);
+        subscriptionHandler = new SubscriptionHandler(this);
         dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
         accountCurrency = accountInfo.getCurrency();
     }
@@ -143,28 +141,7 @@ public class DukaZorroBridge {
     }
 
     public int doSubscribeAsset(String instrumentName) {
-        if (!client.isConnected())
-            return ReturnCodes.ASSET_UNAVAILABLE;
-
-        Instrument toSubscribeInstrument = InstrumentUtils.getByName(instrumentName);
-        if (toSubscribeInstrument == null)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-
-        Set<Instrument> instruments = new HashSet<Instrument>();
-        instruments.add(toSubscribeInstrument);
-        // we must subscribe to cross instrument also for margin calculations
-        Instrument crossInstrument = InstrumentUtils.getfromCurrencies(accountCurrency, toSubscribeInstrument.getPrimaryJFCurrency());
-        if (crossInstrument != null) {
-            logger.debug("crossInstrument: " + crossInstrument);
-            instruments.add(crossInstrument);
-        }
-
-        int subscriptionResult = subscriptionHandler.subscribe(instruments);
-        if (subscriptionResult == ReturnCodes.ASSET_AVAILABLE)
-            priceEngine.initInstruments(instruments);
-
-        logger.info("Subscription for " + toSubscribeInstrument + " successful.");
-        return subscriptionResult;
+        return subscriptionHandler.doSubscribe(instrumentName);
     }
 
     public int doBrokerAsset(String instrumentName,
