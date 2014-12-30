@@ -31,15 +31,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-
+import com.dukascopy.api.Filter;
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IHistory;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
+import com.jforex.dzplugin.utils.DateTimeUtils;
 
 public class HistoryHandler {
 
@@ -54,21 +53,19 @@ public class HistoryHandler {
     public List<IBar> getBars(Instrument instrument,
                               Period period,
                               OfferSide offerSide,
-                              long startDateTimeRaw,
-                              long endDateTimeRaw) {
-        long startDateTimeRounded = getStartDateTimeRounded(period, startDateTimeRaw);
+                              long endDateTimeRaw,
+                              int nTicks) {
         long endDateTimeRounded = getEndDateTimeRounded(instrument, period, endDateTimeRaw);
+        long startDateTimeRounded = endDateTimeRounded - (nTicks - 1) * period.getInterval();
         String dateFrom = DateTimeUtils.formatDateTime(startDateTimeRounded);
         String dateTo = DateTimeUtils.formatDateTime(endDateTimeRounded);
+        logger.debug("Trying to fetch " + nTicks + " " + period + " bars from " + dateFrom + " to " + dateTo + " for " + instrument);
 
-        logger.debug("Trying to fetch " + period + " bars from " + dateFrom + " to " + dateTo);
-
-        List<IBar> bars = null;
+        List<IBar> bars = new ArrayList<IBar>();
         try {
-            bars = history.getBars(instrument, period, offerSide, startDateTimeRounded, endDateTimeRounded);
+            bars = history.getBars(instrument, period, offerSide, Filter.WEEKENDS, nTicks, endDateTimeRounded, 0);
         } catch (JFException e) {
-            ZorroLogger.indicateError(logger, "getBars exc: " + e.getMessage());
-            return new ArrayList<IBar>();
+            logger.error("getBars exc: " + e.getMessage());
         }
         Collections.reverse(bars);
         logger.debug("Fetched " + bars.size() + " bars.");
@@ -76,23 +73,17 @@ public class HistoryHandler {
         return bars;
     }
 
-    private long getStartDateTimeRounded(Period period,
-                                         long startDateTime) {
-        return DateTimeUtils.roundTimeToPeriod(period, startDateTime);
-    }
-
     private long getEndDateTimeRounded(Instrument instrument,
                                        Period period,
                                        long endDateTimeRaw) {
         long endDateTimeRounded = 0L;
         try {
-            long prevBarDateTime = history.getPreviousBarStart(period, history.getLastTick(instrument).getTime());
-            if (endDateTimeRaw >= prevBarDateTime)
-                endDateTimeRounded = prevBarDateTime;
-            else
-                endDateTimeRounded = DateTimeUtils.roundTimeToPeriod(period, endDateTimeRaw);
+            endDateTimeRounded = history.getPreviousBarStart(period, endDateTimeRaw);
+            logger.debug("endDateTimeRaw " + DateTimeUtils.formatDateTime(endDateTimeRaw)
+                    + " endDateTimeRounded " + DateTimeUtils.formatDateTime(endDateTimeRounded));
+
         } catch (JFException e) {
-            ZorroLogger.indicateError(logger, "getPreviousBarStart exc: " + e.getMessage());
+            logger.error("getPreviousBarStart exc: " + e.getMessage());
         }
         return endDateTimeRounded;
     }

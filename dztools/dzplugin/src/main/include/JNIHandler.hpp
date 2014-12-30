@@ -39,41 +39,41 @@ public:
     void checkJNIExcpetion(JNIEnv* env);
 
     jint callBrokerLogin(JNIEnv* env,
-                         jstring jUser,
-                         jstring jPwd,
-                         jstring jType,
-                         jobjectArray jAccountArray);
+                         jstring& jUser,
+                         jstring& jPwd,
+                         jstring& jType,
+                         jobjectArray& jAccountArray);
 
     jint callBrokerLogout(JNIEnv* env);
 
     jint callBrokerTime(JNIEnv* env,
-                        jdoubleArray utcTimeArray);
+                        jdoubleArray& utcTimeArray);
 
     jint callSubscribeAsset(JNIEnv* env,
-                            jstring jAsset);
+                            jstring& jAsset);
 
     jint callBrokerAsset(JNIEnv* env,
-                         jstring jAsset,
-                         jdoubleArray jAssetParamsArray);
+                         jstring& jAsset,
+                         jdoubleArray& jAssetParamsArray);
 
     jint callBrokerHistory(JNIEnv* env,
-                           jstring jAsset,
-                           jlong jtStart,
-                           jlong jtEnd,
+                           jstring& jAsset,
+                           DATE tStart,
+                           DATE tEnd,
                            jint jnTickMinutes,
                            jint jnTicks,
-                           jdoubleArray jTicksArray);
+                           jdoubleArray& jTicksArray);
 
     jint callBrokerAccount(JNIEnv* env,
-                           jdoubleArray jAccountParamsArray);
+                           jdoubleArray& jAccountParamsArray);
 
     jint callBrokerBuy(JNIEnv* env,
-                      jstring jAsset,
-                      jdoubleArray jTradeParamsArray);
+                      jstring& jAsset,
+                      jdoubleArray& jTradeParamsArray);
 
     jint callBrokerTrade(JNIEnv* env,
                          jint jAsset,
-                         jdoubleArray jOrderParamsArray);
+                         jdoubleArray& jOrderParamsArray);
 
     jint callBrokerStop(JNIEnv* env,
                         jint jnTradeID,
@@ -82,6 +82,9 @@ public:
     jint callBrokerSell(JNIEnv* env,
                         jint jnTradeID,
                         jint jnAmount);
+
+    void callDLLlog(JNIEnv* env,
+                    jstring& msg);
 
     JavaVM* getJVM() { return jvm; }
 

@@ -127,10 +127,10 @@ void JNIHandler::checkJNIExcpetion(JNIEnv* env)
 }
 
 jint JNIHandler::callBrokerLogin(JNIEnv* env,
-                                 jstring jUser,
-                                 jstring jPwd,
-                                 jstring jType,
-                                 jobjectArray jAccountArray)
+                                 jstring& jUser,
+                                 jstring& jPwd,
+                                 jstring& jType,
+                                 jobjectArray& jAccountArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doLogin.methodID, jUser, jPwd, jType, jAccountArray);
 }
@@ -142,45 +142,45 @@ jint JNIHandler::callBrokerLogout(JNIEnv* env)
 
 
 jint JNIHandler::callBrokerTime(JNIEnv* env,
-                                jdoubleArray utcTimeArray)
+                                jdoubleArray& utcTimeArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTime.methodID, utcTimeArray);
 }
 
 jint JNIHandler::callSubscribeAsset(JNIEnv* env,
-                                    jstring jAsset)
+                                    jstring& jAsset)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doSubscribeAsset.methodID, jAsset);
 }
 
 jint JNIHandler::callBrokerAsset(JNIEnv* env,
-                                 jstring jAsset,
-                                 jdoubleArray jAssetParamsArray)
+                                 jstring& jAsset,
+                                 jdoubleArray& jAssetParamsArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAsset.methodID, jAsset, jAssetParamsArray);
 }
 
 jint JNIHandler::callBrokerHistory(JNIEnv* env,
-                                   jstring jAsset,
-                                   jlong jtStart,
-                                   jlong jtEnd,
+                                   jstring& jAsset,
+                                   DATE tStart,
+                                   DATE tEnd,
                                    jint jnTickMinutes,
                                    jint jnTicks,
-                                   jdoubleArray jTicksArray)
+                                   jdoubleArray& jTicksArray)
 {
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerHistory.methodID, jAsset, jtStart, jtEnd, jnTickMinutes, jnTicks, jTicksArray);
+    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerHistory.methodID, jAsset, tStart, tEnd, jnTickMinutes, jnTicks, jTicksArray);
 }
 
 jint JNIHandler::callBrokerAccount(JNIEnv* env,
-                                   jdoubleArray jAccountParamsArray)
+                                   jdoubleArray& jAccountParamsArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAccount.methodID, jAccountParamsArray);
 }
 
 
 jint JNIHandler::callBrokerBuy(JNIEnv* env,
-                               jstring jAsset,
-                               jdoubleArray jTradeParamsArray)
+                               jstring& jAsset,
+                               jdoubleArray& jTradeParamsArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerBuy.methodID, jAsset, jTradeParamsArray);
 }
@@ -188,7 +188,7 @@ jint JNIHandler::callBrokerBuy(JNIEnv* env,
 
 jint JNIHandler::callBrokerTrade(JNIEnv* env,
                                  jint jAsset,
-                                 jdoubleArray jOrderParamsArray)
+                                 jdoubleArray& jOrderParamsArray)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTrade.methodID, jAsset, jOrderParamsArray);
 }
@@ -205,4 +205,10 @@ jint JNIHandler::callBrokerSell(JNIEnv* env,
                                 jint jnAmount)
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerSell.methodID, jnTradeID, jnAmount);
+}
+
+void JNIHandler::callDLLlog(JNIEnv* env,
+                            jstring& msg)
+{
+    env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doDLLlog.methodID, msg);
 }

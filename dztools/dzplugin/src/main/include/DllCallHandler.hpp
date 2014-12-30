@@ -84,6 +84,8 @@ public:
                    const int nAmount);
 
 private:
+    void doDLLlog(const char* msg);
+
     JNIHandler jniHandler;
     JNIEnv *env;
 };

@@ -58,7 +58,8 @@ static JMethodDesc doBrokerBuy =      { nullptr, "doBrokerBuy",      "(Ljava/lan
 static JMethodDesc doBrokerTrade =    { nullptr, "doBrokerTrade",    "(I[D)I" };
 static JMethodDesc doBrokerStop =     { nullptr, "doBrokerStop",     "(ID)I" };
 static JMethodDesc doBrokerSell =     { nullptr, "doBrokerSell",     "(II)I" };
-static JMethodDesc doBrokerHistory =  { nullptr, "doBrokerHistory",  "(Ljava/lang/String;JJII[D)I" };
+static JMethodDesc doBrokerHistory =  { nullptr, "doBrokerHistory",  "(Ljava/lang/String;DDII[D)I" };
+static JMethodDesc doDLLlog      =    { nullptr, "doDLLlog",         "(Ljava/lang/String;)V" };
 static JMethodDesc excGetMessage=     { nullptr, "getMessage",       "()Ljava/lang/String;" };
 static JMethodDesc excGetName=        { nullptr, "getName",          "()Ljava/lang/String;" };
 

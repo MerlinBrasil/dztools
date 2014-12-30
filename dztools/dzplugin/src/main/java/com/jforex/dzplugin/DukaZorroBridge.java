@@ -330,16 +330,16 @@ public class DukaZorroBridge {
     }
 
     public int doBrokerHistory(String instrumentName,
-                               long startDate,
-                               long endDate,
+                               double startDate,
+                               double endDate,
                                int tickMinutes,
                                int nTicks,
                                double tickParams[]) {
         if (!accountInfo.isConnected())
             return ReturnCodes.HISTORY_FAIL;
 
-        logger.debug("tickMinutes " + tickMinutes);
-        logger.debug("nTicks " + nTicks);
+        logger.debug("startDate " + DateTimeUtils.formatOLETime(startDate) + " endDate: " + DateTimeUtils.formatOLETime(endDate));
+        logger.debug("nTicks " + nTicks + " tickMinutes " + tickMinutes);
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
         if (instrument == null) {
             return ReturnCodes.HISTORY_FAIL;
@@ -350,7 +350,11 @@ public class DukaZorroBridge {
             ZorroLogger.indicateError(logger, "Invalid tickMinutes: " + tickMinutes);
             return ReturnCodes.HISTORY_FAIL;
         }
-        List<IBar> bars = historyHandler.getBars(instrument, period, OfferSide.ASK, startDate, endDate);
+        List<IBar> bars = historyHandler.getBars(instrument,
+                                                 period,
+                                                 OfferSide.ASK,
+                                                 DateTimeUtils.getMillisFromOLEDate(endDate),
+                                                 nTicks);
         if (bars.size() == 0)
             return ReturnCodes.HISTORY_FAIL;
 
@@ -360,8 +364,7 @@ public class DukaZorroBridge {
         if (arraySizeForAllBars <= tickParams.length)
             maxIndex = bars.size();
 
-        logger.debug("bars size " + bars.size());
-        logger.debug("maxIndex " + maxIndex);
+        logger.debug("bars size " + bars.size() + " maxIndex " + maxIndex);
 
         for (int i = 0; i < maxIndex; ++i) {
             IBar bar = bars.get(i);
@@ -369,9 +372,13 @@ public class DukaZorroBridge {
             tickParams[tickParamsIndex + 1] = bar.getClose();
             tickParams[tickParamsIndex + 2] = bar.getHigh();
             tickParams[tickParamsIndex + 3] = bar.getLow();
-            tickParams[tickParamsIndex + 4] = bar.getTime();
+            tickParams[tickParamsIndex + 4] = DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime());
             tickParamsIndex += 5;
         }
         return maxIndex;
+    }
+
+    public void doDLLlog(String msg) {
+        logger.info(msg);
     }
 }

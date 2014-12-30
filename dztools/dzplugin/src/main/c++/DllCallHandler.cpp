@@ -23,9 +23,8 @@
  */
 
 #include "DllCallHandler.hpp"
-#include <cstring>
-#include "DateUtils.hpp"
 #include "JNIHandler.hpp"
+#include <cstring>
 
 int DllCallHandler::BrokerLogin(const char *User,
                                 const char *Pwd,
@@ -147,10 +146,8 @@ int DllCallHandler::BrokerHistory(const char *Asset,
     jstring jAsset = env->NewStringUTF(Asset);
     int tickArrayLength = nTicks*5;
     jdoubleArray jTicksArray = env->NewDoubleArray(tickArrayLength);
-    jlong startDate = DateUtils::fromDATE(tStart);
-    jlong endDate =  DateUtils::fromDATE(tEnd);
 
-    jint res = jniHandler.callBrokerHistory(env, jAsset, startDate, endDate, nTickMinutes, nTicks, jTicksArray);
+    jint res = jniHandler.callBrokerHistory(env, jAsset, tStart, tEnd, nTickMinutes, nTicks, jTicksArray);
     jdouble *ticksParams = env->GetDoubleArrayElements(jTicksArray, 0u);
 
     for(int i=0; i<nTicks;++i){
@@ -159,7 +156,9 @@ int DllCallHandler::BrokerHistory(const char *Asset,
         ticks[i].fClose = ticksParams[paramsIndex+1];
         ticks[i].fHigh = ticksParams[paramsIndex+2];
         ticks[i].fLow = ticksParams[paramsIndex+3];
-        ticks[i].time = DateUtils::fromDukaTime(ticksParams[paramsIndex+4]);
+        ticks[i].time = ticksParams[paramsIndex+4];
+
+        if(!BrokerProgress(100*i/nTicks)) break;
     }
     env->DeleteLocalRef(jAsset);
     env->ReleaseDoubleArrayElements(jTicksArray, ticksParams, 0u);
@@ -252,5 +251,12 @@ int DllCallHandler::BrokerSell(const int nTradeID,
                                const int nAmount)
 {
     return jniHandler.callBrokerSell(env, nTradeID, nAmount);;
+}
+
+void DllCallHandler::doDLLlog(const char* msg)
+{
+    jstring jMsg = env->NewStringUTF(msg);
+    jniHandler.callDLLlog(env, jMsg);
+    env->DeleteLocalRef(jMsg);
 }
 
