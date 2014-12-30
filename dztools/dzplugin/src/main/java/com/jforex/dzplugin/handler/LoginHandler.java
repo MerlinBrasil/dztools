@@ -27,13 +27,12 @@ package com.jforex.dzplugin.handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.Configuration;
-import com.jforex.dzplugin.config.ReturnCodes;
-
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.config.ReturnCodes;
 
 public class LoginHandler {
 
@@ -45,9 +44,26 @@ public class LoginHandler {
         this.client = client;
     }
 
-    public int login(String User,
-                     String Pwd,
-                     String Pin) {
+    public int doLogin(String User,
+                       String Pwd,
+                       String Type) {
+        if (Type.equals("Demo"))
+            return login(User, Pwd, "");
+        else if (Type.equals("Real")) {
+            logger.warn("Live login not yet supported.");
+            return ReturnCodes.LOGIN_FAIL;
+            // MainPin mp = new MainPin(client);
+            // String pin = mp.getPin();
+            // return handleLogin(User, Pwd, pin);
+        } else {
+            ZorroLogger.indicateError(logger, "Received invalid login type: " + Type);
+            return ReturnCodes.LOGIN_FAIL;
+        }
+    }
+
+    private int login(String User,
+                      String Pwd,
+                      String Pin) {
         try {
             if (Pin.isEmpty())
                 client.connect(Configuration.CONNECT_URL_DEMO, User, Pwd);
@@ -61,7 +77,7 @@ public class LoginHandler {
         } catch (JFVersionException e) {
             ZorroLogger.showError(logger, "Invalid JForex version!");
         } catch (Exception e) {
-            ZorroLogger.indicateError(logger, "Login exc: " + e.getMessage());
+            logger.error("Login exc: " + e.getMessage());
         }
         return client.isConnected() ? ReturnCodes.LOGIN_OK : ReturnCodes.LOGIN_FAIL;
     }

@@ -99,25 +99,7 @@ public class DukaZorroBridge {
         if (client.isConnected())
             return ReturnCodes.LOGIN_OK;
 
-        if (Type.equals("Demo"))
-            return handleLogin(User, Pwd, "", accountInfos);
-        else if (Type.equals("Real")) {
-            logger.warn("Live login not yet supported.");
-            return ReturnCodes.LOGIN_FAIL;
-            // MainPin mp = new MainPin(client);
-            // String pin = mp.getPin();
-            // return handleLogin(User, Pwd, pin, accountInfos);
-        } else {
-            ZorroLogger.indicateError(logger, "Received invalid login type: " + Type);
-            return ReturnCodes.LOGIN_FAIL;
-        }
-    }
-
-    private int handleLogin(String User,
-                            String Pwd,
-                            String Pin,
-                            String accountInfos[]) {
-        int loginResult = loginHandler.login(User, Pwd, Pin);
+        int loginResult = loginHandler.doLogin(User, Pwd, Type);
         if (loginResult == ReturnCodes.LOGIN_OK) {
             initComponentsAfterLogin();
             accountInfos[0] = accountInfo.getID();
@@ -125,6 +107,10 @@ public class DukaZorroBridge {
         }
 
         return loginResult;
+    }
+
+    public int doLogout() {
+        return loginHandler.logout();
     }
 
     private void initComponentsAfterLogin() {
@@ -140,10 +126,6 @@ public class DukaZorroBridge {
         subscriptionHandler = new SubscriptionHandler(client);
         dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
         accountCurrency = accountInfo.getCurrency();
-    }
-
-    public int doLogout() {
-        return loginHandler.logout();
     }
 
     public int doBrokerTime(double serverTime[]) {
