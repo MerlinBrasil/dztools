@@ -26,6 +26,7 @@ package com.jforex.dzconverter;
 
 import java.io.File;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,9 +35,9 @@ import com.dukascopy.api.Instrument;
 public class DukaZorroConverter {
 
     private ArgumentHandler argHandler;
-    private PropertiesHandler propHandler;
     private ClientHandler clientHandler;
     private Instrument instrument;
+    private DZConverterConfig cfg;
     private int year;
 
     private final static Logger logger = LogManager.getLogger(DukaZorroConverter.class);
@@ -58,12 +59,11 @@ public class DukaZorroConverter {
         if (!isYearOK())
             logErrorAndQuit("Provided year is invalid!");
 
-        if (!arePropertiesOK())
-            logErrorAndQuit("Properties are invalid!");
+        cfg = ConfigFactory.create(DZConverterConfig.class);
 
         if (!isCacheDirOK())
-            logErrorAndQuit("Provided cachedir " + propHandler.getCacheDir() + " is missing the data folder " + getDataDirectory()
-                    + ". Check the config.properties cachedir entry!");
+            logErrorAndQuit("Provided cachedir " + cfg.cachedir() + " is missing the data folder " + getDataDirectory()
+                    + ". Check the DZConverterConfig.properties cachedir entry!");
 
         if (!isLoginOK())
             logErrorAndQuit("Login failed!");
@@ -81,19 +81,14 @@ public class DukaZorroConverter {
         return year == 0 ? false : true;
     }
 
-    public boolean arePropertiesOK() {
-        propHandler = new PropertiesHandler("config.properties");
-        return !propHandler.arePropertiesValid() ? false : true;
-    }
-
     public boolean isCacheDirOK() {
-        String cacheDir = propHandler.getCacheDir();
+        String cacheDir = cfg.cachedir();
         File file = new File(cacheDir + "\\" + getDataDirectory());
         return !file.isDirectory() ? false : true;
     }
 
     public boolean isLoginOK() {
-        clientHandler = new ClientHandler(propHandler);
+        clientHandler = new ClientHandler(cfg);
         return !clientHandler.isLoginOK() ? false : true;
     }
 

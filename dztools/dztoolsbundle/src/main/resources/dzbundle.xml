@@ -76,7 +76,7 @@
 						<directory>src/main/resources</directory>
 						<outputDirectory>dztools/dzconverter</outputDirectory>
 						<includes>
-							<include>config.properties</include>
+							<include>DZConverterConfig.properties</include>
 						</includes>
 					</fileSet>
 					<fileSet>

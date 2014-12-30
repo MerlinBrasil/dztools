@@ -24,7 +24,6 @@ package com.jforex.dzconverter;
  * #L%
  */
 
-
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,12 +37,12 @@ import com.dukascopy.api.system.JFVersionException;
 public class ClientHandler {
 
     private static IClient client;
-    private PropertiesHandler propHandler;
+    private DZConverterConfig cfg;
 
     private final static Logger logger = LogManager.getLogger(ClientHandler.class);
 
-    public ClientHandler(PropertiesHandler propHandler) {
-        this.propHandler = propHandler;
+    public ClientHandler(DZConverterConfig cfg) {
+        this.cfg = cfg;
     }
 
     public boolean isLoginOK() {
@@ -52,7 +51,7 @@ public class ClientHandler {
         logger.info("Start login...");
 
         try {
-            client.connect("https://www.dukascopy.com/client/demo/jclient/jforex.jnlp", propHandler.getUser(), propHandler.getPassword());
+            client.connect("https://www.dukascopy.com/client/demo/jclient/jforex.jnlp", cfg.user(), cfg.password());
             for (int i = 0; i < 10 && !client.isConnected(); ++i)
                 Thread.sleep(200);
         } catch (JFAuthenticationException e) {
@@ -89,7 +88,7 @@ public class ClientHandler {
             logger.error("setUpClient fails with " + e.getMessage());
             return false;
         }
-        client.setCacheDirectory(new File(propHandler.getCacheDir()));
+        client.setCacheDirectory(new File(cfg.cachedir()));
         return true;
     }
 }

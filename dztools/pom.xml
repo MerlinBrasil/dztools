@@ -39,6 +39,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.aeonbits.owner</groupId>
+			<artifactId>owner</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+		<dependency>
 			<groupId>com.dukascopy.dds2</groupId>
 			<artifactId>DDS2-jClient-JForex</artifactId>
 			<version>2.42.2</version>
@@ -92,11 +97,6 @@
 					<configuration>
 						<skip>true</skip>
 					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>owner-parent</artifactId>
-					<groupId>org.aeonbits.owner</groupId>
-					<version>1.0.6</version>
 				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
