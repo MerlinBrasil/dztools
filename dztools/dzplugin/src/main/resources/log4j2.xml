@@ -11,7 +11,7 @@
     <Loggers>
         <Root level="debug">
             <AppenderRef ref="STDOUT" level="info" />
-            <AppenderRef ref="dzplugin" level="debug" />
+            <AppenderRef ref="dzplugin" level="info" />
         </Root>
     </Loggers>
 </Configuration>
