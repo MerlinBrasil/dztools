@@ -46,13 +46,7 @@
 							<include>**/*.cpp</include>
 						</includes>
 						<options>
-							<option>-I${JAVA_HOME}/include</option>
-							<option>-I${JAVA_HOME}/include/win32</option>
-							<option>-I${boostPath}</option>
-							<option>${java.os.include}</option>
-							<option>${stack.protector.option}</option>
-							<option>${architecture.option}</option>
-							<option>${subsystem.option}</option>
+						    <option>-I${boostPath}</option>
 							<option>-s</option>
 							<option>-std=c++11</option>
 							<option>-DVERSION=${project.version}</option>
@@ -66,10 +60,6 @@
 								<directory>${JAVA_HOME}/lib</directory>
 							</lib>
 						</libs>
-						<options>
-							<option>${architecture.option}</option>
-							<option>${subsystem.option}</option>
-						</options>
 					</linker>
 					<libraries>
 						<library>
