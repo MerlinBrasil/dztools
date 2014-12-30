@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,10 +77,10 @@ public class DateTimeUtils {
         return getOLEDateFromMillis(millis) + 1e-8;
     }
 
-    public static Date getDateFromOLEDate(double oaDate) {
+    public static long getMillisFromOLEDate(double oaDate) {
         Date date = new Date();
         date.setTime((long) ((oaDate - DAYS_EPOCH) * 24 * 3600 * 1000));
-        return date;
+        return date.getTime();
     }
 
     public boolean isMarketOffline() {
@@ -96,7 +97,13 @@ public class DateTimeUtils {
 
     public static String formatDateTime(long dateTime) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         return dateFormat.format(new Date(dateTime));
+    }
+
+    public static String formatOLETime(double oleTime) {
+        long dateTime = getMillisFromOLEDate(oleTime);
+        return formatDateTime(dateTime);
     }
 
     private Set<ITimeDomain> getOfflineTimes(long startTime,
