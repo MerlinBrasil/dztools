@@ -30,8 +30,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
@@ -39,6 +37,9 @@ import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.utils.InstrumentUtils;
+
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.system.IClient;
 
 public class SubscriptionHandler {
 
@@ -54,10 +55,7 @@ public class SubscriptionHandler {
         this.priceEngine = dukaZorroBridge.getPriceEngine();
     }
 
-    public int doSubscribe(String instrumentName) {
-        if (!client.isConnected())
-            return ReturnCodes.ASSET_UNAVAILABLE;
-
+    public int doSubscribeAsset(String instrumentName) {
         Instrument toSubscribeInstrument = InstrumentUtils.getByName(instrumentName);
         if (toSubscribeInstrument == null)
             return ReturnCodes.ASSET_UNAVAILABLE;

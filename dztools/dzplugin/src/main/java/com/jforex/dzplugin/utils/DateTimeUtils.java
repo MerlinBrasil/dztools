@@ -25,7 +25,6 @@ package com.jforex.dzplugin.utils;
  */
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -34,17 +33,19 @@ import java.util.SimpleTimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.DukaZorroBridge;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.provider.ServerTimeProvider;
+
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.Period;
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.provider.ServerTimeProvider;
 
 public class DateTimeUtils {
 
     private static final HashMap<Integer, Period> minuteToPeriodMap;
-    private static final int DAYS_EPOCH = 25569;
+    private static final int DAYS_SINCE_UTC_EPOCH = 25569;
 
     private final static Logger logger = LogManager.getLogger(DateTimeUtils.class);
 
@@ -63,14 +64,13 @@ public class DateTimeUtils {
     private final IDataService dataService;
     private final ServerTimeProvider serverTimeProvider;
 
-    public DateTimeUtils(IDataService dataService,
-                         ServerTimeProvider serverTimeProvider) {
-        this.dataService = dataService;
-        this.serverTimeProvider = serverTimeProvider;
+    public DateTimeUtils(DukaZorroBridge dukaZorroBridge) {
+        this.dataService = dukaZorroBridge.getContext().getDataService();
+        this.serverTimeProvider = dukaZorroBridge.getServerTimeProvider();
     }
 
     public static double getOLEDateFromMillis(long millis) {
-        return DAYS_EPOCH + (double) millis / (1000f * 3600f * 24f);
+        return DAYS_SINCE_UTC_EPOCH + (double) millis / (1000f * 3600f * 24f);
     }
 
     public static double getOLEDateFromMillisRounded(long millis) {
@@ -79,7 +79,7 @@ public class DateTimeUtils {
 
     public static long getMillisFromOLEDate(double oaDate) {
         Date date = new Date();
-        date.setTime((long) ((oaDate - DAYS_EPOCH) * 24 * 3600 * 1000));
+        date.setTime((long) ((oaDate - DAYS_SINCE_UTC_EPOCH) * 24 * 3600 * 1000));
         return date.getTime();
     }
 
@@ -95,17 +95,6 @@ public class DateTimeUtils {
         return false;
     }
 
-    public static String formatDateTime(long dateTime) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        return dateFormat.format(new Date(dateTime));
-    }
-
-    public static String formatOLETime(double oleTime) {
-        long dateTime = getMillisFromOLEDate(oleTime);
-        return formatDateTime(dateTime);
-    }
-
     private Set<ITimeDomain> getOfflineTimes(long startTime,
                                              long endTime) {
         Set<ITimeDomain> offlineTimes = null;
@@ -117,66 +106,18 @@ public class DateTimeUtils {
         return offlineTimes;
     }
 
+    public static String formatDateTime(long dateTime) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        return dateFormat.format(new Date(dateTime));
+    }
+
+    public static String formatOLETime(double oleTime) {
+        long dateTime = getMillisFromOLEDate(oleTime);
+        return formatDateTime(dateTime);
+    }
+
     public static Period getPeriodFromMinutes(int minutes) {
         return minuteToPeriodMap.get(minutes);
-    }
-
-    public static long roundTimeToPeriod(Period barPeriod,
-                                         long rawTime) {
-        long roundedTime = rawTime;
-        if (barPeriod == Period.DAILY)
-            roundedTime = truncateHours(rawTime);
-        else if (barPeriod == Period.ONE_HOUR)
-            roundedTime = truncateMinutes(rawTime);
-        else if (barPeriod == Period.THIRTY_MINS)
-            roundedTime = roundToMinutes(rawTime, 30);
-        else if (barPeriod == Period.FIFTEEN_MINS)
-            roundedTime = roundToMinutes(rawTime, 15);
-        else if (barPeriod == Period.FIVE_MINS)
-            roundedTime = roundToMinutes(rawTime, 5);
-        else if (barPeriod == Period.ONE_MIN)
-            roundedTime = truncateSeconds(rawTime);
-
-        return roundedTime;
-    }
-
-    private static Calendar getCalendarFromTime(long dateTime) {
-        Date date = new Date(dateTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        return calendar;
-    }
-
-    private static long roundToMinutes(long rawTime,
-                                       int minutes) {
-        Calendar calendar = getCalendarFromTime(rawTime);
-        int unroundedMinutes = calendar.get(Calendar.MINUTE);
-        int mod = unroundedMinutes % minutes;
-        calendar.add(Calendar.MINUTE, mod < (minutes / 2) + 1 ? -mod : (minutes - mod));
-
-        return truncateSeconds(calendar.getTimeInMillis());
-    }
-
-    private static long truncateHours(long rawTime) {
-        Calendar calendar = getCalendarFromTime(truncateMinutes(rawTime));
-        calendar.set(Calendar.HOUR, 0);
-
-        return calendar.getTimeInMillis();
-    }
-
-    private static long truncateMinutes(long rawTime) {
-        Calendar calendar = getCalendarFromTime(truncateSeconds(rawTime));
-        calendar.set(Calendar.MINUTE, 0);
-
-        return calendar.getTimeInMillis();
-    }
-
-    private static long truncateSeconds(long rawTime) {
-        Calendar calendar = getCalendarFromTime(rawTime);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        return calendar.getTimeInMillis();
     }
 }

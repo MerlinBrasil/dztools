@@ -10,12 +10,12 @@ package com.jforex.dzplugin;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -38,7 +38,6 @@ import com.jforex.dzplugin.utils.DateTimeUtils;
 import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.IContext;
-import com.dukascopy.api.ICurrency;
 import com.dukascopy.api.ITick;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.OfferSide;
@@ -50,7 +49,6 @@ public class DukaZorroBridge {
     private IClient client;
     private IContext context;
     private DukaZorroStrategy strategy;
-    private ICurrency accountCurrency;
     private AccountInfo accountInfo;
     private HistoryHandler historyHandler;
     private OrderHandler orderHandler;
@@ -112,13 +110,12 @@ public class DukaZorroBridge {
 
         context = strategy.getContext();
         priceEngine = strategy.getPriceEngine();
-        serverTimeProvider = new ServerTimeProvider(priceEngine);
-        accountInfo = new AccountInfo(context, priceEngine);
+        serverTimeProvider = new ServerTimeProvider(this);
+        accountInfo = new AccountInfo(this);
         historyHandler = new HistoryHandler(this);
-        orderHandler = new OrderHandler(context);
+        orderHandler = new OrderHandler(this);
         subscriptionHandler = new SubscriptionHandler(this);
-        dateTimeUtils = new DateTimeUtils(context.getDataService(), serverTimeProvider);
-        accountCurrency = accountInfo.getCurrency();
+        dateTimeUtils = new DateTimeUtils(this);
     }
 
     public int doBrokerTime(double serverTime[]) {
@@ -136,7 +133,10 @@ public class DukaZorroBridge {
     }
 
     public int doSubscribeAsset(String instrumentName) {
-        return subscriptionHandler.doSubscribe(instrumentName);
+        if (!client.isConnected())
+            return ReturnCodes.ASSET_UNAVAILABLE;
+
+        return subscriptionHandler.doSubscribeAsset(instrumentName);
     }
 
     public int doBrokerAsset(String instrumentName,
@@ -247,22 +247,6 @@ public class DukaZorroBridge {
         return accountInfo;
     }
 
-    public HistoryHandler getHistoryHandler() {
-        return historyHandler;
-    }
-
-    public OrderHandler getOrderHandler() {
-        return orderHandler;
-    }
-
-    public LoginHandler getLoginHandler() {
-        return loginHandler;
-    }
-
-    public SubscriptionHandler getSubscriptionHandler() {
-        return subscriptionHandler;
-    }
-
     public IPriceEngine getPriceEngine() {
         return priceEngine;
     }
@@ -273,9 +257,5 @@ public class DukaZorroBridge {
 
     public ServerTimeProvider getServerTimeProvider() {
         return serverTimeProvider;
-    }
-
-    public static Logger getLogger() {
-        return logger;
     }
 }

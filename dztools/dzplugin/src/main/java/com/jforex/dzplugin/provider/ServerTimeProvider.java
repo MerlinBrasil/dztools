@@ -30,9 +30,11 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.dukascopy.api.ITick;
+import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.task.NTPTimeSynchTask;
+
+import com.dukascopy.api.ITick;
 
 public class ServerTimeProvider {
 
@@ -52,10 +54,11 @@ public class ServerTimeProvider {
         TICK
     }
 
-    public ServerTimeProvider(IPriceEngine priceEngine) {
-        this.priceEngine = priceEngine;
+    public ServerTimeProvider(DukaZorroBridge dukaZorroBridge) {
+        this.priceEngine = dukaZorroBridge.getPriceEngine();
         ntpSynchTask = new NTPTimeSynchTask();
         singleThreadExecutor = Executors.newSingleThreadExecutor();
+
         init();
     }
 

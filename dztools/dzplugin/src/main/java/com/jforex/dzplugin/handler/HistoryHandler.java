@@ -12,12 +12,12 @@ package com.jforex.dzplugin.handler;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -34,7 +34,6 @@ import org.apache.logging.log4j.Logger;
 import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 import com.jforex.dzplugin.utils.InstrumentUtils;
 
@@ -49,13 +48,11 @@ import com.dukascopy.api.Period;
 public class HistoryHandler {
 
     private final IHistory history;
-    private final AccountInfo accountInfo;
 
     private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
     public HistoryHandler(DukaZorroBridge dukaZorroBridge) {
         this.history = dukaZorroBridge.getContext().getHistory();
-        this.accountInfo = dukaZorroBridge.getAccountInfo();
     }
 
     public int doBrokerHistory(String instrumentName,
