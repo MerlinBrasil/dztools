@@ -267,8 +267,7 @@ public class DukaZorroBridge {
         if (!accountInfo.isTradingPossible())
             return ReturnCodes.ORDER_CLOSE_FAIL;
 
-        double convertedAmount = Math.abs(amount) / DukascopyParams.LOT_SCALE;
-        return orderHandler.closeOrder(orderID, convertedAmount);
+        return orderHandler.doBrokerSell(orderID, amount);
     }
 
     public int doBrokerHistory(String instrumentName,

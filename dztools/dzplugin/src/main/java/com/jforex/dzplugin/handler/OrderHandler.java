@@ -86,6 +86,14 @@ public class OrderHandler {
         return setSLPrice(order, priceEngine.getRounded(order.getInstrument(), newSLPrice));
     }
 
+    public int doBrokerSell(int orderID,
+                            int amount) {
+        double convertedAmount = Math.abs(amount) / DukascopyParams.LOT_SCALE;
+        logger.debug("orderID " + orderID + " amount: " + amount + " convertedAmount " + convertedAmount);
+
+        return closeOrder(orderID, convertedAmount);
+    }
+
     public synchronized int submitOrder(Instrument instrument,
                                         OrderCommand cmd,
                                         double amount,
