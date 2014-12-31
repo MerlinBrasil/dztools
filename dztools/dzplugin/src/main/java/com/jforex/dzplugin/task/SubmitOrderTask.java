@@ -26,6 +26,7 @@ package com.jforex.dzplugin.task;
 
 import java.util.concurrent.Callable;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,8 +35,8 @@ import com.dukascopy.api.IEngine.OrderCommand;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
+import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.config.Configuration;
-import com.jforex.dzplugin.config.DukascopyParams;
 
 public class SubmitOrderTask implements Callable<IOrder> {
 
@@ -45,6 +46,7 @@ public class SubmitOrderTask implements Callable<IOrder> {
     private final OrderCommand cmd;
     private final double amount;
     private final double SLPrice;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(SubmitOrderTask.class);
 
@@ -71,7 +73,7 @@ public class SubmitOrderTask implements Callable<IOrder> {
                                        cmd,
                                        amount,
                                        0f,
-                                       DukascopyParams.DEFAULT_SLIPPAGE,
+                                       pluginConfig.DEFAULT_SLIPPAGE(),
                                        SLPrice,
                                        0f,
                                        0L,

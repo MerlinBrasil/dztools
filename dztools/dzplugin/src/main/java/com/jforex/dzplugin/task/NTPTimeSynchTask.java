@@ -27,11 +27,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 
@@ -40,6 +42,7 @@ public class NTPTimeSynchTask implements Callable<Long> {
     private final NTPUDPClient timeClient;
     private InetAddress inetAddress;
     private TimeInfo timeInfo;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(NTPTimeSynchTask.class);
 
@@ -51,9 +54,9 @@ public class NTPTimeSynchTask implements Callable<Long> {
     private void init() {
         timeClient.setDefaultTimeout(Configuration.NTP_TIMEOUT);
         try {
-            inetAddress = InetAddress.getByName(Configuration.NTP_TIME_SERVER_URL);
+            inetAddress = InetAddress.getByName(pluginConfig.NTP_TIME_SERVER_URL());
         } catch (UnknownHostException e) {
-            logger.error("NTP server url " + Configuration.NTP_TIME_SERVER_URL + " is not reachable!");
+            logger.error("NTP server url " + pluginConfig.NTP_TIME_SERVER_URL() + " is not reachable!");
         }
     }
 

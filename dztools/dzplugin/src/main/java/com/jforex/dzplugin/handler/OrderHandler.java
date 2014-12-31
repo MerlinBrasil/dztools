@@ -30,9 +30,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.IEngine;
+import com.dukascopy.api.IEngine.OrderCommand;
+import com.dukascopy.api.IOrder;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.JFException;
+import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -43,13 +51,6 @@ import com.jforex.dzplugin.task.StopLossTask;
 import com.jforex.dzplugin.task.SubmitOrderTask;
 import com.jforex.dzplugin.utils.InstrumentUtils;
 
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.IEngine;
-import com.dukascopy.api.IEngine.OrderCommand;
-import com.dukascopy.api.IOrder;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.JFException;
-
 public class OrderHandler {
 
     private final IContext context;
@@ -57,6 +58,7 @@ public class OrderHandler {
     private final IPriceEngine priceEngine;
     private final AccountInfo accountInfo;
     private final HashMap<Integer, IOrder> orderMap;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(OrderHandler.class);
 
@@ -166,7 +168,7 @@ public class OrderHandler {
                                         double amount,
                                         double SLPrice) {
         int orderID = Math.abs(new UID().hashCode());
-        String orderLabel = DukascopyParams.ORDER_PREFIX_LABEL + orderID;
+        String orderLabel = pluginConfig.ORDER_PREFIX_LABEL() + orderID;
 
         logger.info("Try to open position for " + instrument +
                 " with cmd " + cmd + " ,amount " + amount +
@@ -241,7 +243,7 @@ public class OrderHandler {
         }
         for (IOrder order : orders) {
             String label = order.getLabel();
-            if (label.startsWith(DukascopyParams.ORDER_PREFIX_LABEL)) {
+            if (label.startsWith(pluginConfig.ORDER_PREFIX_LABEL())) {
                 int id = getOrderIDFromLabel(label);
                 orderMap.put(id, order);
             }
@@ -249,7 +251,7 @@ public class OrderHandler {
     }
 
     private int getOrderIDFromLabel(String label) {
-        String idName = label.substring(DukascopyParams.ORDER_PREFIX_LABEL.length());
+        String idName = label.substring(pluginConfig.ORDER_PREFIX_LABEL().length());
         return Integer.parseInt(idName);
     }
 }

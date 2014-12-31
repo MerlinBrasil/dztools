@@ -34,6 +34,13 @@
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
+						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<includes>
+							<include>DZPluginConfig.properties</include>
+						</includes>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
 						<outputDirectory>dztools/dzplugin/logs</outputDirectory>
 						<excludes>
 							<exclude>*</exclude>

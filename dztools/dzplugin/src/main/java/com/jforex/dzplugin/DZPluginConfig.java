@@ -1,10 +1,8 @@
-package com.jforex.dzplugin.config;
+package com.jforex.dzplugin;
 
 /*
  * #%L
  * dzplugin
- * $Id:$
- * $HeadURL:$
  * %%
  * Copyright (C) 2014 juxeii
  * %%
@@ -24,9 +22,29 @@ package com.jforex.dzplugin.config;
  * #L%
  */
 
-public class DukascopyParams {
+import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Config.Sources;
 
-    public static double LOT_SIZE = 1000;
-    public static double LOT_SCALE = 1000000;
-    public static double LOT_SIZE_SCALED = LOT_SIZE / LOT_SCALE;
+@Sources({ "classpath:DZPluginConfig.properties" })
+public interface DZPluginConfig extends Config {
+    @DefaultValue("zorro")
+    String ORDER_PREFIX_LABEL();
+
+    @DefaultValue("3f")
+    double DEFAULT_SLIPPAGE();
+
+    @DefaultValue("1000")
+    long CONNECTION_WAIT_TIME();
+
+    @DefaultValue("10")
+    int CONNECTION_RETRIES();
+
+    @DefaultValue("https://www.dukascopy.com/client/demo/jclient/jforex.jnlp")
+    String CONNECT_URL_DEMO();
+
+    @DefaultValue("https://www.dukascopy.com/client/live/jclient/jforex.jnlp")
+    String CONNECT_URL_LIVE();
+
+    @DefaultValue("time-a.nist.gov")
+    String NTP_TIME_SERVER_URL();
 }

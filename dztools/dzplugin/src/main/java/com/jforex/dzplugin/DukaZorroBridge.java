@@ -25,6 +25,9 @@ package com.jforex.dzplugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.system.ClientFactory;
+import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.handler.AccountHandler;
 import com.jforex.dzplugin.handler.HistoryHandler;
@@ -35,10 +38,6 @@ import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
-
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.system.ClientFactory;
-import com.dukascopy.api.system.IClient;
 
 public class DukaZorroBridge {
 

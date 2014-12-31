@@ -24,22 +24,23 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.jforex.dzplugin.DukaZorroBridge;
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.Configuration;
-import com.jforex.dzplugin.config.ReturnCodes;
 
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
+import com.jforex.dzplugin.DZPluginConfig;
+import com.jforex.dzplugin.DukaZorroBridge;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.ReturnCodes;
 
 public class LoginHandler {
 
     private final DukaZorroBridge dukaZorroBridge;
     private final IClient client;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(LoginHandler.class);
 
@@ -80,12 +81,12 @@ public class LoginHandler {
                       String Pin) {
         try {
             if (Pin.isEmpty())
-                client.connect(Configuration.CONNECT_URL_DEMO, User, Pwd);
+                client.connect(pluginConfig.CONNECT_URL_DEMO(), User, Pwd);
             else
-                client.connect(Configuration.CONNECT_URL_LIVE, User, Pwd, Pin);
+                client.connect(pluginConfig.CONNECT_URL_LIVE(), User, Pwd, Pin);
 
-            for (int i = 0; i < Configuration.CONNECTION_RETRIES && !client.isConnected(); ++i)
-                Thread.sleep(Configuration.CONNECTION_WAIT_TIME);
+            for (int i = 0; i < pluginConfig.CONNECTION_RETRIES() && !client.isConnected(); ++i)
+                Thread.sleep(pluginConfig.CONNECTION_WAIT_TIME());
         } catch (JFAuthenticationException e) {
             ZorroLogger.showError(logger, "Invalid login credentials!");
         } catch (JFVersionException e) {

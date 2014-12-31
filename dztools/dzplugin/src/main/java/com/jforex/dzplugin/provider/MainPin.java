@@ -37,18 +37,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.system.IClient;
+import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.Configuration;
 
 // Code from http://www.dukascopy.com/wiki/#JForex_SDK_LIVE_mode
 public class MainPin {
 
     private final IClient client;
     private static JFrame noParentFrame = null;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(MainPin.class);
 
@@ -78,7 +80,7 @@ public class MainPin {
             captchaPanel.setLayout(new BoxLayout(captchaPanel, BoxLayout.Y_AXIS));
 
             final JLabel captchaImage = new JLabel();
-            captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.CONNECT_URL_LIVE)));
+            captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(pluginConfig.CONNECT_URL_LIVE())));
             captchaPanel.add(captchaImage);
 
             captchaPanel.add(pinfield);
@@ -104,7 +106,7 @@ public class MainPin {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(Configuration.CONNECT_URL_LIVE)));
+                        captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(pluginConfig.CONNECT_URL_LIVE())));
                     } catch (Exception ex) {
                         ZorroLogger.indicateError(logger, "getPin exc: " + ex.getMessage());
                     }

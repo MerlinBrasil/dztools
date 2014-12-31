@@ -26,11 +26,6 @@ package com.jforex.dzplugin.config;
 
 public class Configuration {
 
-    public static final String CONNECT_URL_DEMO = "https://www.dukascopy.com/client/demo/jclient/jforex.jnlp";
-    public static final String CONNECT_URL_LIVE = "https://www.dukascopy.com/client/live/jclient/jforex.jnlp";
-    public static final String NTP_TIME_SERVER_URL = "time-a.nist.gov";
-    public static final long CONNECTION_WAIT_TIME = 1000;
-    public static final int CONNECTION_RETRIES = 10;
     public static final long SUBSCRIPTION_WAIT_TIME = 200;
     public static final int SUBSCRIPTION_WAIT_TIME_RETRIES = 10;
     public static final long SUBMIT_WAIT_TIME = 100;
