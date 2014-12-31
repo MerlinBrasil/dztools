@@ -24,6 +24,7 @@
 
 #include "DllCallHandler.hpp"
 #include "JNIHandler.hpp"
+#include "JReferences.hpp"
 #include <cstring>
 
 int DllCallHandler::BrokerLogin(const char *User,
@@ -47,7 +48,7 @@ int DllCallHandler::BrokerLogin(const char *User,
     else jType = env->NewStringUTF("");
 
     jobjectArray jAccountArray = (jobjectArray)env->NewObjectArray(1, env->FindClass("java/lang/String"), env->NewStringUTF(""));
-    jint res = jniHandler.callBrokerLogin(env, jUser, jPwd, jType, jAccountArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doLogin.methodID, jUser, jPwd, jType, jAccountArray);
 
     if(Account)
     {
@@ -73,13 +74,13 @@ int DllCallHandler::BrokerLogin(const char *User,
 
 int DllCallHandler::BrokerLogout()
 {
-    return jniHandler.callBrokerLogout(env);
+    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doLogout.methodID);
 }
 
 int DllCallHandler::BrokerTime(DATE *pTimeUTC)
 {
     jdoubleArray utcTimeArray = env->NewDoubleArray(1);
-    jint res = jniHandler.callBrokerTime(env, utcTimeArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTime.methodID, utcTimeArray);
 
     if(pTimeUTC)
     {
@@ -96,7 +97,7 @@ int DllCallHandler::SubscribeAsset(const char* Asset)
 {
     jstring jAsset = env->NewStringUTF(Asset);
 
-    jint res = jniHandler.callSubscribeAsset(env, jAsset);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doSubscribeAsset.methodID, jAsset);
     env->DeleteLocalRef(jAsset);
 
     return res;
@@ -116,7 +117,7 @@ int DllCallHandler::BrokerAsset(const char *Asset,
     jstring jAsset = env->NewStringUTF(Asset);
     jdoubleArray jAssetParamsArray = env->NewDoubleArray(9);
 
-    jint res = jniHandler.callBrokerAsset(env, jAsset, jAssetParamsArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAsset.methodID, jAsset, jAssetParamsArray);
     jdouble *assetParams = env->GetDoubleArrayElements(jAssetParamsArray, 0);
 
     if(pPrice) *pPrice = assetParams[0];
@@ -147,7 +148,7 @@ int DllCallHandler::BrokerHistory(const char *Asset,
     int tickArrayLength = nTicks*5;
     jdoubleArray jTicksArray = env->NewDoubleArray(tickArrayLength);
 
-    jint res = jniHandler.callBrokerHistory(env, jAsset, tStart, tEnd, nTickMinutes, nTicks, jTicksArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerHistory.methodID, jAsset, tStart, tEnd, nTickMinutes, nTicks, jTicksArray);
     jdouble *ticksParams = env->GetDoubleArrayElements(jTicksArray, 0u);
 
     for(int i=0; i<nTicks;++i){
@@ -179,7 +180,7 @@ int DllCallHandler::BrokerAccount(const char *Account,
     }
     jdoubleArray jAccountParamsArray = env->NewDoubleArray(3);
 
-    jint res = jniHandler.callBrokerAccount(env, jAccountParamsArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAccount.methodID, jAccountParamsArray);
     jdouble *accountParams = env->GetDoubleArrayElements(jAccountParamsArray, 0);
 
     if(pBalance) *pBalance = accountParams[0];
@@ -205,7 +206,7 @@ int DllCallHandler::BrokerBuy(const char *Asset,
     fill[1] = dStopDist;
     env->SetDoubleArrayRegion(jTradeParamsArray, 0, 2, fill);
 
-    jint res = jniHandler.callBrokerBuy(env, jAsset, jTradeParamsArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerBuy.methodID, jAsset, jTradeParamsArray);
     jdouble *tradeParams = env->GetDoubleArrayElements(jTradeParamsArray, 0);
 
     if(pPrice) *pPrice = tradeParams[2];
@@ -225,7 +226,7 @@ int DllCallHandler::BrokerTrade(const int nTradeID,
 {
     jdoubleArray jOrderParamsArray = env->NewDoubleArray(4);
 
-    jint res = jniHandler.callBrokerTrade(env, nTradeID, jOrderParamsArray);
+    jint res = (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTrade.methodID, nTradeID, jOrderParamsArray);
     jdouble *orderParams = env->GetDoubleArrayElements(jOrderParamsArray, 0);
 
     if(res > 0)
@@ -244,19 +245,18 @@ int DllCallHandler::BrokerTrade(const int nTradeID,
 int DllCallHandler::BrokerStop(const int nTradeID,
                                const double dStop)
 {
-    return jniHandler.callBrokerStop(env, nTradeID, dStop);;
+    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerStop.methodID, nTradeID, dStop);
 }
 
 int DllCallHandler::BrokerSell(const int nTradeID,
                                const int nAmount)
 {
-    return jniHandler.callBrokerSell(env, nTradeID, nAmount);;
+    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerSell.methodID, nTradeID, nAmount);
 }
 
 void DllCallHandler::doDLLlog(const char* msg)
 {
     jstring jMsg = env->NewStringUTF(msg);
-    jniHandler.callDLLlog(env, jMsg);
+    env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doDLLlog.methodID, jMsg);
     env->DeleteLocalRef(jMsg);
 }
-

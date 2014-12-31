@@ -25,9 +25,6 @@
 #ifndef JREFERENCES_HPP
 #define JREFERENCES_HPP
 
-#define DO_QUOTE(X) #X
-#define QUOTE(X) DO_QUOTE(X)
-
 #include <vector>
 #include "dukazorrobridge.hpp"
 
@@ -41,53 +38,39 @@ typedef struct JMethodDesc
 namespace JData
 {
 
-static jobject JDukaZorroBridgeObject;
+extern jobject JDukaZorroBridgeObject;
 
-static jclass JDukaZorroBridgeClass;
-static jclass JZorroLoggerClass;
-static jclass ExceptionClass;
+extern jclass JDukaZorroBridgeClass;
+extern jclass JZorroLoggerClass;
+extern jclass ExceptionClass;
 
-static JMethodDesc constructor =      { nullptr, "<init>",           "()V" };
-static JMethodDesc doLogin =          { nullptr, "doLogin",          "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I" };
-static JMethodDesc doLogout =         { nullptr, "doLogout",         "()I" };
-static JMethodDesc doBrokerTime =     { nullptr, "doBrokerTime",     "([D)I" };
-static JMethodDesc doSubscribeAsset = { nullptr, "doSubscribeAsset", "(Ljava/lang/String;)I" };
-static JMethodDesc doBrokerAsset =    { nullptr, "doBrokerAsset",    "(Ljava/lang/String;[D)I" };
-static JMethodDesc doBrokerAccount =  { nullptr, "doBrokerAccount",  "([D)I" };
-static JMethodDesc doBrokerBuy =      { nullptr, "doBrokerBuy",      "(Ljava/lang/String;[D)I" };
-static JMethodDesc doBrokerTrade =    { nullptr, "doBrokerTrade",    "(I[D)I" };
-static JMethodDesc doBrokerStop =     { nullptr, "doBrokerStop",     "(ID)I" };
-static JMethodDesc doBrokerSell =     { nullptr, "doBrokerSell",     "(II)I" };
-static JMethodDesc doBrokerHistory =  { nullptr, "doBrokerHistory",  "(Ljava/lang/String;DDII[D)I" };
-static JMethodDesc doDLLlog      =    { nullptr, "doDLLlog",         "(Ljava/lang/String;)V" };
-static JMethodDesc excGetMessage=     { nullptr, "getMessage",       "()Ljava/lang/String;" };
-static JMethodDesc excGetName=        { nullptr, "getName",          "()Ljava/lang/String;" };
+extern JMethodDesc constructor;
+extern JMethodDesc doLogin;
+extern JMethodDesc doLogout;
+extern JMethodDesc doBrokerTime;
+extern JMethodDesc doSubscribeAsset;
+extern JMethodDesc doBrokerAsset;
+extern JMethodDesc doBrokerAccount;
+extern JMethodDesc doBrokerBuy;
+extern JMethodDesc doBrokerTrade;
+extern JMethodDesc doBrokerStop;
+extern JMethodDesc doBrokerSell;
+extern JMethodDesc doBrokerHistory;
+extern JMethodDesc doDLLlog;
+extern JMethodDesc excGetMessage;
+extern JMethodDesc excGetName;
 
-static const JNINativeMethod nativesTable[2] { { (char*)"jcallback_BrokerError",    (char*)"(Ljava/lang/String;)V", (void *)&jcallback_BrokerError },
-                                               { (char*)"jcallback_BrokerProgress", (char*)"(I)V",                  (void *)&jcallback_BrokerProgress } };
+extern const JNINativeMethod nativesTable[2];
+extern const int nativesTableSize;
 
-static const char* JVMClassPathOption =  "-Djava.class.path=Plugin\\dztools\\dzplugin\\dzplugin-" QUOTE(VERSION) ".jar";
-static const char* DukaZorroBridgePath = "com/jforex/dzplugin/DukaZorroBridge";
-static const char* ZorroLoggerPath =     "com/jforex/dzplugin/ZorroLogger";
-static const char* ExcPath =             "java/lang/Class";
+extern const char* JVMClassPathOption;
+extern const char* DukaZorroBridgePath;
+extern const char* ZorroLoggerPath;
+extern const char* ExcPath;
 
-static std::vector<JMethodDesc*> DukaZorroBridgeMethods = { &constructor,
-                                                            &doLogin,
-                                                            &doLogout,
-                                                            &doBrokerTime,
-                                                            &doSubscribeAsset,
-                                                            &doBrokerAsset,
-                                                            &doBrokerAccount,
-                                                            &doBrokerBuy,
-                                                            &doBrokerTrade,
-                                                            &doBrokerStop,
-                                                            &doBrokerSell,
-                                                            &doBrokerHistory };
+extern const std::vector<JMethodDesc*> dukaZorroBridgeMethods;
 
-
-static const int nativesTableSize = sizeof(nativesTable) / sizeof(nativesTable[0]);
-
-static const int JNI_VERSION = JNI_VERSION_1_8;
+extern const int JNI_VERSION;
 
 } /* namespace JData */
 

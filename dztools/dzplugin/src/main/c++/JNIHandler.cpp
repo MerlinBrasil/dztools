@@ -98,7 +98,7 @@ void JNIHandler::registerNatives()
 
 void JNIHandler::registerClassMethods()
 {
-    for(auto *desc : JData::DukaZorroBridgeMethods)
+    for(auto *desc : JData::dukaZorroBridgeMethods)
     {
         desc->methodID = env->GetMethodID(JData::JDukaZorroBridgeClass, desc->name, desc->signature);
         checkJNIExcpetion(env);
@@ -124,91 +124,4 @@ void JNIHandler::checkJNIExcpetion(JNIEnv* env)
     env->ReleaseStringUTFChars(message, utfMessage);
     env->ReleaseStringUTFChars(name, utfName);
     env->ExceptionClear();
-}
-
-jint JNIHandler::callBrokerLogin(JNIEnv* env,
-                                 jstring& jUser,
-                                 jstring& jPwd,
-                                 jstring& jType,
-                                 jobjectArray& jAccountArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doLogin.methodID, jUser, jPwd, jType, jAccountArray);
-}
-
-jint JNIHandler::callBrokerLogout(JNIEnv* env)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doLogout.methodID);
-}
-
-
-jint JNIHandler::callBrokerTime(JNIEnv* env,
-                                jdoubleArray& utcTimeArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTime.methodID, utcTimeArray);
-}
-
-jint JNIHandler::callSubscribeAsset(JNIEnv* env,
-                                    jstring& jAsset)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doSubscribeAsset.methodID, jAsset);
-}
-
-jint JNIHandler::callBrokerAsset(JNIEnv* env,
-                                 jstring& jAsset,
-                                 jdoubleArray& jAssetParamsArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAsset.methodID, jAsset, jAssetParamsArray);
-}
-
-jint JNIHandler::callBrokerHistory(JNIEnv* env,
-                                   jstring& jAsset,
-                                   DATE tStart,
-                                   DATE tEnd,
-                                   jint jnTickMinutes,
-                                   jint jnTicks,
-                                   jdoubleArray& jTicksArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerHistory.methodID, jAsset, tStart, tEnd, jnTickMinutes, jnTicks, jTicksArray);
-}
-
-jint JNIHandler::callBrokerAccount(JNIEnv* env,
-                                   jdoubleArray& jAccountParamsArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerAccount.methodID, jAccountParamsArray);
-}
-
-
-jint JNIHandler::callBrokerBuy(JNIEnv* env,
-                               jstring& jAsset,
-                               jdoubleArray& jTradeParamsArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerBuy.methodID, jAsset, jTradeParamsArray);
-}
-
-
-jint JNIHandler::callBrokerTrade(JNIEnv* env,
-                                 jint jAsset,
-                                 jdoubleArray& jOrderParamsArray)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerTrade.methodID, jAsset, jOrderParamsArray);
-}
-
-jint JNIHandler::callBrokerStop(JNIEnv* env,
-                                jint jnTradeID,
-                                jdouble jdStop)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerStop.methodID, jnTradeID, jdStop);
-}
-
-jint JNIHandler::callBrokerSell(JNIEnv* env,
-                                jint jnTradeID,
-                                jint jnAmount)
-{
-    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerSell.methodID, jnTradeID, jnAmount);
-}
-
-void JNIHandler::callDLLlog(JNIEnv* env,
-                            jstring& msg)
-{
-    env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doDLLlog.methodID, msg);
 }
