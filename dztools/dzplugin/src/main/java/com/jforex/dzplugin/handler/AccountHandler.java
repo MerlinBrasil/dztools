@@ -25,6 +25,9 @@ package com.jforex.dzplugin.handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.ITick;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.OfferSide;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DukascopyParams;
 import com.jforex.dzplugin.config.ReturnCodes;
@@ -33,10 +36,6 @@ import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 import com.jforex.dzplugin.utils.InstrumentUtils;
-
-import com.dukascopy.api.ITick;
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.OfferSide;
 
 public class AccountHandler {
 
@@ -73,26 +72,34 @@ public class AccountHandler {
         if (instrument == null)
             return ReturnCodes.ASSET_UNAVAILABLE;
 
+        return fillAssetParams(instrument, assetParams);
+    }
+
+    private int fillAssetParams(Instrument instrument,
+                                double assetParams[]) {
         ITick tick = priceEngine.getLastTick(instrument);
         if (tick == null) {
             logger.warn("No data for " + instrument + " available!");
             ZorroLogger.log("No data for " + instrument + " available!");
             return ReturnCodes.ASSET_UNAVAILABLE;
         }
+
+        double pipCost = accountInfo.getPipCost(instrument, OfferSide.ASK);
+        if (pipCost == 0f)
+            return ReturnCodes.ASSET_UNAVAILABLE;
+        assetParams[4] = pipCost;
+
+        double marginForLot = accountInfo.getMarginForLot(instrument);
+        if (marginForLot == 0f)
+            return ReturnCodes.ASSET_UNAVAILABLE;
+        assetParams[6] = marginForLot;
+
         assetParams[0] = tick.getAsk();
         assetParams[1] = priceEngine.getSpread(instrument);
         // Volume: not supported for Forex
         assetParams[2] = 0f;
         assetParams[3] = instrument.getPipValue();
-        double pipCost = accountInfo.getPipCost(instrument, OfferSide.ASK);
-        if (pipCost == 0f)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-        assetParams[4] = pipCost;
         assetParams[5] = DukascopyParams.LOT_SIZE;
-        double marginForLot = accountInfo.getMarginForLot(instrument);
-        if (marginForLot == 0f)
-            return ReturnCodes.ASSET_UNAVAILABLE;
-        assetParams[6] = marginForLot;
         // RollLong : currently not available by Dukascopy
         assetParams[7] = 0f;
         // RollShort: currently not available by Dukascopy
