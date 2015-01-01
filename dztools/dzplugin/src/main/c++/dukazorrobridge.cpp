@@ -171,8 +171,7 @@ DLLFUNC double BrokerCommand(const int nCommand,
         case GET_TYPE:
             return 1l;
         case HISTORY_DOWNLOAD:
-            dllCallHandler.ProcessHistoryDownload();
-            break;
+            return dllCallHandler.ProcessHistoryDownload();
         default:
         {
             std::stringstream buffer;

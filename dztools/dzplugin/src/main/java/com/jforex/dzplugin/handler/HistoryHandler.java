@@ -24,17 +24,20 @@ package com.jforex.dzplugin.handler;
  * #L%
  */
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 import com.dukascopy.api.Filter;
 import com.dukascopy.api.IBar;
@@ -43,10 +46,18 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.HistoryConfig;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class HistoryHandler {
 
     private final IHistory history;
+    private FileOutputStream outStream;
+    private ByteBuffer bbf;
+    private final HistoryConfig historyConfig = ConfigFactory.create(HistoryConfig.class);
 
     private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
@@ -63,9 +74,8 @@ public class HistoryHandler {
         logger.debug("startDate " + DateTimeUtils.formatOLETime(startDate) + " endDate: " + DateTimeUtils.formatOLETime(endDate));
         logger.debug("nTicks " + nTicks + " tickMinutes " + tickMinutes);
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
+        if (instrument == null)
             return ReturnCodes.HISTORY_FAIL;
-        }
 
         Period period = DateTimeUtils.getPeriodFromMinutes(tickMinutes);
         if (period == null) {
@@ -77,18 +87,13 @@ public class HistoryHandler {
                                   OfferSide.ASK,
                                   DateTimeUtils.getMillisFromOLEDate(endDate),
                                   nTicks);
-        if (bars.size() == 0)
+        int numTicks = bars.size();
+        if (numTicks == 0)
             return ReturnCodes.HISTORY_FAIL;
 
+        logger.debug("Bars size " + numTicks);
         int tickParamsIndex = 0;
-        int arraySizeForAllBars = 5 * bars.size();
-        int maxIndex = nTicks;
-        if (arraySizeForAllBars <= tickParams.length)
-            maxIndex = bars.size();
-
-        logger.debug("bars size " + bars.size() + " maxIndex " + maxIndex);
-
-        for (int i = 0; i < maxIndex; ++i) {
+        for (int i = 0; i < numTicks; ++i) {
             IBar bar = bars.get(i);
             tickParams[tickParamsIndex] = bar.getOpen();
             tickParams[tickParamsIndex + 1] = bar.getClose();
@@ -97,7 +102,7 @@ public class HistoryHandler {
             tickParams[tickParamsIndex + 4] = DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime());
             tickParamsIndex += 5;
         }
-        return maxIndex;
+        return numTicks;
     }
 
     private List<IBar> getBars(Instrument instrument,
@@ -136,5 +141,102 @@ public class HistoryHandler {
             logger.error("getPreviousBarStart exc: " + e.getMessage());
         }
         return endDateTimeRounded;
+    }
+
+    public int doHistoryDownload() {
+        String instrumentName = historyConfig.Asset();
+        int startYear = historyConfig.StartYear();
+        int endYear = historyConfig.EndYear();
+        int numYears = endYear - startYear + 1;
+
+        Instrument instrument = InstrumentUtils.getByName(instrumentName);
+        if (instrument == null) {
+            ZorroLogger.log("Asset " + instrumentName + " is invalid!");
+            return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
+        }
+        for (int i = 0; i < numYears; ++i) {
+            int currentYear = startYear + i;
+            ZorroLogger.log("Load " + instrument + " for " + currentYear + "...");
+
+            List<IBar> bars = new ArrayList<IBar>();
+            try {
+                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, getYearStartTime(currentYear), getYearEndTime(currentYear));
+            } catch (JFException e) {
+                ZorroLogger.log("History exception: " + e.getMessage());
+                return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
+            }
+            processYearBars(bars, instrument, currentYear);
+        }
+
+        return ReturnCodes.HISTORY_DOWNLOAD_OK;
+    }
+
+    private void processYearBars(List<IBar> bars,
+                                 Instrument instrument,
+                                 int year) {
+        Collections.reverse(bars);
+        ZorroLogger.log("Load " + instrument + " for " + year + " OK");
+        String fileName = getBarFileName(instrument, year);
+        writeBarsToTICKsFile(bars, fileName);
+    }
+
+    private long getYearStartTime(int year) {
+        GregorianCalendar calendarStart = new GregorianCalendar(year, 0, 1, 0, 0, 0);
+        calendarStart.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return calendarStart.getTimeInMillis();
+    }
+
+    private long getYearEndTime(int year) {
+        GregorianCalendar calendarEnd = new GregorianCalendar(year, 11, 31, 23, 59, 0);
+        calendarEnd.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return calendarEnd.getTimeInMillis();
+    }
+
+    private void writeBarsToTICKsFile(List<IBar> bars,
+                                      String fileName) {
+        logger.info("Writing " + fileName + " ...");
+
+        initByteBuffer(bars.size());
+        writeBarsToBuffer(bars, bbf);
+        writeBufferToFile(bbf, fileName);
+
+        logger.info("Writing " + fileName + " OK.");
+    }
+
+    private void writeBarsToBuffer(List<IBar> bars,
+                                   ByteBuffer bbf) {
+        for (IBar bar : bars) {
+            bbf.putFloat((float) bar.getOpen());
+            bbf.putFloat((float) bar.getClose());
+            bbf.putFloat((float) bar.getHigh());
+            bbf.putFloat((float) bar.getLow());
+            bbf.putDouble(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime()));
+            // logger.info("Date: " +
+            // DateTimeUtils.formatOLETime(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime())));
+        }
+    }
+
+    private void initByteBuffer(int barsCount) {
+        bbf = ByteBuffer.allocate(24 * barsCount);
+        bbf.order(ByteOrder.LITTLE_ENDIAN);
+    }
+
+    private void writeBufferToFile(ByteBuffer bbf,
+                                   String fileName) {
+        try {
+            outStream = new FileOutputStream(fileName);
+            outStream.write(bbf.array(), 0, bbf.limit());
+            outStream.close();
+        } catch (FileNotFoundException e) {
+            ZorroLogger.log("FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            ZorroLogger.log("IOException while writing TICKs file! " + e.getMessage());
+        }
+    }
+
+    private String getBarFileName(Instrument instrument,
+                                  int year) {
+        return "Plugin\\dztools\\dzconverter\\bars\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
+                instrument.getSecondaryJFCurrency().getCurrencyCode() + "_" + year + ".bar";
     }
 }

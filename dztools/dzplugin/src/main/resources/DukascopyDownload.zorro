@@ -44,6 +44,8 @@ function run()
         char content[100];
         sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i", name, StartDate, EndDate);
         file_write ("Plugin//dztools//dzplugin//HistoryConfig.properties", content, 0);
-        brokerCommand(666, 0);
+        var result = brokerCommand(666, 0);
+        if(result == 0)
+            quit("Error fetching history! Check logfile.");
     quit("Done!");
 }
