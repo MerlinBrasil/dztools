@@ -37,8 +37,8 @@ function run()
     name = ADD_ASSET;
     asset(name);
 #else
-#ifdef ALL_ASSETS // update all assets
-    while(name = loop("AUD/USD","EUR/USD","EUR/CHF","GBP/USD"))
+#ifdef ALL_ASSETS // update all assets; add assets as you need
+    while(name = loop("EUR/USD", "GBP/USD"))
 #endif
 #endif
         char content[100];
