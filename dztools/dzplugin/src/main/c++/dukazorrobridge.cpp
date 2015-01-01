@@ -30,6 +30,7 @@
 
 int (__cdecl *BrokerError)(const char *txt) = nullptr;
 int (__cdecl *BrokerProgress)(const int percent) = nullptr;
+const int HISTORY_DOWNLOAD = 666;
 static DllCallHandler dllCallHandler;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -169,6 +170,9 @@ DLLFUNC double BrokerCommand(const int nCommand,
             return 1000l;
         case GET_TYPE:
             return 1l;
+        case HISTORY_DOWNLOAD:
+            dllCallHandler.ProcessHistoryDownload();
+            break;
         default:
         {
             std::stringstream buffer;

@@ -1,4 +1,4 @@
-package com.jforex.dzplugin;
+package com.jforex.dzplugin.config;
 
 /*
  * #%L
@@ -27,6 +27,9 @@ import org.aeonbits.owner.Config.Sources;
 
 @Sources({ "classpath:DZPluginConfig.properties" })
 public interface DZPluginConfig extends Config {
+    @DefaultValue(".\\Plugin\\dztools\\dzplugin\\.cache")
+    String CACHE_DIR();
+
     @DefaultValue("zorro")
     String ORDER_PREFIX_LABEL();
 

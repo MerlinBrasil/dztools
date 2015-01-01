@@ -33,8 +33,8 @@ import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.config.DZPluginConfig;
 import com.jforex.dzplugin.utils.DateTimeUtils;
 
 public class NTPTimeSynchTask implements Callable<Long> {

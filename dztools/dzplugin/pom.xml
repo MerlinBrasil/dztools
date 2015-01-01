@@ -42,11 +42,8 @@
 					<output>dukascopy-${project.version}</output>
 					<cpp>
 						<name>g++</name>
-						<includes>
-							<include>**/*.cpp</include>
-						</includes>
 						<options>
-						    <option>-I${boostPath}</option>
+							<option>-I${boostPath}</option>
 							<option>-s</option>
 							<option>-std=c++11</option>
 							<option>-DVERSION=${project.version}</option>

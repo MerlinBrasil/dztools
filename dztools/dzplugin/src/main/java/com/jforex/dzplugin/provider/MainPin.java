@@ -42,8 +42,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.dukascopy.api.system.IClient;
-import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DZPluginConfig;
 
 // Code from http://www.dukascopy.com/wiki/#JForex_SDK_LIVE_mode
 public class MainPin {

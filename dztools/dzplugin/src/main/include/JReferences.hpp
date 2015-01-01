@@ -57,6 +57,7 @@ extern JMethodDesc doBrokerStop;
 extern JMethodDesc doBrokerSell;
 extern JMethodDesc doBrokerHistory;
 extern JMethodDesc doDLLlog;
+extern JMethodDesc doHistoryDownload;
 extern JMethodDesc excGetMessage;
 extern JMethodDesc excGetName;
 

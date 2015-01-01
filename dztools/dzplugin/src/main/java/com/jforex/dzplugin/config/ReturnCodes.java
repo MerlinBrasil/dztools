@@ -24,7 +24,6 @@ package com.jforex.dzplugin.config;
  * #L%
  */
 
-
 public class ReturnCodes {
 
     public static final int LOGIN_OK = 1;
@@ -53,4 +52,6 @@ public class ReturnCodes {
 
     public static final int HISTORY_FAIL = 0;
 
+    public static final int HISTORY_DOWNLOAD_OK = 1;
+    public static final int HISTORY_DOWNLOAD_FAIL = 0;
 }

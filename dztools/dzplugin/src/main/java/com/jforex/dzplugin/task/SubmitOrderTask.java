@@ -35,8 +35,8 @@ import com.dukascopy.api.IEngine.OrderCommand;
 import com.dukascopy.api.IOrder;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
-import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.config.Configuration;
+import com.jforex.dzplugin.config.DZPluginConfig;
 
 public class SubmitOrderTask implements Callable<IOrder> {
 

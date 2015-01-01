@@ -83,6 +83,8 @@ public:
     int BrokerSell(const int nTradeID,
                    const int nAmount);
 
+    int ProcessHistoryDownload();
+
 private:
     void doDLLlog(const char* msg);
 

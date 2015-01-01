@@ -1,0 +1,49 @@
+// Update Assets.dta and/or download price history of a certain asset (or all)
+// Select the account (Demo/Real) before
+
+#define ADD_ASSET "EUR/USD"
+// uncomment for adding a new asset to Assets.dta
+
+#define ALL_ASSETS
+// uncomment for updating all assets in the loop (otherwise, selected asset only)
+
+#define PRICE_HISTORY
+// uncomment for downloading the price history (otherwise, update Assets.dta only)
+
+#define MAX_GAP 2
+// uncomment for checking the price history for 2-days gaps
+
+function run()
+{
+    if(!is(TRADEMODE)) {
+        quit("Click [Trade] to update assets!");
+        return;
+    }
+
+    LookBack = 0;
+    StartDate = 2013; // set date for downloading price history
+    EndDate = 2014;
+
+#ifdef PRICE_HISTORY
+#ifdef MAX_GAP
+    GapDays = MAX_GAP;      // detect gaps
+#endif
+#else
+    NumYears = -1; // don't load prices, only update Assets.dta
+#endif
+
+    string name;
+#ifdef ADD_ASSET // add single asset
+    name = ADD_ASSET;
+    asset(name);
+#else
+#ifdef ALL_ASSETS // update all assets
+    while(name = loop("AUD/USD","EUR/USD","EUR/CHF","GBP/USD"))
+#endif
+#endif
+        char content[100];
+        sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i", name, StartDate, EndDate);
+        file_write ("Plugin//dztools//dzplugin//HistoryConfig.properties", content, 0);
+        brokerCommand(666, 0);
+    quit("Done!");
+}

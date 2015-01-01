@@ -31,9 +31,9 @@ import org.apache.logging.log4j.Logger;
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
-import com.jforex.dzplugin.DZPluginConfig;
 import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DZPluginConfig;
 import com.jforex.dzplugin.config.ReturnCodes;
 
 public class LoginHandler {

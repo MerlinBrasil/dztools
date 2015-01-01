@@ -22,12 +22,34 @@ package com.jforex.dzplugin;
  * #L%
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.Filter;
+import com.dukascopy.api.IBar;
 import com.dukascopy.api.IContext;
+import com.dukascopy.api.IHistory;
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.JFException;
+import com.dukascopy.api.OfferSide;
+import com.dukascopy.api.Period;
 import com.dukascopy.api.system.ClientFactory;
 import com.dukascopy.api.system.IClient;
+import com.jforex.dzplugin.config.DZPluginConfig;
+import com.jforex.dzplugin.config.HistoryConfig;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.handler.AccountHandler;
 import com.jforex.dzplugin.handler.HistoryHandler;
@@ -38,6 +60,7 @@ import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class DukaZorroBridge {
 
@@ -54,6 +77,11 @@ public class DukaZorroBridge {
     private DateTimeUtils dateTimeUtils;
     private ServerTimeProvider serverTimeProvider;
     private boolean isStrategyStarted;
+    private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
+    private final HistoryConfig historyConfig = ConfigFactory.create(HistoryConfig.class);
+
+    private FileOutputStream outStream;
+    private ByteBuffer bbf;
 
     private final static Logger logger = LogManager.getLogger(DukaZorroBridge.class);
 
@@ -68,6 +96,7 @@ public class DukaZorroBridge {
         try {
             client = ClientFactory.getDefaultInstance();
             client.setSystemListener(new DukaZorroSystemListener());
+            client.setCacheDirectory(new File(pluginConfig.CACHE_DIR()));
             logger.debug("IClient successfully initialized.");
             return;
         } catch (ClassNotFoundException e) {
@@ -179,6 +208,98 @@ public class DukaZorroBridge {
             return ReturnCodes.HISTORY_FAIL;
 
         return historyHandler.doBrokerHistory(instrumentName, startDate, endDate, tickMinutes, nTicks, tickParams);
+    }
+
+    public int doHistoryDownload() {
+        String instrumentName = historyConfig.Asset();
+        int startYear = historyConfig.StartYear();
+        int endYear = historyConfig.EndYear();
+        int numYears = endYear - startYear + 1;
+
+        Instrument instrument = InstrumentUtils.getByName(instrumentName);
+        if (instrument == null) {
+            ZorroLogger.log("Asset " + instrumentName + " is invalid!");
+            return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
+        }
+        for (int i = 0; i < numYears; ++i) {
+            int currentYear = startYear + i;
+
+            GregorianCalendar calendarStart = new GregorianCalendar(currentYear, 0, 1, 0, 0, 0);
+            calendarStart.setTimeZone(TimeZone.getTimeZone("UTC"));
+            long startTime = calendarStart.getTimeInMillis();
+
+            GregorianCalendar calendarEnd = new GregorianCalendar(currentYear, 11, 31, 23, 59, 0);
+            calendarEnd.setTimeZone(TimeZone.getTimeZone("UTC"));
+            long endTime = calendarEnd.getTimeInMillis();
+
+            String startTimeString = DateTimeUtils.formatDateTime(startTime);
+            String endTimeString = DateTimeUtils.formatDateTime(endTime);
+            ZorroLogger.log("Fetching bars from " + startTimeString + " to " + endTimeString + " for " + currentYear);
+
+            IHistory history = context.getHistory();
+            List<IBar> bars = new ArrayList<IBar>();
+            try {
+                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, startTime, endTime);
+            } catch (JFException e) {
+                ZorroLogger.log("History exception: " + e.getMessage());
+            }
+            Collections.reverse(bars);
+            ZorroLogger.log("Successfully fetched " + bars.size() + " " + Period.ONE_MIN + " bars" + " for " + currentYear);
+            try {
+                writeBarsToTICKsFile(bars, instrument, currentYear);
+            } catch (IOException e) {
+                ZorroLogger.log("IOException while wrting file: " + e.getMessage());
+            }
+        }
+
+        return ReturnCodes.HISTORY_DOWNLOAD_OK;
+    }
+
+    private void writeBarsToTICKsFile(List<IBar> bars,
+                                      Instrument instrument, int year) throws IOException {
+        logger.info("Writing TICKs to file...");
+
+        initByteBuffer(bars.size());
+        writeBarsToBuffer(bars, bbf);
+        writeBufferToFile(bbf, instrument, year);
+
+        logger.info("Writing TICKs file finished.");
+    }
+
+    private void writeBarsToBuffer(List<IBar> bars,
+                                   ByteBuffer bbf) {
+        for (IBar bar : bars) {
+            bbf.putFloat((float) bar.getOpen());
+            bbf.putFloat((float) bar.getClose());
+            bbf.putFloat((float) bar.getHigh());
+            bbf.putFloat((float) bar.getLow());
+            bbf.putDouble(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime()));
+            // logger.info("Date: " +
+            // DateTimeUtils.formatOLETime(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime())));
+        }
+    }
+
+    private void initByteBuffer(int barsCount) {
+        bbf = ByteBuffer.allocate(24 * barsCount);
+        bbf.order(ByteOrder.LITTLE_ENDIAN);
+    }
+
+    private void writeBufferToFile(ByteBuffer bbf, Instrument instrument, int year) {
+        try {
+            outStream = new FileOutputStream(getFileName(instrument, year));
+            outStream.write(bbf.array(), 0, bbf.limit());
+            outStream.close();
+        } catch (FileNotFoundException e) {
+            ZorroLogger.log("FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            ZorroLogger.log("IOException while writing TICKs file! " + e.getMessage());
+        }
+    }
+
+    private String getFileName(Instrument instrument, int year) {
+        return "Plugin\\dztools\\dzconverter\\bars\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
+                instrument.getSecondaryJFCurrency().getCurrencyCode() +
+                "_" + year + ".bar";
     }
 
     public void doDLLlog(String msg) {

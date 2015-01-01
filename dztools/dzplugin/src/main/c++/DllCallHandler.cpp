@@ -260,3 +260,8 @@ void DllCallHandler::doDLLlog(const char* msg)
     env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doDLLlog.methodID, jMsg);
     env->DeleteLocalRef(jMsg);
 }
+
+int DllCallHandler::ProcessHistoryDownload()
+{
+    return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doHistoryDownload.methodID);
+}
