@@ -62,18 +62,21 @@ public class LoginHandler {
             // MainPin mp = new MainPin(client);
             // String pin = mp.getPin();
             // int loginResult = handleLogin(User, Pwd, pin);
-        } else {
+        } else
             ZorroLogger.indicateError(logger, "Received invalid login type: " + Type);
-        }
+        processLoginResult(loginResult, accountInfos);
 
+        return loginResult;
+    }
+
+    private void processLoginResult(int loginResult,
+                                    String accountInfos[]) {
         if (loginResult == ReturnCodes.LOGIN_OK) {
             dukaZorroBridge.initComponentsAfterLogin();
             String accountID = dukaZorroBridge.getAccountInfo().getID();
             accountInfos[0] = accountID;
             logger.info("Login successful for account ID " + accountID);
         }
-
-        return loginResult;
     }
 
     private int login(String User,

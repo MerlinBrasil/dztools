@@ -80,9 +80,8 @@ public class OrderHandler {
             return ReturnCodes.ORDER_SUBMIT_FAIL;
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
+        if (instrument == null)
             return ReturnCodes.ORDER_SUBMIT_FAIL;
-        }
         double amount = tradeParams[0];
         double dStopDist = tradeParams[1];
 
@@ -241,12 +240,15 @@ public class OrderHandler {
         } catch (JFException e) {
             ZorroLogger.indicateError(logger, "getOrders exc: " + e.getMessage());
         }
-        for (IOrder order : orders) {
-            String label = order.getLabel();
-            if (label.startsWith(pluginConfig.ORDER_PREFIX_LABEL())) {
-                int id = getOrderIDFromLabel(label);
-                orderMap.put(id, order);
-            }
+        for (IOrder order : orders)
+            resumeOrderIDIfFound(order);
+    }
+
+    private void resumeOrderIDIfFound(IOrder order) {
+        String label = order.getLabel();
+        if (label.startsWith(pluginConfig.ORDER_PREFIX_LABEL())) {
+            int id = getOrderIDFromLabel(label);
+            orderMap.put(id, order);
         }
     }
 
