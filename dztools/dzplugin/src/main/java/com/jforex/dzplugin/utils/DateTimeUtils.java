@@ -33,13 +33,12 @@ import java.util.SimpleTimeZone;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.provider.ServerTimeProvider;
-
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.Period;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.provider.ServerTimeProvider;
 
 public class DateTimeUtils {
 
@@ -86,9 +85,11 @@ public class DateTimeUtils {
     public boolean isMarketOffline() {
         long serverTime = serverTimeProvider.get();
         Set<ITimeDomain> offlines = getOfflineTimes(serverTime, serverTime + Period.ONE_MIN.getInterval());
-        if (offlines == null)
-            return true;
+        return offlines == null ? true : isServerTimeInOfflineDomains(serverTime, offlines);
+    }
 
+    private boolean isServerTimeInOfflineDomains(long serverTime,
+                                                 Set<ITimeDomain> offlines) {
         for (ITimeDomain offline : offlines)
             if (serverTime >= offline.getStart() && serverTime <= offline.getEnd())
                 return true;
