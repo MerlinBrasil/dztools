@@ -13,11 +13,11 @@
 	<name>dztoolsbundle</name>
 
 	<properties>
-		<assemblyName>dztools</assemblyName>
+		<assemblyName>dukascopy</assemblyName>
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:https://github.com/juxeii/${assemblyName}</developerConnection>
+		<developerConnection>scm:git:https://github.com/juxeii/dztools</developerConnection>
 	</scm>
 
 	<dependencies>

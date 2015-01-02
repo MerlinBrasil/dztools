@@ -27,17 +27,16 @@
 					</fileSet>
 					<fileSet>
 						<directory>target</directory>
-						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/${assemblyName}</outputDirectory>
 						<includes>
 							<include>dzplugin-${project.version}.jar</include>
 						</includes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/${assemblyName}</outputDirectory>
 						<includes>
 							<include>DZPluginConfig.properties</include>
-							<include>DukascopyDownload.zorro</include>
 						</includes>
 					</fileSet>
 					<fileSet>
@@ -49,14 +48,14 @@
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>Plugin/dztools/dzplugin/logs</outputDirectory>
+						<outputDirectory>Plugin/${assemblyName}/logs</outputDirectory>
 						<excludes>
 							<exclude>*</exclude>
 						</excludes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/${assemblyName}</outputDirectory>
 						<includes>
 							<include>log4j2.xml</include>
 							<include>log4j.properties</include>
@@ -69,7 +68,7 @@
 
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>Plugin/dztools/lib</outputDirectory>
+			<outputDirectory>Plugin/${assemblyName}/lib</outputDirectory>
 			<excludes>
 				<exclude>com.jforex:dzplugin</exclude>
 				<exclude>com.jforex:dztoolsbundle</exclude>

@@ -12,6 +12,9 @@
 
 #define MAX_GAP 2
 // uncomment for checking the price history for 2-days gaps
+#define SAVE_PATH "History"
+//#define SAVE_PATH "Plugin//dztools//dzplugin"
+// uncomment for defining the path to save the *.bar files
 
 function run()
 {
@@ -37,17 +40,17 @@ function run()
     asset(name);
 #else
 #ifdef ALL_ASSETS // update all assets; add assets as you need
-    while(name = loop("EUR/USD", "GBP/USD"))
+    while(name = loop("EUR/USD"))
 #endif
 #endif
     {
+        asset(name);
         char content[100];
-        sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i", name, StartDate, EndDate);
-        file_write ("Plugin//dztools//dzplugin//HistoryConfig.properties", content, 0);
+        sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i\n\Path = %s", name, StartDate, EndDate, SAVE_PATH);
+        file_write ("Plugin//dukascopy//HistoryConfig.properties", content, 0);
         var result = brokerCommand(666, 0);
         if(result == 0)
             quit("Error fetching history! Check logfile.");
-        file_delete("Plugin//dztools//dzplugin//HistoryConfig.properties");
     }
     quit("Done!");
 }

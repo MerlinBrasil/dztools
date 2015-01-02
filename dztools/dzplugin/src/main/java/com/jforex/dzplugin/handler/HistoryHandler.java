@@ -57,7 +57,11 @@ public class HistoryHandler {
     private final IHistory history;
     private FileOutputStream outStream;
     private ByteBuffer bbf;
-    private HistoryConfig historyConfig = ConfigFactory.create(HistoryConfig.class);
+    private HistoryConfig historyConfig;
+    private String histSavePath;
+    private int histStartYear;
+    private int histEndYear;
+    private String histFileName;
 
     private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
@@ -144,22 +148,21 @@ public class HistoryHandler {
     }
 
     public int doHistoryDownload() {
-        ZorroLogger.log("1");
         historyConfig = ConfigFactory.create(HistoryConfig.class);
+
         String instrumentName = historyConfig.Asset();
-        int startYear = historyConfig.StartYear();
-        int endYear = historyConfig.EndYear();
-        int numYears = endYear - startYear + 1;
-        ZorroLogger.log("numYears: " + numYears);
+        histSavePath = historyConfig.Path();
+        histStartYear = historyConfig.StartYear();
+        histEndYear = historyConfig.EndYear();
+        int numYears = histEndYear - histStartYear + 1;
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        ZorroLogger.log("2");
         if (instrument == null) {
             ZorroLogger.log("Asset " + instrumentName + " is invalid!");
             return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
         }
         for (int i = 0; i < numYears; ++i) {
-            int currentYear = startYear + i;
+            int currentYear = histStartYear + i;
             ZorroLogger.log("Load " + instrument + " for " + currentYear + "...");
 
             List<IBar> bars = new ArrayList<IBar>();
@@ -180,8 +183,8 @@ public class HistoryHandler {
                                  int year) {
         Collections.reverse(bars);
         ZorroLogger.log("Load " + instrument + " for " + year + " OK");
-        String fileName = getBarFileName(instrument, year);
-        writeBarsToTICKsFile(bars, fileName);
+        histFileName = getBarFileName(instrument, year);
+        writeBarsToTICKsFile(bars);
     }
 
     private long getYearStartTime(int year) {
@@ -196,15 +199,14 @@ public class HistoryHandler {
         return calendarEnd.getTimeInMillis();
     }
 
-    private void writeBarsToTICKsFile(List<IBar> bars,
-                                      String fileName) {
-        logger.info("Writing " + fileName + " ...");
+    private void writeBarsToTICKsFile(List<IBar> bars) {
+        logger.info("Writing " + histFileName + " ...");
 
         initByteBuffer(bars.size());
         writeBarsToBuffer(bars, bbf);
-        writeBufferToFile(bbf, fileName);
+        writeBufferToFile(bbf);
 
-        logger.info("Writing " + fileName + " OK.");
+        logger.info("Writing " + histFileName + " OK.");
     }
 
     private void writeBarsToBuffer(List<IBar> bars,
@@ -215,8 +217,6 @@ public class HistoryHandler {
             bbf.putFloat((float) bar.getHigh());
             bbf.putFloat((float) bar.getLow());
             bbf.putDouble(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime()));
-            // logger.info("Date: " +
-            // DateTimeUtils.formatOLETime(DateTimeUtils.getOLEDateFromMillisRounded(bar.getTime())));
         }
     }
 
@@ -225,10 +225,9 @@ public class HistoryHandler {
         bbf.order(ByteOrder.LITTLE_ENDIAN);
     }
 
-    private void writeBufferToFile(ByteBuffer bbf,
-                                   String fileName) {
+    private void writeBufferToFile(ByteBuffer bbf) {
         try {
-            outStream = new FileOutputStream(fileName);
+            outStream = new FileOutputStream(histFileName);
             outStream.write(bbf.array(), 0, bbf.limit());
             outStream.close();
         } catch (FileNotFoundException e) {
@@ -240,7 +239,7 @@ public class HistoryHandler {
 
     private String getBarFileName(Instrument instrument,
                                   int year) {
-        return "Plugin\\dztools\\dzplugin\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
+        return histSavePath + "\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
                 instrument.getSecondaryJFCurrency().getCurrencyCode() + "_" + year + ".bar";
     }
 }

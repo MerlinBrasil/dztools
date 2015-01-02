@@ -32,4 +32,6 @@ public interface HistoryConfig extends Config {
     int StartYear();
 
     int EndYear();
+
+    String Path();
 }
