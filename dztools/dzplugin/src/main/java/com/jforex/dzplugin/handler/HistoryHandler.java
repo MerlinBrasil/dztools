@@ -174,7 +174,7 @@ public class HistoryHandler {
                 if (prevBarStart < endTime)
                     endTime = prevBarStart;
 
-                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, startTime, prevBarStart);
+                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, startTime, endTime);
             } catch (JFException e) {
                 ZorroLogger.log("History exception: " + e.getMessage());
                 return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
