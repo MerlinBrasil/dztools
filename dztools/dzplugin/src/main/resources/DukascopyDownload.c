@@ -47,7 +47,7 @@ function run()
         asset(name);
         char content[100];
         sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i\n\Path = %s", name, StartDate, EndDate, SAVE_PATH);
-        file_write ("Plugin//dukascopy//HistoryConfig.properties", content, 0);
+        file_write ("Plugin//${assemblyName}//HistoryConfig.properties", content, 0);
         var result = brokerCommand(666, 0);
         if(result == 0)
             quit("Error fetching history! Check logfile.");
