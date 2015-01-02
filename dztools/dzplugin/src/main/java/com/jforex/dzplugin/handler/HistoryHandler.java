@@ -39,6 +39,12 @@ import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.HistoryConfig;
+import com.jforex.dzplugin.config.ReturnCodes;
+import com.jforex.dzplugin.utils.DateTimeUtils;
+import com.jforex.dzplugin.utils.InstrumentUtils;
+
 import com.dukascopy.api.Filter;
 import com.dukascopy.api.IBar;
 import com.dukascopy.api.IHistory;
@@ -46,11 +52,6 @@ import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.OfferSide;
 import com.dukascopy.api.Period;
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.HistoryConfig;
-import com.jforex.dzplugin.config.ReturnCodes;
-import com.jforex.dzplugin.utils.DateTimeUtils;
-import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class HistoryHandler {
 
@@ -167,7 +168,13 @@ public class HistoryHandler {
 
             List<IBar> bars = new ArrayList<IBar>();
             try {
-                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, getYearStartTime(currentYear), getYearEndTime(currentYear));
+                long startTime = getYearStartTime(currentYear);
+                long endTime = getYearEndTime(currentYear);
+                long prevBarStart = history.getPreviousBarStart(Period.ONE_MIN, history.getLastTick(instrument).getTime());
+                if (prevBarStart < endTime)
+                    endTime = prevBarStart;
+
+                bars = history.getBars(instrument, Period.ONE_MIN, OfferSide.ASK, Filter.WEEKENDS, startTime, prevBarStart);
             } catch (JFException e) {
                 ZorroLogger.log("History exception: " + e.getMessage());
                 return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
