@@ -29,7 +29,7 @@ Pick a script of your choice and press *Trade*. If everything is fine you should
 For downloading history data you can use either use the *download.c* script which ships with Zorro or use the *DukascopyDownload.c* which is extracted into the *Strategy* folder.
 
 I recommend using this dedicated script, since it is much faster if your *.cache* folder already contains the Dukascopy history(on my 8 year old machine a complete 1min Bar year takes 3 seconds!).
-You can adapt the SAVE_PATH symbol to define a separate history folder for Dukascopy. This avoids re-downloading histories if you want to test strategies using different brokers. You just copy then the *.bar files to the *History* folder as needed.
+You can adapt the SAVE_PATH symbol to define a separate history folder for Dukascopy. This avoids re-downloading histories if you want to test strategies using different brokers. You just copy then the *.bar* files to the *History* folder as needed.
 
 The plugin stores its logs to *dukascopy/logs/dzplugin.log*(the default log level is *info*). If you encounter problems open *dukascopy/dzplugin/log4j2.xml* for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose *dzplugin.log* file which you can use to report errors.
 
