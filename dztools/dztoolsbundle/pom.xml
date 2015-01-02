@@ -104,7 +104,7 @@
 								<inherited>false</inherited>
 								<configuration>
 									<serverId>github</serverId>
-									<repositoryId>juxeii/${assemblyName}</repositoryId>
+									<repositoryId>juxeii/dztools</repositoryId>
 									<overwriteArtifact>true</overwriteArtifact>
 									<releaseName>Release-${project.version}</releaseName>
 									<tag>${project.version}</tag>
