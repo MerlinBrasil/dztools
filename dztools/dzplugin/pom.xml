@@ -19,6 +19,44 @@
 			<artifactId>commons-net</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.aeonbits.owner</groupId>
+			<artifactId>owner</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dukascopy.dds2</groupId>
+			<artifactId>DDS2-jClient-JForex</artifactId>
+			<version>2.42.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.dukascopy.api</groupId>
+			<artifactId>JForex-API</artifactId>
+			<version>2.12.1</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2Version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2Version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
