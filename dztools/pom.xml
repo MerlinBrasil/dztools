@@ -8,7 +8,6 @@
 
 	<modules>
 		<module>dzplugin</module>
-		<module>dzconverter</module>
 		<module>dztoolsbundle</module>
 	</modules>
 

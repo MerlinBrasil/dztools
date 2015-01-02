@@ -57,7 +57,7 @@ public class HistoryHandler {
     private final IHistory history;
     private FileOutputStream outStream;
     private ByteBuffer bbf;
-    private final HistoryConfig historyConfig = ConfigFactory.create(HistoryConfig.class);
+    private HistoryConfig historyConfig = ConfigFactory.create(HistoryConfig.class);
 
     private final static Logger logger = LogManager.getLogger(HistoryHandler.class);
 
@@ -114,7 +114,7 @@ public class HistoryHandler {
         long startDateTimeRounded = endDateTimeRounded - (nTicks - 1) * period.getInterval();
         String dateFrom = DateTimeUtils.formatDateTime(startDateTimeRounded);
         String dateTo = DateTimeUtils.formatDateTime(endDateTimeRounded);
-        logger.debug("Trying to fetch " + nTicks + " " + period + " bars from " + dateFrom + " to " + dateTo + " for " + instrument);
+        ZorroLogger.log("Trying to fetch " + nTicks + " " + period + " bars from " + dateFrom + " to " + dateTo + " for " + instrument);
 
         List<IBar> bars = new ArrayList<IBar>();
         try {
@@ -123,7 +123,7 @@ public class HistoryHandler {
             logger.error("getBars exc: " + e.getMessage());
         }
         Collections.reverse(bars);
-        logger.debug("Fetched " + bars.size() + " bars.");
+        ZorroLogger.log("Fetched " + bars.size() + " bars.");
 
         return bars;
     }
@@ -144,12 +144,16 @@ public class HistoryHandler {
     }
 
     public int doHistoryDownload() {
+        ZorroLogger.log("1");
+        historyConfig = ConfigFactory.create(HistoryConfig.class);
         String instrumentName = historyConfig.Asset();
         int startYear = historyConfig.StartYear();
         int endYear = historyConfig.EndYear();
         int numYears = endYear - startYear + 1;
+        ZorroLogger.log("numYears: " + numYears);
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
+        ZorroLogger.log("2");
         if (instrument == null) {
             ZorroLogger.log("Asset " + instrumentName + " is invalid!");
             return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
@@ -236,7 +240,7 @@ public class HistoryHandler {
 
     private String getBarFileName(Instrument instrument,
                                   int year) {
-        return "Plugin\\dztools\\dzconverter\\bars\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
+        return "Plugin\\dztools\\dzplugin\\" + instrument.getPrimaryJFCurrency().getCurrencyCode() +
                 instrument.getSecondaryJFCurrency().getCurrencyCode() + "_" + year + ".bar";
     }
 }

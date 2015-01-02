@@ -42,6 +42,7 @@
 					<output>dukascopy-${project.version}</output>
 					<cpp>
 						<name>g++</name>
+						<sourceDirectory>src/main</sourceDirectory>
 						<options>
 							<option>-I${boostPath}</option>
 							<option>-s</option>
@@ -49,6 +50,13 @@
 							<option>-DVERSION=${project.version}</option>
 						</options>
 					</cpp>
+					<c>
+						<name>gcc</name>
+						<sourceDirectory>src/main</sourceDirectory>
+						<excludes>
+							<exclude>**</exclude>
+						</excludes>
+					</c>
 					<linker>
 						<name>g++</name>
 						<libs>

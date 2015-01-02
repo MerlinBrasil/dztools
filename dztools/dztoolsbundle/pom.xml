@@ -27,11 +27,6 @@
 			<version>0.9.1</version>
 			<type>nar</type>
 		</dependency>
-		<dependency>
-			<groupId>com.jforex</groupId>
-			<artifactId>dzconverter</artifactId>
-			<version>0.9.1</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -76,7 +71,7 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>${zorroPath}/Plugin</outputDirectory>
+									<outputDirectory>${zorroPath}</outputDirectory>
 									<includeEmptyDirs>true</includeEmptyDirs>
 									<overwrite>true</overwrite>
 									<resources>

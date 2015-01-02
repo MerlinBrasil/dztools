@@ -20,93 +20,47 @@
 				<fileSets>
 					<fileSet>
 						<directory>target/nar/dzplugin-${project.version}-x86-Windows-gpp-shared/lib/x86-Windows-gpp/shared</directory>
-						<outputDirectory>/</outputDirectory>
+						<outputDirectory>Plugin</outputDirectory>
 						<includes>
 							<include>dukascopy-${project.version}.dll</include>
 						</includes>
 					</fileSet>
 					<fileSet>
 						<directory>target</directory>
-						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
 						<includes>
 							<include>dzplugin-${project.version}.jar</include>
 						</includes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
 						<includes>
 							<include>DZPluginConfig.properties</include>
+							<include>DukascopyDownload.zorro</include>
 						</includes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzplugin/logs</outputDirectory>
+						<outputDirectory>Strategy</outputDirectory>
+						<includes>
+							<include>DukascopyDownload.c</include>
+						</includes>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>Plugin/dztools/dzplugin/logs</outputDirectory>
 						<excludes>
 							<exclude>*</exclude>
 						</excludes>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzplugin</outputDirectory>
+						<outputDirectory>Plugin/dztools/dzplugin</outputDirectory>
 						<includes>
 							<include>log4j2.xml</include>
 							<include>log4j.properties</include>
 						</includes>
-					</fileSet>
-				</fileSets>
-			</sources>
-		</moduleSet>
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
-			<includes>
-				<include>com.jforex:dzconverter</include>
-			</includes>
-			<sources>
-				<includeModuleDirectory>false</includeModuleDirectory>
-				<fileSets>
-					<fileSet>
-						<directory>target</directory>
-						<outputDirectory>dztools/dzconverter</outputDirectory>
-						<includes>
-							<include>dzconverter-${project.version}.jar</include>
-						</includes>
-					</fileSet>
-					<fileSet>
-						<directory>target/classes</directory>
-						<outputDirectory>dztools/dzconverter</outputDirectory>
-						<includes>
-							<include>convert.bat</include>
-						</includes>
-					</fileSet>
-					<fileSet>
-						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzconverter</outputDirectory>
-						<includes>
-							<include>DZConverterConfig.properties</include>
-						</includes>
-					</fileSet>
-					<fileSet>
-						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzconverter</outputDirectory>
-						<includes>
-							<include>log4j2.xml</include>
-							<include>log4j.properties</include>
-						</includes>
-					</fileSet>
-					<fileSet>
-						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzconverter/bars</outputDirectory>
-						<excludes>
-							<exclude>*</exclude>
-						</excludes>
-					</fileSet>
-					<fileSet>
-						<directory>src/main/resources</directory>
-						<outputDirectory>dztools/dzconverter/logs</outputDirectory>
-						<excludes>
-							<exclude>*</exclude>
-						</excludes>
 					</fileSet>
 				</fileSets>
 			</sources>
@@ -115,10 +69,9 @@
 
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>dztools/lib</outputDirectory>
+			<outputDirectory>Plugin/dztools/lib</outputDirectory>
 			<excludes>
 				<exclude>com.jforex:dzplugin</exclude>
-				<exclude>com.jforex:dzconverter</exclude>
 				<exclude>com.jforex:dztoolsbundle</exclude>
 			</excludes>
 		</dependencySet>

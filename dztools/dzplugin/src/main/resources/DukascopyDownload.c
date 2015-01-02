@@ -1,7 +1,7 @@
 // Update Assets.dta and/or download price history of a certain asset (or all)
 // Select the account (Demo/Real) before
 
-#define ADD_ASSET "EUR/USD"
+//#define ADD_ASSET "EUR/USD"
 // uncomment for adding a new asset to Assets.dta
 
 #define ALL_ASSETS
@@ -31,7 +31,6 @@ function run()
 #else
     NumYears = -1; // don't load prices, only update Assets.dta
 #endif
-
     string name;
 #ifdef ADD_ASSET // add single asset
     name = ADD_ASSET;
@@ -41,11 +40,14 @@ function run()
     while(name = loop("EUR/USD", "GBP/USD"))
 #endif
 #endif
+    {
         char content[100];
         sprintf(content,"Asset = %s\nStartYear = %i\nEndYear = %i", name, StartDate, EndDate);
         file_write ("Plugin//dztools//dzplugin//HistoryConfig.properties", content, 0);
         var result = brokerCommand(666, 0);
         if(result == 0)
             quit("Error fetching history! Check logfile.");
+        file_delete("Plugin//dztools//dzplugin//HistoryConfig.properties");
+    }
     quit("Done!");
 }
