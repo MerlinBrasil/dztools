@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.jforex</groupId>
 		<artifactId>dztools</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.2</version>
 	</parent>
 
 	<artifactId>dztoolsbundle</artifactId>
-	<version>0.9.1</version>
+	<version>0.9.2</version>
 	<name>dztoolsbundle</name>
 
 	<properties>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>com.jforex</groupId>
 			<artifactId>dzplugin</artifactId>
-			<version>0.9.1</version>
+			<version>0.9.2</version>
 			<type>nar</type>
 		</dependency>
 	</dependencies>

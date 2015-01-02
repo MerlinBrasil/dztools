@@ -4,16 +4,16 @@
 //#define ADD_ASSET "EUR/USD"
 // uncomment for adding a new asset to Assets.dta
 
-#define ALL_ASSETS
+//#define ALL_ASSETS
 // uncomment for updating all assets in the loop (otherwise, selected asset only)
 
-#define PRICE_HISTORY
+//#define PRICE_HISTORY
 // uncomment for downloading the price history (otherwise, update Assets.dta only)
 
-#define MAX_GAP 2
+//#define MAX_GAP 2
 // uncomment for checking the price history for 2-days gaps
 #define SAVE_PATH "History"
-//#define SAVE_PATH "Plugin//dztools//dzplugin"
+//#define SAVE_PATH "Plugin//dukascopy//history"
 // uncomment for defining the path to save the *.bar files
 
 function run()
