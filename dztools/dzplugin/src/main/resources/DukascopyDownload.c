@@ -40,7 +40,7 @@ function run()
     asset(name);
 #else
 #ifdef ALL_ASSETS // update all assets; add assets as you need
-    while(name = loop("EUR/USD"))
+    while(name = loop("EUR/USD", "GBP/USD"))
 #endif
 #endif
     {
