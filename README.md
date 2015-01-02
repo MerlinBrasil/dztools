@@ -1,14 +1,6 @@
-# dztools
-
-Here you find two tools for trading with [Dukascopy](http://www.dukascopy.com) over the [Zorro](http://www.takemoneyfromtherichandgiveittothepoor.com/) platform.
-
 ## dzplugin
 
-This is the Dukascopy broker plugin which implements the [Zorro-Broker-API](http://www.zorro-trader.com/manual/en/brokerplugin.htm).
-
-## dzconverter
-
-When trading with Dukascopy you probably also want to use their historical price data within Zorro. In case you already have some assets/instruments of them available in your local .cache folder(with bi5 file extension), this converter creates *.bar files which Zorro can use for trading and testing.
+This a plugin for [Zorro](http://www.takemoneyfromtherichandgiveittothepoor.com/) which lets you trade with [Dukascopy](http://www.dukascopy.com). It implements the [Zorro-Broker-API](http://www.zorro-trader.com/manual/en/brokerplugin.htm) and provides a script for fast downloading/converting the Dukascopy history data.
 
 ## General installation
 
@@ -18,62 +10,38 @@ When trading with Dukascopy you probably also want to use their historical price
 
 3.) Install [Zorro 1.26](http://www.takemoneyfromtherichandgiveittothepoor.com/download.php) if not already on your machine.
 
-4.) Download the [dztools.zip](https://github.com/juxeii/dztools/releases) archive.
+4.) Download the [dukascopy.zip](https://github.com/juxeii/dztools/releases) archive.
 
-5.) Extract the archive into *${yourZorroInstallPath}/Plugin* folder.
+5.) Extract the archive into *${yourZorroInstallPath}* folder.
 
-## dzplugin usage
+## Configuration/Usage
 
-After extracting the dztools archive you should see a *dukascopy-{version}.dll* and a folder *dztools* in the Plugin directory of your Zorro installation.
+After extracting the dztools archive you should see a *dukascopy-{version}.dll* and a folder *dukascopy* in the *Plugin* directory of your Zorro installation.
+
+Go to the *dukascopy* folder and open the *DZPluginConfig.properties* file with a text editor.
+
+Here you should adapt the *.cache* path to your local JForex installation path. Be careful with this step, since it may happen that the [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29) **will delete the .cache folder if it is corrupted**. Please make a copy of an instrument to a different location and set the path accordingly. If nothing gets deleted then you can use your complete *.cache* directory.
+You can leave the other entries to their default values.
 
 Start Zorro and check if the *Account* drop-down-box shows *Dukascopy* as an available broker.
-
 Pick a script of your choice and press *Trade*. If everything is fine you should see that the login to Dukascopy has been successful.
 
-The plugin stores its logs to *dztools/dzplugin/logs/dzplugin.log*(the default log level is *info*). If you encounter problems open *dztools/dzplugin/log4j2.xml* for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose *dzplugin.log* file which you can use to report errors.
+For downloading history data you can use either use the *download.c* script which ships with Zorro or use the *DukascopyDownload.c* which is extracted into the *Strategy* folder.
+
+I recommend using this dedicated script, since it is much faster if your *.cache* folder already contains the Dukascopy history(on my 8 year old machine a complete 1min Bar year takes 3 seconds!).
+You can adapt the SAVE_PATH symbol to define a separate history folder for Dukascopy. This avoids re-downloading histories if you want to test strategies using different brokers. You just copy then the *.bar files to the *History* folder as needed.
+
+The plugin stores its logs to *dukascopy/logs/dzplugin.log*(the default log level is *info*). If you encounter problems open *dukascopy/dzplugin/log4j2.xml* for configuring the log level. Then change the log level for the file dzplugin-appender to *debug* and save the file. A new Zorro session will now produce a more verbose *dzplugin.log* file which you can use to report errors.
 
 You can also change the log level for Dukascopy via *dztools/dzplugin/log4j.properties*.
 
 Please use [pastebin](http://pastebin.com/) for uploading the logs.
 
-## dzconverter usage
-
-This command line tool allows you to convert *.bi5 Dukascopy history files to the *.bar file format of Zorro.
-- The tool converts only 1min bars of an **entire** year(except the current of course). This is currently the highest resolution of Zorro(IMHO a tick based version of Zorro is in preparation).
-- Make sure that you have a full year history of past years, otherwise Zorro is not able to test.
-
-**Read these steps carefully, otherwise you run the risk of losing your .cache files!!!**
-
-1.) Go to your JForex installation path and locate the *.cache* directory(e.g. my path is *D:\programs\JForex\\.cache*).
-
-2.) **Create a *cacheCopy* folder(or some other foler name of your choice).**
-
-3.) Say you want to convert the EUR/USD history. **Copy .cache/EURUSD to cacheCopy!!** This step is needed since the program uses this [Dukascopy API](http://www.dukascopy.com/client/javadoc/com/dukascopy/api/system/IClient.html#setCacheDirectory%28java.io.File%29) method.
-
-4.) Open *dztools/dzconverter/config.properties* with a text editor. Fill in your login credentials under *user* and *password*. For *cachedir* put your path to the *cacheCopy* here(always use two backslashes as in the given example path). Save this file.
-
-5.) Open *dztools/dzconverter/convert.bat*. A cmd box window should appear with *java -jar dzconverter-$version}.jar*. If the batch file does not work you can also invoke the java command from a manually opened cmd window. 
-
-6.) The tool expects two parameters: first the asset/instrument name, e.g. *EUR/USD*; second the year you want to convert, e.g. *2013*. 
-A valid convert command sould look like this: *java -jar dzconverter-${version}.jar EUR/USD 2013*.
-
-7.) You will see all kind of console output and if the conversion went fine, you will find a *.bar* file in *dztools/dzconverter/bars* with the asset and year name as specified [here](http://www.zorro-trader.com/manual/en/export.htm).
-
-8.) Copy the .bar files to *${yourZorroInstallPath}\History* **after you did a backup of this folder!!!**
-
-For subsequent conversions you can skip steps 1,2 and 4.
-
-**Make sure you convert the entire history for all assets which are used by your script(s). All brokers have their own quotes and ticks feeds.**
-
-Say you want to test a script which trades EUR/USD for 2008-2014. You need to convert all years and replace all affected .bar files under *${yourZorroInstallPath}\History*.
-
-For reporting/finding bugs adapt the *log4j2.xml* and *log4j.properties* files under *dztools/dzconverter*. Use the logs *dztools/dzconverter/logs* in the same way as described for the dzplugin.
-
 ## Remarks
 
 - This a very early release so **don't expect it to be bug free!**
 - Currently **only Forex** is supported(no Stocks, CFDs etc.)
-- The login process for the converter is sometimes not reliable; just repeat the conversion
+- The history downloading is sometimes not reliable; just repeat the conversion in case of errors
 - Login to a real account for the plugin is currently not supported(although the code is in place).
 - If you don't trust the binaries checkout the dztools project und build it manually(you need to know [maven](http://maven.apache.org/))
 - Follow discussions for this project on the [forum](http://www.opserver.de/ubb7/ubbthreads.php?ubb=showflat&Number=447697&#Post447697)
