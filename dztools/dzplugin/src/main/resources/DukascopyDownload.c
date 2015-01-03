@@ -24,8 +24,8 @@ function run()
     }
 
     LookBack = 0;
-    StartDate = 2013; // set date for downloading price history
-    EndDate = 2014;
+    StartDate = 2014; // set date for downloading price history
+    EndDate = 2015;
 
 #ifdef PRICE_HISTORY
 #ifdef MAX_GAP

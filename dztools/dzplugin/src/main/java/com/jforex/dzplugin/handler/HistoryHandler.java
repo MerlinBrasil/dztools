@@ -170,6 +170,7 @@ public class HistoryHandler {
             try {
                 long startTime = getYearStartTime(currentYear);
                 long endTime = getYearEndTime(currentYear);
+                history.getBar(instrument, Period.ONE_MIN, OfferSide.ASK, 0); // This guarantees getLasTick does not return null!
                 long prevBarStart = history.getPreviousBarStart(Period.ONE_MIN, history.getLastTick(instrument).getTime());
                 if (prevBarStart < endTime)
                     endTime = prevBarStart;
