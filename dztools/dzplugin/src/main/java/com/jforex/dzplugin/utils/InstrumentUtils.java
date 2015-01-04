@@ -63,7 +63,7 @@ public class InstrumentUtils {
     }
 
     private static synchronized Instrument getFromNewName(String instrumentName) {
-        Instrument instrument = InstrumentUtils.getfromString(instrumentName);
+        Instrument instrument = getfromString(instrumentName);
         if (instrument == null) {
             logger.error(instrumentName + " is no valid asset name!");
             ZorroLogger.log(instrumentName + " is no valid asset name!");

@@ -105,10 +105,11 @@ public class OrderHandler {
         }
         int orderID = submitOrder(instrument, cmd, amount, priceEngine.getRounded(instrument, SLPrice));
         if (orderID == ReturnCodes.INVALID_ORDER_ID) {
-            ZorroLogger.log("Could not open position for " + instrument + ".Check logs!");
+            logger.warn("Could not open position for " + instrument);
+            ZorroLogger.log("Could not open position for " + instrument);
             return ReturnCodes.ORDER_SUBMIT_FAIL;
         }
-        tradeParams[2] = getOrderByID(orderID).getOpenPrice();
+        tradeParams[2] = orderMap.get(orderID).getOpenPrice();
 
         return orderID;
     }
@@ -121,7 +122,7 @@ public class OrderHandler {
             return ReturnCodes.INVALID_ORDER_ID;
         }
 
-        IOrder order = getOrderByID(orderID);
+        IOrder order = orderMap.get(orderID);
         orderParams[0] = order.getOpenPrice();
         if (order.isLong())
             orderParams[1] = priceEngine.getAsk(order.getInstrument());
@@ -145,9 +146,10 @@ public class OrderHandler {
             return ReturnCodes.ADJUST_SL_FAIL;
         }
 
-        IOrder order = getOrderByID(orderID);
+        IOrder order = orderMap.get(orderID);
         if (order.getStopLossPrice() == 0) {
             logger.warn("Order has no SL set -> reject BrokerStop!");
+            ZorroLogger.log("Order has no SL set -> reject BrokerStop!");
             return ReturnCodes.ADJUST_SL_FAIL;
         }
 
@@ -184,10 +186,6 @@ public class OrderHandler {
         orderMap.put(orderID, order);
 
         return orderID;
-    }
-
-    public IOrder getOrderByID(int orderID) {
-        return orderMap.get(orderID);
     }
 
     public boolean isOrderIDValid(int orderID) {

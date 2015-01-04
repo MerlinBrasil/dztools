@@ -149,10 +149,8 @@ public class HistoryHandler {
         int endYear = historyConfig.EndYear();
 
         Instrument instrument = InstrumentUtils.getByName(instrumentName);
-        if (instrument == null) {
-            ZorroLogger.log("Asset " + instrumentName + " is invalid!");
+        if (instrument == null)
             return ReturnCodes.HISTORY_DOWNLOAD_FAIL;
-        }
 
         int numYears = endYear - startYear + 1;
         for (int i = 0; i < numYears; ++i) {

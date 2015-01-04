@@ -79,9 +79,9 @@ public class DateTimeUtils {
         return getOLEDateFromMillis(millis) + 1e-8;
     }
 
-    public static long getMillisFromOLEDate(double oaDate) {
+    public static long getMillisFromOLEDate(double oleDate) {
         Date date = new Date();
-        date.setTime((long) ((oaDate - DAYS_SINCE_UTC_EPOCH) * 24 * 3600 * 1000));
+        date.setTime((long) ((oleDate - DAYS_SINCE_UTC_EPOCH) * 24 * 3600 * 1000));
         return date.getTime();
     }
 
