@@ -27,7 +27,7 @@ import org.aeonbits.owner.Config.Sources;
 
 @Sources({ "classpath:DZPluginConfig.properties" })
 public interface DZPluginConfig extends Config {
-    @DefaultValue(".\\Plugin\\dztools\\dzplugin\\.cache")
+    @DefaultValue(".\\Plugin\\dukascopy\\.cache")
     String CACHE_DIR();
 
     @DefaultValue("zorro")
