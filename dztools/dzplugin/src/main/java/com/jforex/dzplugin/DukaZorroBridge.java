@@ -208,8 +208,4 @@ public class DukaZorroBridge {
     public void doDLLlog(String msg) {
         logger.info("DLL msg " + msg);
     }
-
-    public AccountInfo getAccountInfo() {
-        return accountInfo;
-    }
 }
