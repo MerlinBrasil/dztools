@@ -86,8 +86,6 @@ public:
     int ProcessHistoryDownload();
 
 private:
-    void doDLLlog(const char* msg);
-
     JNIHandler jniHandler;
     JNIEnv *env;
 };

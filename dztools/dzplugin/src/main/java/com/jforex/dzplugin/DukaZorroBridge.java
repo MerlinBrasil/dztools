@@ -204,8 +204,4 @@ public class DukaZorroBridge {
 
         return historyHandler.doHistoryDownload();
     }
-
-    public void doDLLlog(String msg) {
-        logger.info("DLL msg " + msg);
-    }
 }

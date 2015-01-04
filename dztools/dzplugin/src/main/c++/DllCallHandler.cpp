@@ -254,13 +254,6 @@ int DllCallHandler::BrokerSell(const int nTradeID,
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doBrokerSell.methodID, nTradeID, nAmount);
 }
 
-void DllCallHandler::doDLLlog(const char* msg)
-{
-    jstring jMsg = env->NewStringUTF(msg);
-    env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doDLLlog.methodID, jMsg);
-    env->DeleteLocalRef(jMsg);
-}
-
 int DllCallHandler::ProcessHistoryDownload()
 {
     return (jint)env->CallObjectMethod(JData::JDukaZorroBridgeObject, JData::doHistoryDownload.methodID);
