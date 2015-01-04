@@ -28,12 +28,12 @@ import org.apache.logging.log4j.Logger;
 
 public class ZorroLogger {
 
-    public static void log(String errorMsg) {
-        jcallback_BrokerError(errorMsg);
+    public static int log(String errorMsg) {
+        return jcallback_BrokerError(errorMsg);
     }
 
-    public static void logProgress(int progress) {
-        jcallback_BrokerProgress(progress);
+    public static int logProgress(int progress) {
+        return jcallback_BrokerProgress(progress);
     }
 
     public static void logDiagnose(String errorMsg) {
@@ -54,7 +54,7 @@ public class ZorroLogger {
         log(errorMsg);
     }
 
-    private static native void jcallback_BrokerError(String errorMsg);
+    private static native int jcallback_BrokerError(String errorMsg);
 
-    private static native void jcallback_BrokerProgress(int progress);
+    private static native int jcallback_BrokerProgress(int progress);
 }

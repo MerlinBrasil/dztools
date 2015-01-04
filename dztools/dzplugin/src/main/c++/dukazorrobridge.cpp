@@ -51,22 +51,24 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     return TRUE;
 }
 
-void jcallback_BrokerError(JNIEnv *env,
-                           jclass clazz,
-                           jstring msg)
+int jcallback_BrokerError(JNIEnv *env,
+                          jclass clazz,
+                          jstring msg)
 {
+    int result = 0;
     const char *ctxt = env->GetStringUTFChars(msg, nullptr);
     if (ctxt != nullptr) {
-        BrokerError(ctxt);
+        result = BrokerError(ctxt);
         env->ReleaseStringUTFChars(msg, ctxt);
     }
+    return result;
 }
 
-void jcallback_BrokerProgress(JNIEnv *env,
-                              jclass clazz,
-                              jint progress)
+int jcallback_BrokerProgress(JNIEnv *env,
+                             jclass clazz,
+                             jint progress)
 {
-    BrokerProgress(progress);
+    return BrokerProgress(progress);
 }
 
 DLLFUNC int BrokerOpen(char *Name,

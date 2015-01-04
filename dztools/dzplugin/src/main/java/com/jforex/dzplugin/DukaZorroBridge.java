@@ -110,7 +110,6 @@ public class DukaZorroBridge {
             return ReturnCodes.LOGIN_OK;
 
         int loginResult = loginHandler.doLogin(User, Pwd, Type, accountInfos);
-
         if (loginResult == ReturnCodes.LOGIN_OK) {
             initComponentsAfterLogin();
             String accountID = accountInfo.getID();
