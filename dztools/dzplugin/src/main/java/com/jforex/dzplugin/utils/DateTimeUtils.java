@@ -26,13 +26,16 @@ package com.jforex.dzplugin.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.IBar;
 import com.dukascopy.api.IDataService;
 import com.dukascopy.api.ITimeDomain;
 import com.dukascopy.api.JFException;
@@ -102,7 +105,8 @@ public class DateTimeUtils {
         try {
             offlineTimes = dataService.getOfflineTimeDomains(startTime, endTime);
         } catch (JFException e) {
-            ZorroLogger.indicateError(logger, "getOfflineTimes exc: " + e.getMessage());
+            logger.error("getOfflineTimes exc: " + e.getMessage());
+            ZorroLogger.indicateError();
         }
         return offlineTimes;
     }
@@ -120,5 +124,28 @@ public class DateTimeUtils {
 
     public static Period getPeriodFromMinutes(int minutes) {
         return minuteToPeriodMap.get(minutes);
+    }
+
+    public static long getUTCYearStartTime(int year) {
+        return getUTCTime(year, 0, 1, 0, 0, 0);
+    }
+
+    public static long getUTCYearEndTime(int year) {
+        return getUTCTime(year, 11, 31, 23, 59, 0);
+    }
+
+    public static long getUTCTime(int year,
+                                  int month,
+                                  int day,
+                                  int hour,
+                                  int min,
+                                  int sec) {
+        GregorianCalendar calendar = new GregorianCalendar(year, month, day, hour, min, sec);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return calendar.getTimeInMillis();
+    }
+
+    public static double getUTCTimeFromBar(IBar bar) {
+        return getOLEDateFromMillisRounded(bar.getTime());
     }
 }

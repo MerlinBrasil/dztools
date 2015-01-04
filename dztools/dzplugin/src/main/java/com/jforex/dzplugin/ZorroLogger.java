@@ -44,9 +44,7 @@ public class ZorroLogger {
         log("!" + errorMsg);
     }
 
-    public static void indicateError(Logger logger,
-                                    String errorMsg) {
-        logger.error(errorMsg);
+    public static void indicateError() {
         log("Error! Check dzplugin logfile!");
     }
 

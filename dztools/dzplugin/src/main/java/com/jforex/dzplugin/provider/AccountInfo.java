@@ -27,16 +27,15 @@ package com.jforex.dzplugin.provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.jforex.dzplugin.ZorroLogger;
-import com.jforex.dzplugin.config.DukascopyParams;
-import com.jforex.dzplugin.utils.InstrumentUtils;
-
 import com.dukascopy.api.IAccount;
 import com.dukascopy.api.ICurrency;
 import com.dukascopy.api.Instrument;
 import com.dukascopy.api.JFException;
 import com.dukascopy.api.JFUtils;
 import com.dukascopy.api.OfferSide;
+import com.jforex.dzplugin.ZorroLogger;
+import com.jforex.dzplugin.config.DukascopyParams;
+import com.jforex.dzplugin.utils.InstrumentUtils;
 
 public class AccountInfo {
 
@@ -118,7 +117,8 @@ public class AccountInfo {
         try {
             pipCost = utils.convertPipToCurrency(instrument, accountCurrency, offerSide) * DukascopyParams.LOT_SIZE;
         } catch (JFException e) {
-            ZorroLogger.indicateError(logger, "Pipcost calculation exc: " + e.getMessage());
+            logger.error("Pipcost calculation exc: " + e.getMessage());
+            ZorroLogger.indicateError();
         }
         return pipCost;
     }

@@ -28,6 +28,9 @@ import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.IContext;
+import com.dukascopy.api.system.ClientFactory;
+import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.config.DZPluginConfig;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.handler.AccountHandler;
@@ -39,10 +42,6 @@ import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.provider.ServerTimeProvider;
 import com.jforex.dzplugin.utils.DateTimeUtils;
-
-import com.dukascopy.api.IContext;
-import com.dukascopy.api.system.ClientFactory;
-import com.dukascopy.api.system.IClient;
 
 public class DukaZorroBridge {
 
@@ -79,12 +78,13 @@ public class DukaZorroBridge {
             logger.debug("IClient successfully initialized.");
             return;
         } catch (ClassNotFoundException e) {
-            ZorroLogger.indicateError(logger, "IClient ClassNotFoundException occured!");
+            logger.error("IClient ClassNotFoundException occured! " + e.getMessage());
         } catch (IllegalAccessException e) {
-            ZorroLogger.indicateError(logger, "IClient IllegalAccessException occured!");
+            logger.error("IClient IllegalAccessException occured!" + e.getMessage());
         } catch (InstantiationException e) {
-            ZorroLogger.indicateError(logger, "IClient InstantiationException occured!");
+            logger.error("IClient InstantiationException occured!" + e.getMessage());
         }
+        ZorroLogger.indicateError();
     }
 
     public void initComponentsAfterLogin() {

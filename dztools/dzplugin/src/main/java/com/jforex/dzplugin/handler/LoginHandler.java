@@ -62,8 +62,10 @@ public class LoginHandler {
             // MainPin mp = new MainPin(client);
             // String pin = mp.getPin();
             // int loginResult = handleLogin(User, Pwd, pin);
-        } else
-            ZorroLogger.indicateError(logger, "Received invalid login type: " + Type);
+        } else {
+            logger.error("Received invalid login type: " + Type);
+            ZorroLogger.indicateError();
+        }
         processLoginResult(loginResult, accountInfos);
 
         return loginResult;

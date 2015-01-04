@@ -30,15 +30,14 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dukascopy.api.Instrument;
+import com.dukascopy.api.system.IClient;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.Configuration;
 import com.jforex.dzplugin.config.ReturnCodes;
 import com.jforex.dzplugin.provider.AccountInfo;
 import com.jforex.dzplugin.provider.IPriceEngine;
 import com.jforex.dzplugin.utils.InstrumentUtils;
-
-import com.dukascopy.api.Instrument;
-import com.dukascopy.api.system.IClient;
 
 public class SubscriptionHandler {
 
@@ -96,7 +95,8 @@ public class SubscriptionHandler {
             try {
                 Thread.sleep(Configuration.SUBSCRIPTION_WAIT_TIME);
             } catch (InterruptedException e) {
-                ZorroLogger.indicateError(logger, "Thread exc: " + e.getMessage());
+                logger.error("Thread exc: " + e.getMessage());
+                ZorroLogger.indicateError();
                 break;
             }
         }

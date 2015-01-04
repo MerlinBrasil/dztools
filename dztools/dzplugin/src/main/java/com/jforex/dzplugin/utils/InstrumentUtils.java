@@ -58,6 +58,10 @@ public class InstrumentUtils {
         return getFromNewName(instrumentName);
     }
 
+    public static String getNameWODash(Instrument instrument) {
+        return instrument.getPrimaryJFCurrency().getCurrencyCode() + instrument.getSecondaryJFCurrency().getCurrencyCode();
+    }
+
     private static synchronized Instrument getFromNewName(String instrumentName) {
         Instrument instrument = InstrumentUtils.getfromString(instrumentName);
         if (instrument == null) {

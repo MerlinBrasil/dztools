@@ -63,7 +63,8 @@ public class MainPin {
         try {
             pd = new PinDialog();
         } catch (Exception e) {
-            ZorroLogger.indicateError(logger, "getPin exc: " + e.getMessage());
+            logger.error("getPin exc: " + e.getMessage());
+            ZorroLogger.indicateError();
         }
         return pd.pinfield.getText();
     }
@@ -108,7 +109,8 @@ public class MainPin {
                     try {
                         captchaImage.setIcon(new ImageIcon(client.getCaptchaImage(pluginConfig.CONNECT_URL_LIVE())));
                     } catch (Exception ex) {
-                        ZorroLogger.indicateError(logger, "getPin exc: " + ex.getMessage());
+                        logger.error("getPin exc: " + ex.getMessage());
+                        ZorroLogger.indicateError();
                     }
                 }
             });

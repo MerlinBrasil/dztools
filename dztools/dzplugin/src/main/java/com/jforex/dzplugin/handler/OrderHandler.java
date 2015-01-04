@@ -222,15 +222,15 @@ public class OrderHandler {
     }
 
     private IOrder getOrderFromFuture(Future<IOrder> orderFuture) {
-        IOrder order = null;
         try {
-            order = orderFuture.get();
+            return orderFuture.get();
         } catch (InterruptedException e) {
-            ZorroLogger.indicateError(logger, "InterruptedException: " + e.getMessage());
+            logger.error("InterruptedException: " + e.getMessage());
         } catch (ExecutionException e) {
-            ZorroLogger.indicateError(logger, "ExecutionException: " + e.getMessage());
+            logger.error("ExecutionException: " + e.getMessage());
         }
-        return order;
+        ZorroLogger.indicateError();
+        return null;
     }
 
     private synchronized void resumeOrderIDs() {
@@ -238,7 +238,8 @@ public class OrderHandler {
         try {
             orders = engine.getOrders();
         } catch (JFException e) {
-            ZorroLogger.indicateError(logger, "getOrders exc: " + e.getMessage());
+            logger.error("getOrders exc: " + e.getMessage());
+            ZorroLogger.indicateError();
         }
         for (IOrder order : orders)
             resumeOrderIDIfFound(order);
