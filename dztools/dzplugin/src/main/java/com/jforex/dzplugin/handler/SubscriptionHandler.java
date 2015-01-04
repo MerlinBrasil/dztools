@@ -82,7 +82,7 @@ public class SubscriptionHandler {
 
         waitForSubscription(instruments);
         if (!client.getSubscribedInstruments().containsAll(instruments)) {
-            ZorroLogger.showError(logger, "Subscription for assets failed!");
+            ZorroLogger.showError("Subscription for assets failed!");
             return ReturnCodes.ASSET_UNAVAILABLE;
         }
         return ReturnCodes.ASSET_AVAILABLE;

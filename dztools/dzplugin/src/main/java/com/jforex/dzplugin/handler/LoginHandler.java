@@ -79,10 +79,10 @@ public class LoginHandler {
                 Thread.sleep(pluginConfig.CONNECTION_WAIT_TIME());
         } catch (JFAuthenticationException e) {
             logger.error("Invalid login credentials!");
-            ZorroLogger.showError(logger, "Invalid login credentials!");
+            ZorroLogger.showError("Invalid login credentials!");
         } catch (JFVersionException e) {
             logger.error("Invalid JForex version!");
-            ZorroLogger.showError(logger, "Invalid JForex version!");
+            ZorroLogger.showError("Invalid JForex version!");
         } catch (Exception e) {
             logger.error("Login exc: " + e.getMessage());
             ZorroLogger.indicateError();

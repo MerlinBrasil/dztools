@@ -24,7 +24,6 @@ package com.jforex.dzplugin;
  * #L%
  */
 
-import org.apache.logging.log4j.Logger;
 
 public class ZorroLogger {
 
@@ -48,9 +47,7 @@ public class ZorroLogger {
         log("Error! Check dzplugin logfile!");
     }
 
-    public static void showError(Logger logger,
-                                 String errorMsg) {
-        logger.error(errorMsg);
+    public static void showError(String errorMsg) {
         log(errorMsg);
     }
 
