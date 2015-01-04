@@ -64,11 +64,14 @@ public class DateTimeUtils {
 
     private final IDataService dataService;
     private final ServerTimeProvider serverTimeProvider;
+    private static SimpleDateFormat simpleUTCormat;
 
     public DateTimeUtils(IDataService dataService,
                          ServerTimeProvider serverTimeProvider) {
         this.dataService = dataService;
         this.serverTimeProvider = serverTimeProvider;
+        simpleUTCormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        simpleUTCormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
     }
 
     public static double getOLEDateFromMillis(long millis) {
@@ -112,9 +115,7 @@ public class DateTimeUtils {
     }
 
     public static String formatDateTime(long dateTime) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        return dateFormat.format(new Date(dateTime));
+        return simpleUTCormat.format(new Date(dateTime));
     }
 
     public static String formatOLETime(double oleTime) {
