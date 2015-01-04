@@ -67,7 +67,7 @@ public class DukaZorroBridge {
         initClientInstance();
         isStrategyStarted = false;
         strategy = new DukaZorroStrategy();
-        loginHandler = new LoginHandler(this);
+        loginHandler = new LoginHandler(client);
     }
 
     private void initClientInstance() {
@@ -109,7 +109,15 @@ public class DukaZorroBridge {
         if (client.isConnected())
             return ReturnCodes.LOGIN_OK;
 
-        return loginHandler.doLogin(User, Pwd, Type, accountInfos);
+        int loginResult = loginHandler.doLogin(User, Pwd, Type, accountInfos);
+
+        if (loginResult == ReturnCodes.LOGIN_OK) {
+            initComponentsAfterLogin();
+            String accountID = accountInfo.getID();
+            accountInfos[0] = accountID;
+            logger.info("Login successful for account ID " + accountID);
+        }
+        return loginResult;
     }
 
     public int doLogout() {
@@ -199,10 +207,6 @@ public class DukaZorroBridge {
 
     public void doDLLlog(String msg) {
         logger.info("DLL msg " + msg);
-    }
-
-    public IClient getClient() {
-        return client;
     }
 
     public AccountInfo getAccountInfo() {

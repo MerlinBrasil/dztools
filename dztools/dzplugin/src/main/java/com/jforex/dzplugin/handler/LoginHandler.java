@@ -31,22 +31,19 @@ import org.apache.logging.log4j.Logger;
 import com.dukascopy.api.system.IClient;
 import com.dukascopy.api.system.JFAuthenticationException;
 import com.dukascopy.api.system.JFVersionException;
-import com.jforex.dzplugin.DukaZorroBridge;
 import com.jforex.dzplugin.ZorroLogger;
 import com.jforex.dzplugin.config.DZPluginConfig;
 import com.jforex.dzplugin.config.ReturnCodes;
 
 public class LoginHandler {
 
-    private final DukaZorroBridge dukaZorroBridge;
     private final IClient client;
     private final DZPluginConfig pluginConfig = ConfigFactory.create(DZPluginConfig.class);
 
     private final static Logger logger = LogManager.getLogger(LoginHandler.class);
 
-    public LoginHandler(DukaZorroBridge dukaZorroBridge) {
-        this.dukaZorroBridge = dukaZorroBridge;
-        this.client = dukaZorroBridge.getClient();
+    public LoginHandler(IClient client) {
+        this.client = client;
     }
 
     public int doLogin(String User,
@@ -66,19 +63,7 @@ public class LoginHandler {
             logger.error("Received invalid login type: " + Type);
             ZorroLogger.indicateError();
         }
-        processLoginResult(loginResult, accountInfos);
-
         return loginResult;
-    }
-
-    private void processLoginResult(int loginResult,
-                                    String accountInfos[]) {
-        if (loginResult == ReturnCodes.LOGIN_OK) {
-            dukaZorroBridge.initComponentsAfterLogin();
-            String accountID = dukaZorroBridge.getAccountInfo().getID();
-            accountInfos[0] = accountID;
-            logger.info("Login successful for account ID " + accountID);
-        }
     }
 
     private int login(String User,
@@ -93,11 +78,14 @@ public class LoginHandler {
             for (int i = 0; i < pluginConfig.CONNECTION_RETRIES() && !client.isConnected(); ++i)
                 Thread.sleep(pluginConfig.CONNECTION_WAIT_TIME());
         } catch (JFAuthenticationException e) {
+            logger.error("Invalid login credentials!");
             ZorroLogger.showError(logger, "Invalid login credentials!");
         } catch (JFVersionException e) {
+            logger.error("Invalid JForex version!");
             ZorroLogger.showError(logger, "Invalid JForex version!");
         } catch (Exception e) {
             logger.error("Login exc: " + e.getMessage());
+            ZorroLogger.indicateError();
         }
         return client.isConnected() ? ReturnCodes.LOGIN_OK : ReturnCodes.LOGIN_FAIL;
     }
