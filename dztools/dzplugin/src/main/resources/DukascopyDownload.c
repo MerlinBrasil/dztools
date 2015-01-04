@@ -51,6 +51,7 @@ function run()
         var result = brokerCommand(666, 0);
         if(result == 0)
             quit("Error fetching history! Check logfile.");
+        file_delete("Plugin//${assemblyName}//HistoryConfig.properties");
     }
     quit("Done!");
 }
