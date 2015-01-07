@@ -19,7 +19,7 @@
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<directory>target/nar/dzplugin-${project.version}-x86-Windows-gpp-shared/lib/x86-Windows-gpp/shared</directory>
+						<directory>target/nar/dzplugin-${project.version}-${os.arch}-Windows-gpp-shared/lib/${os.arch}-Windows-gpp/shared</directory>
 						<outputDirectory>Plugin</outputDirectory>
 						<includes>
 							<include>dukascopy-${project.version}.dll</include>

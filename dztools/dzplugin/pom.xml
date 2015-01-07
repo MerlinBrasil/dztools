@@ -57,53 +57,6 @@
 			<plugin>
 				<groupId>com.github.maven-nar</groupId>
 				<artifactId>nar-maven-plugin</artifactId>
-				<version>3.2.0</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<goals>
-							<goal>nar-compile</goal>
-							<goal>nar-unpack</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<multithreaded>true</multithreaded>
-					<maxCores>1</maxCores>
-					<output>dukascopy-${project.version}</output>
-					<architecture>x86</architecture>
-					<cpp>
-						<name>g++</name>
-						<sourceDirectory>src/main</sourceDirectory>
-						<options>
-							<option>-I${boostPath}</option>
-							<option>-s</option>
-							<option>-std=c++11</option>
-							<option>-DVERSION=${project.version}</option>
-						</options>
-					</cpp>
-					<c>
-						<name>gcc</name>
-						<sourceDirectory>src/main</sourceDirectory>
-						<excludes>
-							<exclude>**</exclude>
-						</excludes>
-					</c>
-					<linker>
-						<name>g++</name>
-						<libs>
-							<lib>
-								<name>jvm</name>
-								<directory>${JAVA_HOME}/lib</directory>
-							</lib>
-						</libs>
-					</linker>
-					<libraries>
-						<library>
-							<type>shared</type>
-						</library>
-					</libraries>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
