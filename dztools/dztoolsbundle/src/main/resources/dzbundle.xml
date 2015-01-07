@@ -26,6 +26,13 @@
 						</includes>
 					</fileSet>
 					<fileSet>
+						<directory>target/nar/dzplugin-${project.version}-amd64-Windows-gpp-shared/lib/amd64-Windows-gpp/shared</directory>
+						<outputDirectory>Plugin</outputDirectory>
+						<includes>
+							<include>dukascopy-${project.version}.dll</include>
+						</includes>
+					</fileSet>
+					<fileSet>
 						<directory>target</directory>
 						<outputDirectory>Plugin/${assemblyName}</outputDirectory>
 						<includes>
