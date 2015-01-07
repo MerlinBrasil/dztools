@@ -71,6 +71,7 @@
 					<multithreaded>true</multithreaded>
 					<maxCores>1</maxCores>
 					<output>dukascopy-${project.version}</output>
+					<architecture>x86</architecture>
 					<cpp>
 						<name>g++</name>
 						<sourceDirectory>src/main</sourceDirectory>
